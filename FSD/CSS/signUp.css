@@ -1,44 +1,51 @@
 /* -----------------------------------------
-   ANIMATED GRADIENT BACKGROUND
+   GLOBAL (animated gradient bg)
 ----------------------------------------- */
-body{
-    margin:0;
-    font-family:'Poppins',sans-serif;
+body {
+  margin: 0;
+  background: linear-gradient(-45deg, #0a75ff, #004bb5, #007fff, #0050d0);
+  background-size: 300% 300%;
+  animation: bgMove 10s ease infinite;
 
-    /* Animated Gradient */
-    background: linear-gradient(-45deg, #0A75FF, #004BB5, #007FFF, #003C99);
-    background-size: 300% 300%;
-    animation: gradientMove 8s ease infinite;
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 
-    min-height:100vh;
-    padding:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-
-    animation:fadeIn 0.8s ease;
+  animation: fadeIn 0.8s ease;
+}
+@keyframes bgMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Gradient Animation */
-@keyframes gradientMove {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* -----------------------------------------
-   MAIN WRAPPER (2-column layout)
------------------------------------------ */
+/* MAIN CONTAINER */
 .main-container {
   width: 100%;
   max-width: 1100px;
-  height: 100%;
   max-height: 680px;
   background: white;
   border-radius: 25px;
-  overflow: hidden;
   display: flex;
+  overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 
   opacity: 0;
@@ -52,9 +59,7 @@ body{
   }
 }
 
-/* -----------------------------------------
-   LEFT PANEL + TYPING EFFECT
------------------------------------------ */
+/* LEFT PANEL */
 .left-panel {
   flex: 1;
   padding: clamp(20px, 4vw, 50px);
@@ -115,7 +120,6 @@ body{
   }
 }
 
-/* Welcome text fade-in */
 .welcome-text {
   font-size: clamp(12px, 1.4vw, 15px);
   width: 80%;
@@ -124,17 +128,14 @@ body{
 
   opacity: 0;
   animation: fadeText 1.2s ease forwards;
-  animation-delay: 4s;
+  animation-delay: 2.5s;
 }
 @keyframes fadeText {
   to {
     opacity: 1;
   }
 }
-
-/* -----------------------------------------
-   Floating bubbles (improved)
------------------------------------------ */
+/* bubbles */
 .circle {
   position: absolute;
   border-radius: 50%;
@@ -147,10 +148,9 @@ body{
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-15px);
+    transform: translateY(-12px);
   }
 }
-
 .c1 {
   width: clamp(80px, 15vw, 150px);
   height: clamp(80px, 15vw, 150px);
@@ -160,7 +160,7 @@ body{
 .c2 {
   width: clamp(120px, 25vw, 230px);
   height: clamp(120px, 25vw, 230px);
-  bottom: -6%;
+  bottom: -8%;
   right: 10%;
 }
 .c3 {
@@ -170,9 +170,7 @@ body{
   right: 18%;
 }
 
-/* -----------------------------------------
-   RIGHT PANEL
------------------------------------------ */
+/* RIGHT PANEL */
 .right-panel {
   flex: 1;
   padding: clamp(20px, 4vw, 50px);
@@ -182,14 +180,14 @@ body{
 }
 
 .right-panel h2 {
+  text-align: center;
   font-size: clamp(20px, 2vw, 28px);
   font-weight: 700;
-  text-align: center;
 }
 
 /* Inputs */
 .form-control {
-  height: clamp(38px, 4.5vh, 48px);
+  height: clamp(38px, 5vh, 48px);
   border-radius: 8px;
   font-size: clamp(12px, 1.2vw, 14px);
   transition: 0.3s;
@@ -199,18 +197,18 @@ body{
   box-shadow: 0 0 8px rgba(30, 95, 255, 0.3);
 }
 
-/* Login button */
+/* Button */
 .login-btn {
   width: 100%;
-  padding: clamp(10px, 1.5vw, 13px);
+  padding: clamp(10px, 1.4vw, 13px);
+  background: #1e5afe;
   border: none;
   border-radius: 30px;
-  background: #1e5afe;
   color: white;
   font-size: clamp(12px, 1.2vw, 16px);
   font-weight: 600;
   margin-top: 10px;
-  transition: 0.3s ease;
+  transition: 0.3s;
 }
 .login-btn:hover {
   transform: translateY(-3px);
@@ -222,63 +220,28 @@ body{
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #777;
 }
 .divider::before,
 .divider::after {
   content: "";
-  height: 1px;
   flex: 1;
+  height: 1px;
   background: #ddd;
 }
 
-/* -----------------------------------------
-   SOCIAL BUTTON FADE-IN
------------------------------------------ */
-.social-btn {
-  width: 100%;
-  padding: clamp(10px, 1.3vw, 13px);
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  font-size: clamp(12px, 1.1vw, 14px);
-  transition: 0.25s;
-}
-.social-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-}
-
-/* -----------------------------------------
-   MOBILE MODE
------------------------------------------ */
+/* MOBILE */
 @media (max-width: 450px) {
-  body {
-    overflow-y: auto;
-    padding: 5px;
-  }
-
   .main-container {
     flex-direction: column;
-    height: auto;
     max-height: none;
+    height: auto;
   }
-
   .left-panel,
   .right-panel {
     text-align: center;
     padding: 25px 16px;
   }
-
   .welcome-text {
     width: 100%;
-  }
-
-  .circle {
-    opacity: 0.25;
   }
 }
