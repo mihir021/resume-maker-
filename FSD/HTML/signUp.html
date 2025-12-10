@@ -32,35 +32,29 @@
 
         <h2>Create Your Account</h2>
 
-        <form>
+        <form action="http://localhost:5000/signup" method="POST">
 
             <label class="fw-bold small">FULL NAME</label>
-            <input type="text" class="form-control mb-3" placeholder="Your Full Name" required>
+            <input type="text" name="name" class="form-control mb-3" placeholder="Your Full Name" required>
 
             <label class="fw-bold small">EMAIL ADDRESS</label>
-            <input type="email" class="form-control mb-3" placeholder="Email Address" required>
+            <input type="email" name="email" class="form-control mb-3" placeholder="Email Address" required>
 
             <label class="fw-bold small">PASSWORD</label>
-            <input type="password" class="form-control mb-3" placeholder="Password" required>
+            <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
 
             <label class="fw-bold small">CONFIRM PASSWORD</label>
-            <input type="password" class="form-control mb-2" placeholder="Confirm Password" required>
+            <input type="password" name="confirm_password" class="form-control mb-2" placeholder="Confirm Password" required>
 
-            <div class="d-flex align-items-center mb-3" style="font-size:clamp(12px,1vw,14px);">
+            <div class="d-flex align-items-center mb-3">
                 <input type="checkbox" class="me-2" required>
                 I agree to the <a href="#" class="text-primary ms-1 fw-bold">Terms & Conditions</a>
             </div>
 
-            <button class="login-btn">Sign Up</button>
-
-            <div class="divider">or</div>
-
-            <p class="text-center" style="font-size:clamp(12px,1vw,14px);">
-                Already have an account?
-                <a href="loginPage.html" class="text-primary fw-bold">Sign in</a>
-            </p>
+            <button type="submit" class="login-btn">Sign Up</button>
 
         </form>
+
     </div>
 </div>
 
