@@ -1,9 +1,11 @@
 from Python.config.db import db
 
 class UserRepo:
+    def __init__(self):
+        self.collection = db["users"]
 
-    def create_user(self, user_data):
-        return db["users"].insert_one(user_data)
+    def find_user_by_email(self, encoded_email):
+        return self.collection.find_one({"email": encoded_email})
 
-    def find_user_by_email(self, email):
-        return db["users"].find_one({"email": email})
+    def create_user(self, data):
+        return self.collection.insert_one(data)
