@@ -7,6 +7,7 @@ class UserSignupDTO:
     def is_valid(self):
         return all([self.name, self.email, self.password])
 
+    # caz mongo db does not store whole object's
     def to_dict(self):
         return {
             "name": self.name,
