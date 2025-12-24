@@ -1,7 +1,6 @@
 import base64
 
-SECRET_KEY = "my_secret_salt_2025"
-
+SECRET_KEY = "ABC_abc"
 
 class CryptoUtils:
 

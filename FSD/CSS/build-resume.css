@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.form-section {
+    width: 55%;
+    padding: 40px;
+    background: #ffffff;
+}
+
+.form-section label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.form-section input,
+.form-section textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.preview-section {
+    width: 45%;
+    background: #eef2f7;
+    padding: 30px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#resumeContainer {
+    transform: scale(0.9);
+    transform-origin: top center;
+    background: white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
