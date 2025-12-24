@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Build Resume</title>
+
+    <link rel="stylesheet" href="../CSS/build-resume.css">
+    <link rel="stylesheet" href="../templates/template-modern-clean/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- LEFT FORM -->
+    <div class="form-section">
+        <h2>Build Your Resume</h2>
+
+        <label>First Name</label>
+        <input type="text" id="firstName">
+
+        <label>Last Name</label>
+        <input type="text" id="lastName">
+
+        <label>Email</label>
+        <input type="email" id="email">
+
+        <label>Phone</label>
+        <input type="text" id="phone">
+
+        <label>Summary</label>
+        <textarea id="summary" rows="3"></textarea>
+
+        <label>Skills (comma or new line separated)</label>
+        <textarea id="skills" rows="3"
+            placeholder="HTML, CSS, JavaScript
+React
+Python"></textarea>
+    </div>
+
+    <!-- RIGHT PREVIEW -->
+    <div class="preview-section">
+        <div id="resumeContainer"></div>
+    </div>
+
+</div>
+
+<script src="../JS/live-preview.js"></script>
+</body>
+</html>
