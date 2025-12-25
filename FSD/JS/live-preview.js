@@ -1,4 +1,4 @@
-fetch("../templates/template-modern-clean/template.html")
+fetch("../templates/template-clean-profile/template.html")
     .then(res => {
         if (!res.ok) throw new Error("Template not found");
         return res.text();
