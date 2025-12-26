@@ -1,32 +1,16 @@
-fetch("../templates/template-modern-clean/template.html")
-    .then(res => {
-        if (!res.ok) throw new Error("Template not found");
-        return res.text();
-    })
-    .then(html => {
-        document.getElementById("resumeContainer").innerHTML = html;
-        init();
-        updatePreview();
-    })
-    .catch(err => console.error(err));
-
-function init() {
-    window.firstName = document.getElementById("firstName");
-    window.lastName  = document.getElementById("lastName");
-    window.email     = document.getElementById("email");
-    window.phone     = document.getElementById("phone");
-    window.summary   = document.getElementById("summary");
-    window.skills    = document.getElementById("skills");
-
-    [firstName, lastName, email, phone, summary, skills]
-        .forEach(el => el.addEventListener("input", updatePreview));
-}
+const firstName = document.getElementById("firstName");
+const lastName  = document.getElementById("lastName");
+const email     = document.getElementById("email");
+const phone     = document.getElementById("phone");
+const summary   = document.getElementById("summary");
+const skills    = document.getElementById("skills");
 
 function safe(v, d) {
     return v && v.trim() !== "" ? v : d;
 }
 
 function updatePreview() {
+
     document.getElementById("previewName").textContent =
         safe(firstName.value, "John") + " " + safe(lastName.value, "Doe");
 
@@ -38,7 +22,7 @@ function updatePreview() {
 
     document.getElementById("previewSummary").textContent =
         safe(summary.value,
-            "Passionate developer focused on building clean and user-friendly interfaces."
+            "Passionate developer focused on clean UI and UX."
         );
 
     const ul = document.getElementById("previewSkills");
@@ -46,9 +30,9 @@ function updatePreview() {
 
     if (skills.value.trim()) {
         skills.value
-            .split(/,|\n/)
+            .split(/[\n,]/)     // ✅ comma OR new line
             .map(s => s.trim())
-            .filter(s => s.length > 0)
+            .filter(Boolean)
             .forEach(skill => {
                 const li = document.createElement("li");
                 li.textContent = skill;
@@ -56,3 +40,6 @@ function updatePreview() {
             });
     }
 }
+
+[firstName, lastName, email, phone, summary, skills]
+    .forEach(i => i.addEventListener("input", updatePreview));

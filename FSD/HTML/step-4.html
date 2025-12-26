@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 4 – Skills</title>
+
+  <link rel="stylesheet" href="../templates/template-academic-yellow/style.css">
+  <link rel="stylesheet" href="../CSS/step-4.css">
+</head>
+<body>
+
+<!-- LEFT STEP BAR -->
+<aside class="step-sidebar">
+  <div class="step-number">4</div>
+  <ul class="steps">
+    <li><span>1</span></li>
+    <li><span>2</span></li>
+    <li><span>3</span></li>
+    <li class="active"><span>4</span></li>
+  </ul>
+</aside>
+
+<!-- PAGE -->
+<div class="page">
+
+  <header class="top-bar">
+    <h1>Skills</h1>
+    <span>Step 4 of 4</span>
+  </header>
+
+  <main class="wrapper">
+
+    <!-- FORM -->
+    <section class="form-card">
+
+      <h2>Add Skills</h2>
+      <p class="hint">Click to add or type your own skills.</p>
+
+      <div class="skills-list">
+        <button data-skill="Customer Service">+ Customer Service</button>
+        <button data-skill="Team Collaboration">+ Team Collaboration</button>
+        <button data-skill="Time Management">+ Time Management</button>
+        <button data-skill="Problem Solving">+ Problem Solving</button>
+        <button data-skill="Effective Communication">+ Effective Communication</button>
+        <button data-skill="Project Management">+ Project Management</button>
+      </div>
+
+      <label>Your Skills (one per line)</label>
+      <textarea
+        id="skillsEditor"
+        rows="6"
+        placeholder="Java
+Spring Boot
+REST APIs
+MySQL">
+      </textarea>
+
+      <div class="nav-buttons">
+        <button class="ghost-btn" onclick="history.back()">← Back</button>
+        <button class="primary-btn" onclick="goToStep5()">Finish</button>
+      </div>
+
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="preview-wrap">
+      <div id="resumePreview"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="../JS/step-4.js"></script>
+</body>
+</html>
