@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 1 – Resume Header</title>
+  <link rel="stylesheet" href="../CSS/step-1.css" />
+</head>
+<body>
+
+<!-- LEFT STEP BAR -->
+<aside class="step-sidebar">
+  <div class="step-number">1</div>
+
+  <ul class="steps">
+    <li class="active"><span>1</span></li>
+    <li><span>2</span></li>
+    <li><span>3</span></li>
+    <li><span>4</span></li>
+  </ul>
+</aside>
+
+<!-- MAIN PAGE -->
+<div class="page">
+
+  <header class="top-bar">
+    <h1>Resume Builder</h1>
+    <span>Step 1 of 4</span>
+  </header>
+
+  <main class="wrapper">
+
+    <!-- FORM -->
+    <section class="form-card">
+      <h2>Resume Header</h2>
+
+      <div class="field">
+        <label>Full Name</label>
+        <input id="name" placeholder="Rathod Mihir" />
+      </div>
+
+      <div class="field">
+        <label>Job Title</label>
+        <input id="title" placeholder="Java Developer" />
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input id="email" placeholder="mihir@email.com" />
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <input id="phone" placeholder="+91 9876543210" />
+      </div>
+
+      <div class="field">
+        <label>Location</label>
+        <input id="location" placeholder="Ahmedabad, India" />
+      </div>
+
+      <div class="field">
+        <label>Summary</label>
+        <textarea id="summary" rows="4"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Languages</label>
+        <textarea id="languages" rows="3"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Certificates</label>
+        <textarea id="certs" rows="3"></textarea>
+      </div>
+
+      <button id="nextBtn" class="primary-btn">Next →</button>
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="preview-wrap">
+      <div id="resumePreview"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="../JS/step-1.js"></script>
+</body>
+</html>

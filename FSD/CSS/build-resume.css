@@ -1,46 +1,100 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* SCREEN BACKGROUND */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
+  background: #1f2a44;
 }
 
-.container {
-    display: flex;
-    height: 100vh;
+/* LAYOUT */
+.build-wrapper {
+  display: flex;
+  min-height: 100vh;
 }
 
-.form-section {
-    width: 55%;
-    padding: 40px;
-    background: #ffffff;
+/* SIDEBAR */
+.build-sidebar {
+  width: 260px;
+  background: #223055;
+  color: white;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
-.form-section label {
-    display: block;
-    margin-top: 15px;
-    font-weight: 600;
+.build-sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
-.form-section input,
-.form-section textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    font-size: 14px;
+/* BUTTONS */
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  background: #3b5cff;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
 }
 
-.preview-section {
-    width: 45%;
-    background: #eef2f7;
-    padding: 30px;
-    overflow-y: auto;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+.ghost-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
 }
 
-#resumeContainer {
-    transform: scale(0.9);
-    transform-origin: top center;
-    background: white;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+/* PREVIEW AREA */
+.build-preview {
+  flex: 1;
+  background: #e5e5e5;
+  overflow: auto;
+  padding: 40px;
+}
+
+#resumePreview {
+  margin: auto;
+  max-width: 900px;
+}
+
+/* ================= PRINT FIX (CORRECT) ================= */
+@media print {
+
+  body {
+    background: white !important;
+  }
+
+  /* Hide sidebar ONLY */
+  .build-sidebar {
+    display: none !important;
+  }
+
+  /* Expand preview to full width */
+  .build-preview {
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  #resumePreview {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Force A4 */
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
 }

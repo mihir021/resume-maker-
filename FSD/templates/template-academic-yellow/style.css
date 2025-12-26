@@ -1,0 +1,98 @@
+.resume.academic-yellow {
+    width: 800px;
+    min-height: 1100px;
+    border: 14px solid #ffd83d;
+    background: #fff;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* HEADER */
+.top-header {
+    background: #2f3b4c;
+    color: #fff;
+    padding: 30px;
+}
+
+.top-header h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.top-header h2 {
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+/* BODY */
+.body {
+    display: flex;
+}
+
+/* SIDEBAR */
+.left-panel {
+    width: 30%;
+    background: #e6e6e6;
+    padding: 30px 20px;
+}
+
+.photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #b0b0b0;
+    margin: 0 auto 20px;
+}
+
+.side-section {
+    margin-bottom: 28px;
+}
+
+.side-section h3 {
+    font-size: 14px;
+    border-bottom: 2px solid #333;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+}
+
+.side-section p,
+.side-section li {
+    font-size: 13px;
+    margin-bottom: 6px;
+    word-wrap: break-word;
+}
+
+.side-section ul {
+    padding-left: 18px;
+}
+
+/* CONTENT */
+.right-panel {
+    width: 70%;
+    padding: 35px;
+}
+
+.main-section {
+    margin-bottom: 30px;
+}
+
+.main-section h3 {
+    font-size: 15px;
+    border-bottom: 2px solid #2f3b4c;
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+}
+
+.main-section p,
+.main-section li {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+
+.main-section ul {
+    padding-left: 20px;
+}

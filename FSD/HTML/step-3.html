@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 3 – Education</title>
+
+  <link rel="stylesheet" href="../templates/template-academic-yellow/style.css">
+  <link rel="stylesheet" href="../CSS/step-3.css">
+</head>
+<body>
+
+<!-- LEFT STEP BAR -->
+<aside class="step-sidebar">
+  <div class="step-number">3</div>
+  <ul class="steps">
+    <li><span>1</span></li>
+    <li><span>2</span></li>
+    <li class="active"><span>3</span></li>
+    <li><span>4</span></li>
+  </ul>
+</aside>
+
+<!-- PAGE -->
+<div class="page">
+
+  <header class="top-bar">
+    <h1>Education</h1>
+    <span>Step 3 of 4</span>
+  </header>
+
+  <main class="wrapper">
+
+    <!-- FORM -->
+    <section class="form-card">
+
+      <h2>Education Details</h2>
+      <p class="hint">Include education or training, even if unfinished.</p>
+
+      <label>School / University</label>
+      <input id="school" placeholder="XYZ University" />
+
+      <label>Location</label>
+      <input id="eduLocation" placeholder="Ahmedabad, India" />
+
+      <label>Degree</label>
+      <input id="degree" placeholder="B.Tech" />
+
+      <label>Field of Study</label>
+      <input id="field" placeholder="Computer Science" />
+
+      <label>Graduation Month</label>
+      <input id="gradMonth" type="month" />
+
+      <label class="checkbox">
+        <input type="checkbox" id="currentStudy" />
+        I am currently studying here
+      </label>
+
+      <label>Additional Details (one per line)</label>
+      <textarea
+        id="eduDetails"
+        rows="4"
+        placeholder="CGPA: 8.5 / 10
+Honors: University Merit List
+Relevant Coursework: Data Structures, DBMS">
+      </textarea>
+
+      <div class="nav-buttons">
+        <button class="ghost-btn" onclick="history.back()">← Back</button>
+        <button class="primary-btn" onclick="goToStep4()">Next →</button>
+      </div>
+
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="preview-wrap">
+      <div id="resumePreview"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="../JS/step-3.js"></script>
+</body>
+</html>
