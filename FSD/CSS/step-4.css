@@ -1,0 +1,248 @@
+:root {
+  --bg: #f4f6f9;
+  --card: #ffffff;
+  --primary: #2563eb;
+  --sidebar: #1f2f5c;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  display: flex;
+  color: var(--text);
+}
+
+/* ================= LEFT STEP BAR ================= */
+.step-sidebar {
+  width: 80px;
+  background: var(--sidebar);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+}
+
+.step-number {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.steps::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: rgba(255,255,255,0.35);
+  transform: translateX(-50%);
+}
+
+.steps li {
+  margin: 22px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.steps span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background: var(--sidebar);
+  color: white;
+}
+
+.steps li.active span {
+  background: white;
+  color: var(--sidebar);
+  font-weight: 700;
+  border-color: white;
+}
+
+/* ================= PAGE ================= */
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- TOP BAR ---------- */
+.top-bar {
+  background: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* ---------- LAYOUT ---------- */
+.wrapper {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+/* ================= FORM CARD ================= */
+.form-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.form-card h2 {
+  margin-top: 0;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ---------- LABELS & INPUTS ---------- */
+label {
+  font-size: 13px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  background: #fafafa;
+  margin-bottom: 12px;
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #fff;
+}
+
+/* ================= SKILLS BUTTONS ================= */
+.skills-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.skills-list button {
+  background: #eef2ff;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.skills-list button:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* ================= BUTTONS ================= */
+.primary-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ghost-btn {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* ================= PREVIEW ================= */
+.preview-wrap {
+  position: sticky;
+  top: 90px;
+}
+
+#resumePreview {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  min-height: 600px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* ================= TEXT SAFETY ================= */
+.resume,
+.resume * {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .step-sidebar {
+    display: none;
+  }
+
+  .wrapper {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .preview-wrap {
+    position: static;
+  }
+
+  .skills-list {
+    grid-template-columns: 1fr;
+  }
+}

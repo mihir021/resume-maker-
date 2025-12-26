@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 2 – Experience</title>
+
+  <link rel="stylesheet" href="../templates/template-academic-yellow/style.css">
+  <link rel="stylesheet" href="../CSS/step-2.css">
+</head>
+<body>
+
+<!-- LEFT STEP BAR -->
+<aside class="step-sidebar">
+  <div class="step-number">2</div>
+  <ul class="steps">
+    <li><span>1</span></li>
+    <li class="active"><span>2</span></li>
+    <li><span>3</span></li>
+    <li><span>4</span></li>
+  </ul>
+</aside>
+
+<!-- MAIN PAGE -->
+<div class="page">
+
+  <header class="top-bar">
+    <h1>Experience</h1>
+    <span>Step 2 of 4</span>
+  </header>
+
+  <main class="wrapper">
+
+    <!-- FORM -->
+    <section class="form-card">
+
+      <h2>Work Experience</h2>
+      <p class="hint">Add your most recent job first.</p>
+
+      <label>Job Title</label>
+      <input
+        id="jobTitle"
+        placeholder="Software Engineer"
+      />
+
+      <label>Employer</label>
+      <input
+        id="employer"
+        placeholder="ABC Technologies Pvt. Ltd."
+      />
+
+      <div class="row">
+        <div>
+          <label>City</label>
+          <input
+            id="city"
+            placeholder="New Delhi"
+          />
+        </div>
+        <div>
+          <label>Country</label>
+          <input
+            id="country"
+            placeholder="India"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Start Month</label>
+          <input id="startDate" type="month" />
+        </div>
+        <div>
+          <label>End Month</label>
+          <input id="endDate" type="month" />
+        </div>
+      </div>
+
+      <label>Job Description (one bullet per line)</label>
+      <textarea
+        id="description"
+        rows="4"
+        placeholder="Developed REST APIs using Java and Spring Boot
+Improved application performance by 30%
+Collaborated with QA and frontend teams">
+      </textarea>
+
+      <button type="button" id="addExperienceBtn" class="secondary-btn">
+        Add Experience
+      </button>
+
+      <div class="nav-buttons">
+        <button class="ghost-btn" onclick="history.back()">← Back</button>
+        <button class="primary-btn" onclick="goToStep3()">Next →</button>
+      </div>
+
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="preview-wrap">
+      <div id="resumePreview"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="../JS/step-2.js"></script>
+</body>
+</html>
