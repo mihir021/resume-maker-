@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contact Us | Resume Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font Awesome Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="../CSS/contact.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">Resume<span>Now</span></div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>How to Contact Resume Now</h1>
+  <p>Support for account, billing, downloads, and technical issues.</p>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="contact-wrapper gradient-bg">
+  <div class="email-card">
+    <h2>Reach Us by Email</h2>
+    <p class="subtext">Our support team usually replies within 24 hours.</p>
+
+    <form id="contactForm">
+      <label>Full name</label>
+      <input type="text" placeholder="Rathod Mihir" required />
+
+      <label>Email address</label>
+      <input type="email" placeholder="mihir@gmail.com" required />
+
+      <label>Subject</label>
+      <small class="hint">Choose the option that best describes your issue</small>
+      <select required>
+        <option value="">Select</option>
+        <option>Account Support</option>
+        <option>Billing & Subscription</option>
+        <option>Resume Download Issue</option>
+        <option>Technical Problem</option>
+      </select>
+
+      <label>How can we help you?</label>
+      <textarea rows="4" placeholder="Explain your issue..." required></textarea>
+
+      <button class="btn-primary" type="submit">
+        Send Message
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <h2>Helpful Account FAQ</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Where do I find the login button?
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+      The login button is located at the top-right corner of the website.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Why is my resume not downloading?
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+      Ensure your subscription is active and all required sections are completed.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Can I edit my resume after download?
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+      Yes, your resume remains editable anytime after logging in.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How do I cancel my subscription?
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+      You can cancel from Account Settings → Subscription section.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How fast does support respond?
+      <i class="fa-solid fa-chevron-down"></i>
+    </button>
+    <div class="faq-answer">
+      Most requests receive a response within 24 hours.
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div>
+    <h3>ResumeNow</h3>
+    <p>Create professional resumes fast.</p>
+
+    <div class="social-icons">
+      <a><i class="fa-brands fa-facebook-f"></i></a>
+      <a><i class="fa-brands fa-x-twitter"></i></a>
+      <a><i class="fa-brands fa-instagram"></i></a>
+      <a><i class="fa-brands fa-youtube"></i></a>
+      <a><i class="fa-brands fa-linkedin-in"></i></a>
+    </div>
+  </div>
+
+  <div>
+    <p><strong>Phone:</strong> 844-351-7484</p>
+    <p><strong>Email:</strong> customerservice@resume-now.com</p>
+    <p><strong>Support:</strong> Mon–Fri 8:00 AM – 8:00 PM CST</p>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="toTop">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script src="../JS/contact.js"></script>
+</body>
+</html>
