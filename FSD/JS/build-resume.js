@@ -1,7 +1,39 @@
+/* ================== SHORTCUT ================== */
 const $ = id => document.getElementById(id);
 
-/* ---------- LOAD TEMPLATE ---------- */
-fetch("../templates/template-academic-yellow/template.html")
+/* ================== TEMPLATE CONFIG ================== */
+const TEMPLATES = {
+  academicYellow: {
+    css: "../templates/template-academic-yellow/style.css",
+    html: "../templates/template-academic-yellow/template.html"
+  },
+  professionalBlue: {
+    css: "../templates/template-professional-blue/style.css",
+    html: "../templates/template-professional-blue/template.html"
+  },
+  minimalElegant: {
+    css: "../templates/template-minimal/style.css",
+    html: "../templates/template-minimal/template.html"
+  }
+};
+
+/* ================== SELECTED TEMPLATE ================== */
+const selectedTemplate =
+  localStorage.getItem("selectedTemplate") || "academicYellow";
+
+/* ================== LOAD TEMPLATE CSS (ONCE) ================== */
+(function loadTemplateCSS() {
+  if (document.getElementById("template-style")) return;
+
+  const link = document.createElement("link");
+  link.id = "template-style";
+  link.rel = "stylesheet";
+  link.href = TEMPLATES[selectedTemplate].css;
+  document.head.appendChild(link);
+})();
+
+/* ================== LOAD TEMPLATE HTML ================== */
+fetch(TEMPLATES[selectedTemplate].html)
   .then(res => res.text())
   .then(html => {
     $("resumePreview").innerHTML = html;
@@ -13,25 +45,28 @@ fetch("../templates/template-academic-yellow/template.html")
     loadSkills();
   });
 
-/* ---------- STEP 1 : HEADER ---------- */
+/* ================== STEP 1 : HEADER ================== */
 function loadHeader() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
+
   setText("previewName", d.name || "Rathod Mihir");
   setText("previewTitle", d.title || "Java Developer");
   setText("previewSummary", d.summary || "");
 }
 
-/* ---------- STEP 1 : SIDEBAR ---------- */
+/* ================== STEP 1 : SIDEBAR ================== */
 function loadSidebar() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
+
   setText("previewPhone", d.phone || "");
   setText("previewEmail", d.email || "");
   setText("previewLocation", d.location || "");
-  fillList("pCerts", d.certs || "");
-  fillList("pLanguages", d.languages || "");
+
+  fillList("pLanguages", d.languages || "English\nHindi");
+  fillList("pCerts", d.certs || "Google Data Analytics\nAdvanced Excel");
 }
 
-/* ---------- STEP 2 : EXPERIENCE ---------- */
+/* ================== STEP 2 : EXPERIENCE ================== */
 function loadExperience() {
   const list = JSON.parse(localStorage.getItem("experiences") || []);
   const section = $("previewExperienceSection");
@@ -43,13 +78,18 @@ function loadExperience() {
   }
 
   box.innerHTML = "";
+
   list.forEach(exp => {
     const div = document.createElement("div");
     div.innerHTML = `
       <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
       <small>${exp.startDate} – ${exp.endDate}</small>
       <ul>
-        ${exp.description.split("\n").map(l => `<li>${l}</li>`).join("")}
+        ${exp.description
+          .split("\n")
+          .filter(Boolean)
+          .map(l => `<li>${l}</li>`)
+          .join("")}
       </ul>
     `;
     box.appendChild(div);
@@ -58,11 +98,11 @@ function loadExperience() {
   section.style.display = "block";
 }
 
-/* ---------- STEP 3 : EDUCATION ---------- */
+/* ================== STEP 3 : EDUCATION ================== */
 function loadEducation() {
   const d = JSON.parse(localStorage.getItem("education") || {});
   const eduSection = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.includes("EDUCATION"));
+    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("EDUCATION"));
 
   if (!eduSection) return;
 
@@ -72,21 +112,22 @@ function loadEducation() {
 
   eduSection.innerHTML = `
     <h3>EDUCATION</h3>
-    <p><strong>${d.degree} in ${d.field}</strong></p>
-    <p>${d.school} | ${d.location}</p>
+    <p><strong>${d.degree || ""} ${d.field ? "in " + d.field : ""}</strong></p>
+    <p>${d.school || ""} ${d.location ? "| " + d.location : ""}</p>
     <p><em>${dateText}</em></p>
   `;
 }
 
-/* ---------- STEP 4 : SKILLS ---------- */
+/* ================== STEP 4 : SKILLS ================== */
 function loadSkills() {
   const list = JSON.parse(localStorage.getItem("skills") || []);
   const section = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.includes("SKILLS"));
+    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("SKILLS"));
 
   if (!section || !list.length) return;
 
   const half = Math.ceil(list.length / 2);
+
   section.innerHTML = `
     <h3>SKILLS</h3>
     <div class="skills-grid">
@@ -96,23 +137,24 @@ function loadSkills() {
   `;
 }
 
-/* ---------- DOWNLOAD ---------- */
+/* ================== DOWNLOAD / PRINT ================== */
 function downloadPDF() {
   const oldTitle = document.title;
   document.title = "Resume";
   window.print();
-  setTimeout(() => document.title = oldTitle, 500);
+  setTimeout(() => (document.title = oldTitle), 500);
 }
 
-/* ---------- HELPERS ---------- */
+/* ================== HELPERS ================== */
 function setText(id, val) {
   const el = $(id);
-  if (el) el.textContent = val;
+  if (el && val) el.textContent = val;
 }
 
 function fillList(id, text) {
   const ul = $(id);
-  if (!ul) return;
+  if (!ul || !text) return;
+
   ul.innerHTML = "";
   text.split("\n").forEach(line => {
     if (line.trim()) {
@@ -126,5 +168,8 @@ function fillList(id, text) {
 function formatMonth(val) {
   if (!val) return "";
   const d = new Date(val);
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric"
+  });
 }
