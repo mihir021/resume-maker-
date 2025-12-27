@@ -1,28 +1,49 @@
+/* ================== SHORTCUT ================== */
 const $ = id => document.getElementById(id);
 
-/* ---------- CLEAN TEXT ---------- */
-function cleanText(text) {
-  if (!text) return "";
-  return text.replace(/â€“|–|—/g, "-").trim();
-}
-
-/* ---------- FALLBACKS (FROM STEP-1 UI) ---------- */
-const FALLBACK = {
-  languages: "English\nHindi",
-  certs: "Google Data Analytics\nAdvanced Excel"
+/* ================== TEMPLATE CONFIG ================== */
+const TEMPLATES = {
+  academicYellow: {
+    css: "../templates/template-academic-yellow/style.css",
+    html: "../templates/template-academic-yellow/template.html"
+  },
+  professionalBlue: { // template 2
+    css: "../templates/template-clean-profile/style.css",
+    html: "../templates/template-clean-profile/template.html"
+  },
+  minimalElegant: { // template 3
+    css: "../templates/template-modern-clean/style.css",
+    html: "../templates/template-modern-clean/template.html"
+  }
 };
 
-/* ---------- LOAD TEMPLATE ---------- */
-fetch("../templates/template-academic-yellow/template.html")
+
+/* ================== SELECTED TEMPLATE ================== */
+const selectedTemplate =
+  localStorage.getItem("selectedTemplate") || "academicYellow";
+
+/* ================== LOAD TEMPLATE CSS (ONCE) ================== */
+(function loadTemplateCSS() {
+  if (document.getElementById("template-style")) return;
+
+  const link = document.createElement("link");
+  link.id = "template-style";
+  link.rel = "stylesheet";
+  link.href = TEMPLATES[selectedTemplate].css;
+  document.head.appendChild(link);
+})();
+
+/* ================== LOAD TEMPLATE HTML ================== */
+fetch(TEMPLATES[selectedTemplate].html)
   .then(res => res.text())
   .then(html => {
     $("resumePreview").innerHTML = html;
-    loadHeaderFromStep1();
-    loadExperience();
+    loadHeader();
+    renderExperiences();
   });
 
-/* ---------- LOAD HEADER + SIDEBAR FROM STEP-1 ---------- */
-function loadHeaderFromStep1() {
+/* ================== LOAD HEADER FROM STEP-1 ================== */
+function loadHeader() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
   setText("previewName", d.name);
@@ -32,32 +53,11 @@ function loadHeaderFromStep1() {
   setText("previewLocation", d.location);
   setText("previewSummary", d.summary);
 
-  // ✅ FIXED: fallback values
-  fillList("pLanguages", d.languages || FALLBACK.languages);
-  fillList("pCerts", d.certs || FALLBACK.certs);
+  fillList("pLanguages", d.languages || "English\nHindi");
+  fillList("pCerts", d.certs || "Google Data Analytics\nAdvanced Excel");
 }
 
-/* ---------- HELPERS ---------- */
-function setText(id, value) {
-  const el = $(id);
-  if (el && value) el.textContent = cleanText(value);
-}
-
-function fillList(id, text) {
-  const ul = $(id);
-  if (!ul || !text) return;
-
-  ul.innerHTML = "";
-  text.split("\n").forEach(line => {
-    if (line.trim()) {
-      const li = document.createElement("li");
-      li.textContent = line.trim();
-      ul.appendChild(li);
-    }
-  });
-}
-
-/* ---------- EXPERIENCE STORAGE ---------- */
+/* ================== EXPERIENCE STORAGE ================== */
 function getExperiences() {
   return JSON.parse(localStorage.getItem("experiences") || "[]");
 }
@@ -66,16 +66,17 @@ function saveExperiences(arr) {
   localStorage.setItem("experiences", JSON.stringify(arr));
 }
 
-/* ---------- DATE FORMAT ---------- */
+/* ================== DATE FORMAT ================== */
 function formatMonth(val) {
   if (!val) return "";
-  return new Date(val).toLocaleDateString("en-US", {
+  const d = new Date(val);
+  return d.toLocaleDateString("en-US", {
     month: "short",
     year: "numeric"
   });
 }
 
-/* ---------- ADD EXPERIENCE ---------- */
+/* ================== ADD EXPERIENCE ================== */
 $("addExperienceBtn").addEventListener("click", () => {
   const jobTitle = $("jobTitle").value.trim();
   const employer = $("employer").value.trim();
@@ -100,46 +101,80 @@ $("addExperienceBtn").addEventListener("click", () => {
     description: desc
   };
 
-  saveExperiences([exp]);
+  const list = getExperiences();
+  list.unshift(exp); // most recent first
+  saveExperiences(list);
+
   renderExperiences();
   clearForm();
 });
 
-/* ---------- RENDER EXPERIENCE ---------- */
+/* ================== RENDER EXPERIENCE PREVIEW ================== */
 function renderExperiences() {
-  const listBox = $("previewExperienceList");
+  const list = getExperiences();
   const section = $("previewExperienceSection");
+  const box = $("previewExperienceList");
 
-  if (!listBox || !section) return;
+  if (!section || !box || !list.length) {
+    section && (section.style.display = "none");
+    return;
+  }
 
-  listBox.innerHTML = "";
+  box.innerHTML = "";
 
-  getExperiences().forEach(exp => {
+  list.forEach(exp => {
     const div = document.createElement("div");
     div.innerHTML = `
       <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
       <small>${exp.startDate} – ${exp.endDate}</small>
       <ul>
-        ${exp.description.split("\n").map(l => `<li>${l}</li>`).join("")}
+        ${exp.description
+          .split("\n")
+          .filter(Boolean)
+          .map(l => `<li>${l}</li>`)
+          .join("")}
       </ul>
     `;
-    listBox.appendChild(div);
+    box.appendChild(div);
   });
 
   section.style.display = "block";
 }
 
-function loadExperience() {
-  if (getExperiences().length) renderExperiences();
-}
-
+/* ================== CLEAR FORM ================== */
 function clearForm() {
   [
-    "jobTitle","employer","city","country",
-    "startDate","endDate","description"
+    "jobTitle",
+    "employer",
+    "city",
+    "country",
+    "startDate",
+    "endDate",
+    "description"
   ].forEach(id => $(id).value = "");
 }
 
+/* ================== HELPERS ================== */
+function setText(id, val) {
+  const el = $(id);
+  if (el && val) el.textContent = val;
+}
+
+function fillList(id, text) {
+  const ul = $(id);
+  if (!ul || !text) return;
+
+  ul.innerHTML = "";
+  text.split("\n").forEach(line => {
+    if (line.trim()) {
+      const li = document.createElement("li");
+      li.textContent = line.trim();
+      ul.appendChild(li);
+    }
+  });
+}
+
+/* ================== NAVIGATION ================== */
 function goToStep3() {
   window.location.href = "step-3.html";
 }

@@ -1,113 +1,100 @@
 const $ = id => document.getElementById(id);
 
-/* 🔹 Default Preview Data */
-const DEFAULTS = {
-  name: "Rathod Mihir",
-  title: "Java Developer",
-  email: "mihir@email.com",
-  phone: "+91 9876543210",
-  location: "Ahmedabad, India",
-  summary:
-    "Motivated software developer with strong fundamentals in Java and problem-solving skills.",
-  languages: "English\nHindi",
-  certs: "Google Data Analytics\nAdvanced Excel"
+const TEMPLATES = {
+  academicYellow: {
+    css: "../templates/template-academic-yellow/style.css",
+    html: "../templates/template-academic-yellow/template.html"
+  },
+  professionalBlue: { // template 2
+    css: "../templates/template-clean-profile/style.css",
+    html: "../templates/template-clean-profile/template.html"
+  },
+  minimalElegant: { // template 3
+    css: "../templates/template-modern-clean/style.css",
+    html: "../templates/template-modern-clean/template.html"
+  }
 };
 
-/* 🔹 Load template CSS once */
-(function loadTemplateCSS() {
-  if (document.getElementById("template-style")) return;
+/* ================= SELECTED TEMPLATE ================= */
+const selectedTemplate =
+  localStorage.getItem("selectedTemplate") || "academicYellow";
 
+/* ================= LOAD TEMPLATE CSS ================= */
+(function () {
+  if (document.getElementById("template-style")) return;
   const link = document.createElement("link");
   link.id = "template-style";
   link.rel = "stylesheet";
-  link.href = "../templates/template-academic-yellow/style.css";
+  link.href = TEMPLATES[selectedTemplate].css;
   document.head.appendChild(link);
 })();
 
-/* 🔹 Load template HTML */
-fetch("../templates/template-academic-yellow/template.html")
+/* ================= LOAD TEMPLATE HTML ================= */
+fetch(TEMPLATES[selectedTemplate].html)
   .then(res => res.text())
   .then(html => {
-    document.getElementById("resumePreview").innerHTML = html;
-    restoreData();
+    $("resumePreview").innerHTML = html;
+    restore();
   });
 
-/* 🔹 Save form data */
-function saveData() {
-  localStorage.setItem(
-    "step1",
-    JSON.stringify({
-      name: $("name").value,
-      title: $("title").value,
-      email: $("email").value,
-      phone: $("phone").value,
-      location: $("location").value,
-      summary: $("summary").value,
-      languages: $("languages").value,
-      certs: $("certs").value
-    })
-  );
+function save() {
+  localStorage.setItem("step1", JSON.stringify({
+    name: $("name").value,
+    title: $("title").value,
+    email: $("email").value,
+    phone: $("phone").value,
+    location: $("location").value,
+    summary: $("summary").value,
+    languages: $("languages").value,
+    certs: $("certs").value
+  }));
 }
 
-/* 🔹 Restore data */
-function restoreData() {
+function restore() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
-  Object.keys(DEFAULTS).forEach(key => {
-    if ($(key)) {
-      $(key).value = d[key] || "";
-    }
-  });
+  ["name","title","email","phone","location","summary","languages","certs"]
+    .forEach(id => $(id).value = d[id] || "");
 
   updatePreview();
 }
 
-/* 🔹 Update Preview (WITH FALLBACK) */
 function updatePreview() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
-  setText("previewName", d.name || DEFAULTS.name);
-  setText("previewTitle", d.title || DEFAULTS.title);
-  setText("previewEmail", d.email || DEFAULTS.email);
-  setText("previewPhone", d.phone || DEFAULTS.phone);
-  setText("previewLocation", d.location || DEFAULTS.location);
-  setText("previewSummary", d.summary || DEFAULTS.summary);
+  set("previewName", d.name);
+  set("previewTitle", d.title);
+  set("previewEmail", d.email);
+  set("previewPhone", d.phone);
+  set("previewLocation", d.location);
+  set("previewSummary", d.summary);
 
-  fillList("pLanguages", d.languages || DEFAULTS.languages);
-  fillList("pCerts", d.certs || DEFAULTS.certs);
+  fill("pLanguages", d.languages);
+  fill("pCerts", d.certs);
 }
 
-/* 🔹 Helpers */
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
+function set(id, v) {
+  const el = $(id);
+  if (el && v) el.textContent = v;
 }
 
-function fillList(id, text) {
-  const ul = document.getElementById(id);
-  if (!ul) return;
-
+function fill(id, txt) {
+  const ul = $(id);
+  if (!ul || !txt) return;
   ul.innerHTML = "";
-
-  text.split("\n").forEach(line => {
-    if (line.trim()) {
-      const li = document.createElement("li");
-      li.textContent = line.trim();
-      ul.appendChild(li);
-    }
+  txt.split("\n").forEach(l => {
+    if (l.trim()) ul.innerHTML += `<li>${l}</li>`;
   });
 }
 
-/* 🔹 Live typing */
 document.querySelectorAll("input, textarea").forEach(el => {
   el.addEventListener("input", () => {
-    saveData();
+    save();
     updatePreview();
   });
 });
 
-/* 🔹 Next button */
-document.getElementById("nextBtn").onclick = () => {
-  saveData();
+$("nextBtn").onclick = () => {
+  save();
   window.location.href = "step-2.html";
 };

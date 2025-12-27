@@ -1,7 +1,38 @@
+/* ================== SHORTCUT ================== */
 const $ = id => document.getElementById(id);
 
-/* ---------- LOAD TEMPLATE ---------- */
-fetch("../templates/template-academic-yellow/template.html")
+const TEMPLATES = {
+  academicYellow: {
+    css: "../templates/template-academic-yellow/style.css",
+    html: "../templates/template-academic-yellow/template.html"
+  },
+  professionalBlue: { // template 2
+    css: "../templates/template-clean-profile/style.css",
+    html: "../templates/template-clean-profile/template.html"
+  },
+  minimalElegant: { // template 3
+    css: "../templates/template-modern-clean/style.css",
+    html: "../templates/template-modern-clean/template.html"
+  }
+};
+
+/* ================== SELECTED TEMPLATE ================== */
+const selectedTemplate =
+  localStorage.getItem("selectedTemplate") || "academicYellow";
+
+/* ================== LOAD TEMPLATE CSS ================== */
+(function loadTemplateCSS() {
+  if (document.getElementById("template-style")) return;
+
+  const link = document.createElement("link");
+  link.id = "template-style";
+  link.rel = "stylesheet";
+  link.href = TEMPLATES[selectedTemplate].css;
+  document.head.appendChild(link);
+})();
+
+/* ================== LOAD TEMPLATE HTML ================== */
+fetch(TEMPLATES[selectedTemplate].html)
   .then(res => res.text())
   .then(html => {
     $("resumePreview").innerHTML = html;
@@ -10,7 +41,7 @@ fetch("../templates/template-academic-yellow/template.html")
     loadEducation();
   });
 
-/* ---------- STEP-1 HEADER ---------- */
+/* ================== LOAD HEADER ================== */
 function loadHeader() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
@@ -25,9 +56,9 @@ function loadHeader() {
   fillList("pCerts", d.certs || "Google Data Analytics\nAdvanced Excel");
 }
 
-/* ---------- STEP-2 EXPERIENCE ---------- */
+/* ================== LOAD EXPERIENCE ================== */
 function loadExperience() {
-  const list = JSON.parse(localStorage.getItem("experiences") || []);
+  const list = JSON.parse(localStorage.getItem("experiences") || "[]");
   const section = $("previewExperienceSection");
   const box = $("previewExperienceList");
 
@@ -50,7 +81,7 @@ function loadExperience() {
   section.style.display = "block";
 }
 
-/* ---------- STEP-3 EDUCATION ---------- */
+/* ================== EDUCATION ================== */
 function loadEducation() {
   const d = JSON.parse(localStorage.getItem("education") || "{}");
 
@@ -65,7 +96,7 @@ function loadEducation() {
   renderEducation(d);
 }
 
-/* ---------- LIVE SAVE ---------- */
+/* ================== LIVE SAVE ================== */
 document.querySelectorAll("input, textarea").forEach(el => {
   el.addEventListener("input", saveAndRender);
 });
@@ -85,10 +116,10 @@ function saveAndRender() {
   renderEducation(data);
 }
 
-/* ---------- RENDER EDUCATION ---------- */
+/* ================== RENDER EDUCATION ================== */
 function renderEducation(d) {
-  const section = document.querySelector(".main-section h3")
-    ?.closest(".main-section");
+  const section = [...document.querySelectorAll(".main-section")]
+    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("EDUCATION"));
 
   if (!section) return;
 
@@ -105,7 +136,7 @@ function renderEducation(d) {
   `;
 }
 
-/* ---------- HELPERS ---------- */
+/* ================== HELPERS ================== */
 function setText(id, val) {
   const el = $(id);
   if (el && val) el.textContent = val;
@@ -119,10 +150,10 @@ function fillList(id, text) {
 
 function formatMonth(v) {
   if (!v) return "";
-  const d = new Date(v);
-  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return new Date(v).toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
+/* ================== NAV ================== */
 function goToStep4() {
   window.location.href = "step-4.html";
 }
