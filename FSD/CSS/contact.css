@@ -5,10 +5,6 @@
   --text: #0f172a;
   --muted: #64748b;
   --border: #e2e8f0;
-
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --fast: 0.2s;
-  --normal: 0.35s;
 }
 
 * {
@@ -46,11 +42,6 @@ body {
 .hero h1 { font-size: 42px; }
 .hero p { color: var(--muted); }
 
-/* GRADIENT */
-.gradient-bg {
-  background: linear-gradient(135deg, #f0f9ff, #ffffff);
-}
-
 /* CONTACT */
 .contact-wrapper {
   display: flex;
@@ -65,21 +56,6 @@ body {
   padding: 36px;
   border-radius: 18px;
   box-shadow: 0 20px 40px rgba(0,0,0,.08);
-  transition: transform var(--normal) var(--ease),
-              box-shadow var(--normal) var(--ease);
-}
-
-.email-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px rgba(0,0,0,.12);
-}
-
-.subtext { color: var(--muted); }
-.hint {
-  display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--muted);
 }
 
 /* FORM */
@@ -89,49 +65,12 @@ label {
   font-weight: 600;
 }
 
-input,
-select,
-textarea {
+input, select, textarea {
   width: 100%;
   margin-top: 6px;
   padding: 14px 16px;
   border-radius: 14px;
   border: 1px solid var(--border);
-  font-size: 15px;
-  background: #fff;
-
-  transition:
-    border-color var(--fast) var(--ease),
-    box-shadow var(--fast) var(--ease),
-    transform var(--fast) var(--ease);
-}
-
-/* SELECT FIX */
-select {
-  appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, #64748b 50%),
-    linear-gradient(135deg, #64748b 50%, transparent 50%);
-  background-position:
-    calc(100% - 22px) 50%,
-    calc(100% - 16px) 50%;
-  background-size: 6px 6px;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-input:hover,
-select:hover,
-textarea:hover {
-  transform: translateY(-1px);
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(37,99,235,.15);
 }
 
 /* BUTTON */
@@ -139,28 +78,12 @@ textarea:focus {
   margin-top: 30px;
   width: 100%;
   padding: 16px;
-  font-size: 15px;
-  font-weight: 600;
-
   background: linear-gradient(135deg, #2563eb, #1e40af);
   color: #fff;
-
   border: none;
   border-radius: 999px;
+  font-weight: 600;
   cursor: pointer;
-
-  transition:
-    transform var(--fast) var(--ease),
-    box-shadow var(--fast) var(--ease);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(37,99,235,.35);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
 }
 
 /* FAQ */
@@ -176,13 +99,6 @@ textarea:focus {
   margin-bottom: 14px;
   background: #fff;
   overflow: hidden;
-  transition: box-shadow var(--normal) var(--ease),
-              transform var(--normal) var(--ease);
-}
-
-.faq-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(0,0,0,.08);
 }
 
 .faq-question {
@@ -199,27 +115,15 @@ textarea:focus {
 .faq-answer {
   padding: 0 22px;
   opacity: 0;
-  transform: translateY(-10px) scale(0.98);
   height: 0;
   overflow: hidden;
-  transition: opacity var(--normal) var(--ease),
-              transform var(--normal) var(--ease);
-  color: var(--muted);
+  transition: all .3s ease;
 }
 
 .faq-item.active .faq-answer {
   padding: 18px 22px;
   opacity: 1;
-  transform: translateY(0) scale(1);
   height: auto;
-}
-
-.faq-item i {
-  transition: transform var(--normal) var(--ease);
-}
-
-.faq-item.active i {
-  transform: rotate(180deg);
 }
 
 /* FOOTER */
@@ -233,42 +137,49 @@ textarea:focus {
   gap: 30px;
 }
 
-.social-icons a {
-  margin-right: 14px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: transform var(--fast) var(--ease),
-              color var(--fast) var(--ease);
-}
-
-.social-icons a:hover {
-  color: #60a5fa;
-  transform: translateY(-2px) scale(1.1);
-}
-
-/* BACK TO TOP */
-#toTop {
+/* 🤖 ROBOT CHAT ASSISTANT */
+#robotAssistant {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  padding: 14px;
-  border-radius: 50%;
+  bottom: 20px;
+  right: 20px;
+  width: 110px;
+  z-index: 9999;
   cursor: pointer;
-  display: none;
-  transition: transform var(--fast) var(--ease),
-              box-shadow var(--fast) var(--ease);
 }
 
-#toTop:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(37,99,235,.4);
+.robot-head {
+  width: 100px;
+  height: 80px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  box-shadow: 0 12px 30px rgba(37,99,235,.45);
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .hero h1 { font-size: 32px; }
-  .footer { text-align: center; }
+.eye {
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  position: relative;
+}
+
+.pupil {
+  width: 9px;
+  height: 9px;
+  background: #020617;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+}
+
+.robot-body {
+  width: 60px;
+  height: 22px;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  margin: 6px auto 0;
+  border-radius: 0 0 12px 12px;
 }

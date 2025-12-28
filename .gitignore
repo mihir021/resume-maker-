@@ -6,8 +6,9 @@ __pycache__/
 
 # Virtual environments
 venv/
-.env/
+Python/.env
 
 # IDE
 .idea/
 .vscode/
+.cursor
