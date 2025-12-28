@@ -1,0 +1,20 @@
+.resume.red-impact {
+  width: 800px;
+  border-top: 14px solid #c62828;
+  font-family: "Montserrat", sans-serif;
+}
+
+.red-impact .top-header {
+  background: #b71c1c;
+  color: white;
+}
+
+.red-impact h3 {
+  color: #b71c1c;
+  text-transform: uppercase;
+}
+
+.red-impact ul li::before {
+  content: "➤";
+  color: #c62828;
+}

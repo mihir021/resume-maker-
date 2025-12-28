@@ -1,0 +1,29 @@
+.resume.dark-elegant {
+  background: #121212;
+  color: #e0e0e0;
+  box-shadow: 0 25px 65px rgba(0,0,0,0.5);
+  font-family: "Montserrat", sans-serif;
+}
+
+.dark-elegant .top-header {
+  background: linear-gradient(135deg, #000, #333);
+}
+
+.dark-elegant .left-panel {
+  background: #1b1b1b;
+}
+
+.dark-elegant .right-panel {
+  background: #ffffff;
+  color: #222;
+}
+
+.dark-elegant h3 {
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.dark-elegant ul li::before {
+  content: "◆";
+  color: #ffca28;
+}

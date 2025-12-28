@@ -1,0 +1,15 @@
+.resume.ultra-minimal {
+  width: 800px;
+  font-family: "Times New Roman", serif;
+  background: #fff;
+}
+
+.ultra-minimal .top-header {
+  border-bottom: 2px solid #000;
+  background: none;
+  color: black;
+}
+
+.ultra-minimal h3 {
+  border-bottom: 1px solid black;
+}
