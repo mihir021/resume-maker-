@@ -20,6 +20,96 @@ const templates = [
     img: "../IMG/template3.png",
     name: "Creative",
     desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "blueCorporate",
+    img:"../IMG/template4.png",
+    name: "Blue-Corporate",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "softGreenMinimal",
+    img:"../IMG/template5.png",
+    name: "Soft-Green-Minimal",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "darkElegant",
+    img:"../IMG/template6.png",
+    name: "Dark-Elegant",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "timelineResume",
+    img:"../IMG/template7.png",
+    name: "Timeline-Resume",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "cardBased",
+    img:"../IMG/template8.png",
+    name: "Card-Based",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "boldRedAccent",
+    img:"../IMG/template9.png",
+    name: "Bold-Red-Accent",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "glassmorphism",
+    img:"../IMG/template1.png",
+    name: "Glassmorphism",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "infographic",
+    img:"../IMG/template2.png",
+    name: "Infographic",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "ultraMinimal",
+    img:"../IMG/template3.png",
+    name: "Ultra-Minimal",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "boxShadow",
+    img:"../IMG/template4.png",
+    name: "Box-Shadow",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "classicSerif",
+    img:"../IMG/template5.png",
+    name: "Classic-Serif",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "freshGradient",
+    img:"../IMG/template6.png",
+    name: "Fresh-Gradient",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "splitHeaderModern",
+    img:"../IMG/template7.png",
+    name: "Split-Header-Modern",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "techLook",
+    img:"../IMG/template8.png",
+    name: "Tech-Look",
+    desc: "A creative layout for designers and innovators."
+  },
+  {
+    key: "ultraClean",
+    img:"../IMG/template9.png",
+    name: "Ultra-Clean",
+    desc: "A creative layout for designers and innovators."
   }
 ];
 
@@ -148,3 +238,36 @@ document.querySelectorAll(".use-btn").forEach((btn, index) => {
     window.location.href = "step-1.html";
   });
 });
+
+/* ===================================================== */
+/* ================= FILTER LOGIC ====================== */
+/* ===================================================== */
+
+const filterButtons = document.querySelectorAll(".filter-btn");
+const templateCards = document.querySelectorAll(".template-card");
+
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+
+    // Active button UI
+    filterButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const filterValue = btn.dataset.filter;
+
+    templateCards.forEach(card => {
+      const categories = card.dataset.category;
+
+      if (filterValue === "all") {
+        card.classList.remove("hide");
+      }
+      else if (categories.includes(filterValue)) {
+        card.classList.remove("hide");
+      }
+      else {
+        card.classList.add("hide");
+      }
+    });
+  });
+});
+
