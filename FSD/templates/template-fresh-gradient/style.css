@@ -1,0 +1,32 @@
+.resume.gradient {
+  width: 800px;
+  min-height: 1100px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
+  background: #ffffff;
+}
+
+.top-header {
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  color: white;
+  padding: 35px;
+}
+
+.body { display: flex; }
+
+.left-panel {
+  width: 30%;
+  background: #e0f2f1;
+  padding: 30px 20px;
+}
+
+.right-panel {
+  width: 70%;
+  padding: 35px;
+}
+
+.side-section h3,
+.main-section h3 {
+  color: #185a9d;
+  border-bottom: 2px solid #43cea2;
+}
