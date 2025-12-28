@@ -1,0 +1,11 @@
+.resume.infographic {
+  font-family: "Poppins", sans-serif;
+}
+
+.infographic ul li {
+  background: #ffeb3b;
+  padding: 6px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin: 5px;
+}

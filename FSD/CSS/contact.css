@@ -24,11 +24,7 @@ body {
 }
 
 /* HEADER */
-.navbar {
-  padding: 20px 40px;
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-}
+
 
 .logo {
   font-size: 22px;

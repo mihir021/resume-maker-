@@ -1,0 +1,23 @@
+.resume.classic-serif {
+  width: 800px;
+  min-height: 1100px;
+  margin: auto;
+  font-family: "Times New Roman", serif;
+  background: #ffffff;
+  border: 2px solid #5d4037;
+}
+
+.top-header {
+  background: #5d4037;
+  color: white;
+  padding: 30px;
+}
+
+.right-panel {
+  padding: 40px;
+}
+
+.main-section h3 {
+  border-bottom: 1px solid #5d4037;
+  padding-bottom: 4px;
+}

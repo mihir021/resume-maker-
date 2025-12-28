@@ -1,0 +1,32 @@
+.resume.tech-dark {
+  width: 800px;
+  min-height: 1100px;
+  margin: auto;
+  font-family: "JetBrains Mono", monospace;
+  background: #ffffff;
+}
+
+.top-header {
+  background: #212121;
+  color: white;
+  padding: 30px;
+}
+
+.body { display: flex; }
+
+.left-panel {
+  width: 30%;
+  background: #263238;
+  color: #e0e0e0;
+  padding: 30px 20px;
+}
+
+.right-panel {
+  width: 70%;
+  padding: 35px;
+}
+
+.side-section h3 {
+  color: #4fc3f7;
+  border-bottom: 1px solid #4fc3f7;
+}

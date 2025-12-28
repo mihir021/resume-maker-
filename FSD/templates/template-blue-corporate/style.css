@@ -1,0 +1,27 @@
+.resume.blue-corporate {
+  background: #fff;
+  border-left: 20px solid #0d47a1;
+  box-shadow: 0 22px 55px rgba(0,0,0,0.2);
+  font-family: "Calibri", sans-serif;
+}
+
+.blue-corporate .top-header {
+  background: linear-gradient(135deg, #0d47a1, #1976d2);
+  text-transform: uppercase;
+}
+
+.blue-corporate .left-panel {
+  background: #eef3fb;
+}
+
+.blue-corporate .main-section h3 {
+  color: #0d47a1;
+  font-weight: 700;
+}
+
+.blue-corporate ul li::before {
+  content: "■";
+  color: #0d47a1;
+  font-size: 8px;
+  margin-right: 6px;
+}
