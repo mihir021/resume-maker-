@@ -1,4 +1,4 @@
-// Fade-in on scroll
+// Fade-in animation
 const sections = document.querySelectorAll('.fade-section');
 
 const observer = new IntersectionObserver(entries => {
@@ -11,6 +11,27 @@ const observer = new IntersectionObserver(entries => {
 
 sections.forEach(section => observer.observe(section));
 
-// Dynamic username (frontend demo)
-const userName = "Yashrajsinh"; // later from backend
-document.getElementById("userName").innerText = userName;
+// Fetch logged-in user
+fetch("http://127.0.0.1:5000/api/me", {
+  credentials: "include"
+})
+.then(res => {
+  if (!res.ok) throw new Error("Not logged in");
+  return res.json();
+})
+.then(data => {
+  document.getElementById("username").textContent = data.name;
+  document.getElementById("firstName").textContent = data.name.split(" ")[0];
+})
+.catch(() => {
+  window.location.href = "loginPage.html";
+});
+
+function logoutUser() {
+  fetch("http://127.0.0.1:5000/logout", {
+    method: "POST",
+    credentials: "include"
+  }).then(() => {
+    window.location.href = "loginPage.html";
+  });
+}

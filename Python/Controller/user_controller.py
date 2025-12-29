@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, redirect, session
 
 from Python.DTO.user_login_dto import UserLoginDTO
 from Python.DTO.user_signup_dto import UserSignupDTO
@@ -40,4 +40,16 @@ def login():
         return jsonify({"success": False, "message": "Invalid login data"}), 400
 
     result = user_service.login_user(dto)
-    return jsonify(result), 200 if result["success"] else 401
+
+    if not result["success"]:
+        # ❌ Keep API-style failure response
+        return jsonify(result), 401
+
+    # ✅ SAME SESSION STRUCTURE AS GOOGLE LOGIN
+    session["user"] = {
+        "name": result["user"]["name"],
+        "email": result["user"]["email"]
+    }
+
+    # ✅ SAME REDIRECT AS GOOGLE LOGIN
+    return redirect("/login-success")

@@ -1,3 +1,5 @@
+from datetime import datetime
+from bson import ObjectId
 from Python.config.db import db
 
 class UserRepo:
@@ -9,3 +11,7 @@ class UserRepo:
 
     def create_user(self, data):
         return self.collection.insert_one(data)
+
+    def create_google_user(self, user_data):
+        user_data["created_at"] = datetime.utcnow()
+        return db.users.insert_one(user_data)

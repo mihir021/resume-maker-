@@ -1,10 +1,12 @@
-
 import requests
-from Python.config.openai_config import OPENAI_HEADERS, OPENAI_URL
 
+from Python.config.openai_config import OPENAI_HEADERS, OPENAI_URL
+from Python.config.redis_config import redis_client
 from Python.utilis.intent_mapper import detect_intent, is_website_question
+from Python.utilis.semantic_cache import semantic_key
 
 MODEL = "gpt-4o-mini"
+CACHE_TTL = 3600  # 1 hour
 
 SYSTEM_PROMPT = """
 You are a website assistant for the ResumeNow resume builder website.
@@ -24,56 +26,76 @@ RULES (STRICT):
   Respond exactly with:
   "I can help only with questions about this website."
 
-- Do NOT answer:
-  • General knowledge
-  • Coding questions
-  • Math
-  • Personal advice
-  • Career advice unrelated to the site
-  • Anything outside the website
-
 - Keep answers short and clear.
-- Never mention AI, ChatGPT, OpenAI, or models.
 """
 
 
-def process_chat(message: str):
+def incr_metric(name: str):
+    try:
+        redis_client.incr(f"metrics:{name}")
+    except Exception:
+        pass
 
-    # 🔒 Website-only filter
+
+def process_chat(message: str):
+    if not message or not message.strip():
+        return "Message cannot be empty.", "NONE"
+
     if not is_website_question(message):
         return (
             "I can help only with ResumeNow features like resumes, downloads, pricing, and support.",
             "NONE"
         )
 
-    payload = {
-        "model": MODEL,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": message}
-        ],
-        "temperature": 0.2
-    }
+    cache_key = f"chat:{semantic_key(message)}"
 
+    try:
+        cached = redis_client.get(cache_key)
+        if cached:
+            incr_metric("cache_hit")
+            print("⚡ Redis HIT")
+            reply, intent = cached.split("||")
+            return reply, intent
+    except Exception:
+        print("⚠ Redis unavailable, bypassing cache")
+
+    # 👇 ADD THIS LINE (THIS IS WHAT YOU ASKED FOR)
+    print("❌ Redis MISS → OpenAI")
+    incr_metric("cache_miss")
+
+    # 🔹 OpenAI fallback
     try:
         response = requests.post(
             OPENAI_URL,
             headers=OPENAI_HEADERS,
-            json=payload,
+            json={
+                "model": MODEL,
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": message}
+                ],
+                "temperature": 0.2
+            },
             timeout=20
         )
 
         data = response.json()
-
-        if "error" in data:
-            print("OpenAI error:", data["error"])
-            return "Service temporarily unavailable.", "NONE"
-
         reply = data["choices"][0]["message"]["content"]
         intent = detect_intent(message)
 
+        # 🔹 Redis write (safe)
+        try:
+            redis_client.setex(
+                cache_key,
+                CACHE_TTL,
+                f"{reply}||{intent}"
+            )
+        except Exception:
+            pass
+
         return reply, intent
 
-    except Exception as e:
-        print("Chat exception:", e)
-        return "Chat service unavailable.", "NONE"
+    except Exception:
+        return "Chat service temporarily unavailable.", "NONE"
+
+

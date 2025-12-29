@@ -1,18 +1,34 @@
-// FAQ toggle
+/* ===============================
+   CONFIG (SAFE LOCAL SETUP)
+================================ */
+
+// Change this ONLY when deploying
+const API_BASE = "http://127.0.0.1:5000";
+
+/* ===============================
+   FAQ TOGGLE
+================================ */
+
 document.querySelectorAll(".faq-question").forEach(btn => {
   btn.addEventListener("click", () => {
     btn.parentElement.classList.toggle("active");
   });
 });
 
-// Form submit
+/* ===============================
+   CONTACT FORM (UI ONLY)
+================================ */
+
 document.getElementById("contactForm").addEventListener("submit", e => {
   e.preventDefault();
   alert("Message sent successfully!");
   e.target.reset();
 });
 
-/* 🤖 ROBOT EYES FOLLOW CURSOR */
+/* ===============================
+   🤖 ROBOT EYES FOLLOW CURSOR
+================================ */
+
 const robot = document.getElementById("robotAssistant");
 const pupils = document.querySelectorAll(".pupil");
 
@@ -31,35 +47,46 @@ document.addEventListener("mousemove", e => {
 });
 
 /* ===============================
-   CHATBOT BACKEND INTEGRATION
+   🤖 CHATBOT BACKEND INTEGRATION
 ================================ */
 
-// TEMP chat popup (basic – will enhance later)
-robot.addEventListener("click", () => {
-  const userText = prompt("Ask me something:");
+robot.addEventListener("click", async () => {
+  const userText = prompt("Ask me something about this website:");
 
-  if (!userText) return;
+  if (!userText || !userText.trim()) return;
 
-  fetch("http://localhost:5000/api/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ message: userText })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.reply);
-
-      // Handle navigation intent
-      if (data.intent === "SCROLL_FAQ") {
-        document
-          .getElementById("faq")
-          ?.scrollIntoView({ behavior: "smooth" });
-      }
-    })
-    .catch(err => {
-      console.error("Chatbot error:", err);
-      alert("Chat service unavailable.");
+  try {
+    const res = await fetch(`${API_BASE}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userText })
     });
+
+    // 🔒 Rate limit handling
+    if (res.status === 429) {
+      alert("Too many requests. Please wait a moment.");
+      return;
+    }
+
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+
+    const data = await res.json();
+
+    alert(data.reply || "No response from bot.");
+
+    // 🔁 Handle intent-based navigation
+    if (data.intent === "SCROLL_FAQ") {
+      document
+        .getElementById("faq")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+
+  } catch (err) {
+    console.error("Chatbot error:", err);
+    alert("Chat service unavailable. Please try again later.");
+  }
 });
