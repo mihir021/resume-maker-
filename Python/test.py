@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import redis
+
 
 # Load .env file
 load_dotenv()
@@ -27,3 +29,9 @@ try:
 except Exception as e:
     print("\nConnection Failed!")
     print("Error:", e)
+
+redis_client = redis.Redis.from_url(
+    os.getenv("REDIS_URL"),
+    decode_responses=True,
+    ssl_cert_reqs=None
+)

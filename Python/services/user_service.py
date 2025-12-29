@@ -41,3 +41,20 @@ class UserService:
                 "email": CryptoUtils.decode(user["email"])
             }
         }
+
+    def login_with_google(self, profile):
+        email = profile["email"]
+        name = profile.get("name", "")
+
+        # ✅ FIXED METHOD NAME
+        user = self.repo.find_user_by_email(email)
+
+        if not user:
+            user = {
+                "email": email,
+                "name": name,
+                "provider": "google"
+            }
+            self.repo.create_user(user)
+
+        return user

@@ -1,42 +1,16 @@
-<<<<<<< HEAD
-// FAQ toggle (smooth, no lag)
-=======
 // FAQ toggle
->>>>>>> 6fce5a90ff73366c50feb6b100f5561e0dc434f6
 document.querySelectorAll(".faq-question").forEach(btn => {
   btn.addEventListener("click", () => {
     btn.parentElement.classList.toggle("active");
   });
 });
 
-<<<<<<< HEAD
-// Back to top button
-const toTop = document.getElementById("toTop");
-
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 300) {
-    toTop.style.display = "block";
-    toTop.style.opacity = "1";
-  } else {
-    toTop.style.opacity = "0";
-    toTop.style.display = "none";
-  }
-});
-
-toTop.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-=======
->>>>>>> 6fce5a90ff73366c50feb6b100f5561e0dc434f6
 // Form submit
 document.getElementById("contactForm").addEventListener("submit", e => {
   e.preventDefault();
   alert("Message sent successfully!");
   e.target.reset();
 });
-<<<<<<< HEAD
-=======
 
 /* 🤖 ROBOT EYES FOLLOW CURSOR */
 const robot = document.getElementById("robotAssistant");
@@ -89,4 +63,3 @@ robot.addEventListener("click", () => {
       alert("Chat service unavailable.");
     });
 });
->>>>>>> 6fce5a90ff73366c50feb6b100f5561e0dc434f6
