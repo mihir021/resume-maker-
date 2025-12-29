@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 # Read MongoDB URI from environment variable
-MONGO_URI = os.getenv("MONGO_URI")
+MONGO_URI = os.getenv("MONGODB_URI")
 
 print("Loaded URI:", MONGO_URI)  # Debugging (optional)
 
