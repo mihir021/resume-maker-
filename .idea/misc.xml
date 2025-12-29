@@ -3,5 +3,9 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.11" />
   </component>
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (resume-maker-)" project-jdk-type="Python SDK" />
+=======
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (resume-maker-clean)" project-jdk-type="Python SDK" />
+>>>>>>> 6fce5a90ff73366c50feb6b100f5561e0dc434f6
 </project>
