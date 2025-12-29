@@ -2,11 +2,21 @@
 __pycache__/
 *.pyc
 *.pyo
+<<<<<<< HEAD
 *.pyd
 
 # Virtual environments
 venv/
 .env/
+=======
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment variables
+.env
+>>>>>>> 6fce5a90ff73366c50feb6b100f5561e0dc434f6
 
 # IDE
 .idea/
