@@ -1,6 +1,6 @@
 from datetime import datetime
 from bson import ObjectId
-from Python.config.db import db
+from config.db import db
 
 class UserRepo:
     def __init__(self):

@@ -8,10 +8,11 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../CSS/loginPage.css">
     <script>
-          function loginWithGoogle() {
-            window.location.href = "http://127.0.0.1:5000/auth/google";
-          }
-    </script>
+  function loginWithGoogle() {
+    window.location.href = "http://127.0.0.1:5000/api/auth/google/login";
+  }
+</script>
+
 </head>
 <body>
 
@@ -38,7 +39,7 @@
         <h2>Sign in to your Account</h2>
 
         <!-- IMPORTANT FIXES HERE -->
-        <form action="http://127.0.0.1:5000/login" method="POST">
+        <form action="http://127.0.0.1:5000/api/users/login" method="POST">
 
             <label class="fw-bold small">EMAIL ADDRESS</label>
             <input

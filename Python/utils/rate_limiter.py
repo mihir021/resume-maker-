@@ -1,4 +1,4 @@
-from Python.config.redis_config import redis_client
+from config.redis_config import redis_client
 
 RATE_LIMIT = 20    # 🔧 testing value (change back to 20 later)
 WINDOW = 60        # seconds

@@ -4,9 +4,15 @@ from authlib.integrations.flask_client import OAuth
 import os
 import secrets
 
-from Python.services.user_service import UserService
+from services.user_service import UserService
 
-google_bp = Blueprint("google", __name__)
+# ✅ ADD url_prefix
+google_bp = Blueprint(
+    "google",
+    __name__,
+    url_prefix="/api/auth/google"
+)
+
 oauth = OAuth()
 user_service = UserService()
 
@@ -25,9 +31,9 @@ def init_oauth(app):
     )
 
 
-@google_bp.route("/auth/google")
+# ✅ FINAL LOGIN URL
+@google_bp.route("/login")
 def google_login():
-    # 🔐 CSRF protection (nonce)
     nonce = secrets.token_urlsafe(16)
     session["google_nonce"] = nonce
 
@@ -38,20 +44,16 @@ def google_login():
     )
 
 
-@google_bp.route("/auth/google/callback")
+# ✅ CALLBACK
+@google_bp.route("/callback")
 def google_callback():
     nonce = session.pop("google_nonce", None)
 
-    # ✅ Exchange code → token
     token = oauth.google.authorize_access_token()
-
-    # ✅ Validate ID token using nonce
     profile = oauth.google.parse_id_token(token, nonce=nonce)
 
-    # ✅ Save / fetch user from DB
     user = user_service.login_with_google(profile)
 
-    # ✅ Session (used across app)
     session["user"] = {
         "email": user["email"],
         "name": user.get("name"),
@@ -59,5 +61,4 @@ def google_callback():
         "provider": "google"
     }
 
-    # ✅ Redirect with success
     return redirect("/login-success")
