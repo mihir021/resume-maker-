@@ -1,36 +1,45 @@
-from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
-from Python.repo.user_repo import UserRepo
-from Python.utilis.crypto_utils import CryptoUtils
+from repo.user_repo import UserRepo
+from utils.crypto_utils import CryptoUtils
 
 
 class UserService:
     def __init__(self):
         self.repo = UserRepo()
 
+    # ---------------- SIGNUP ----------------
     def create_user(self, dto):
         data = dto.to_dict()
 
-        # Encode sensitive fields
-        data["name"] = CryptoUtils.encode(data["name"])
-        data["email"] = CryptoUtils.encode(data["email"])
-        data["password"] = CryptoUtils.encode(data["password"])
+        encoded_email = CryptoUtils.encode(data["email"])
 
-        if self.repo.find_user_by_email(data["email"]):
+        # ❌ Do NOT encode password with CryptoUtils
+        hashed_password = generate_password_hash(data["password"])
+
+        if self.repo.find_user_by_email(encoded_email):
             return {"success": False, "message": "Email already registered"}
 
-        self.repo.create_user(data)
+        user = {
+            "name": CryptoUtils.encode(data["name"]),
+            "email": encoded_email,
+            "password": hashed_password,
+            "provider": "local"
+        }
+
+        self.repo.create_user(user)
         return {"success": True, "message": "User registered successfully"}
 
+    # ---------------- LOGIN (EMAIL / PASSWORD) ----------------
     def login_user(self, dto):
         encoded_email = CryptoUtils.encode(dto.email)
-        encoded_password = CryptoUtils.encode(dto.password)
 
         user = self.repo.find_user_by_email(encoded_email)
         if not user:
             return {"success": False, "message": "User not found"}
 
-        if user["password"] != encoded_password:
+        # ✅ Correct password check
+        if not check_password_hash(user["password"], dto.password):
             return {"success": False, "message": "Invalid password"}
 
         return {
@@ -42,11 +51,12 @@ class UserService:
             }
         }
 
+    # ---------------- GOOGLE LOGIN ----------------
     def login_with_google(self, profile):
         email = profile["email"]
         name = profile.get("name", "")
 
-        # ✅ FIXED METHOD NAME
+        # 🔑 Google users are NOT encoded
         user = self.repo.find_user_by_email(email)
 
         if not user:

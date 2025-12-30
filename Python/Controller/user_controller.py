@@ -1,17 +1,33 @@
-from flask import Blueprint, request, jsonify, redirect, session
+from flask import Blueprint, request, jsonify, redirect, session, url_for
 
-from Python.DTO.user_login_dto import UserLoginDTO
-from Python.DTO.user_signup_dto import UserSignupDTO
-from Python.services.user_service import UserService
+from DTO.user_login_dto import UserLoginDTO
+from DTO.user_signup_dto import UserSignupDTO
+from services.user_service import UserService
 
 user_bp = Blueprint("user", __name__)
 user_service = UserService()
 
+
+# ---------------- HEALTH CHECK ----------------
 @user_bp.get("/hc")
 def hc():
     return "done"
 
-@user_bp.post("/signup")
+
+# ---------------- CURRENT USER ----------------
+@user_bp.route("/me", methods=["GET"])
+def get_me():
+    if "user" not in session:
+        return jsonify({"authenticated": False}), 401
+
+    return jsonify({
+        "authenticated": True,
+        "user": session["user"]
+    })
+
+
+# ---------------- SIGNUP ----------------
+@user_bp.route("/signup", methods=["POST"])
 def signup():
     name = request.form.get("name")
     email = request.form.get("email")
@@ -29,7 +45,9 @@ def signup():
     result = user_service.create_user(dto)
     return jsonify(result)
 
-@user_bp.post("/login")
+
+# ---------------- LOGIN (EMAIL / PASSWORD) ----------------
+@user_bp.route("/login", methods=["POST"])
 def login():
     dto = UserLoginDTO(
         email=request.form.get("email"),
@@ -37,19 +55,26 @@ def login():
     )
 
     if not dto.is_valid():
-        return jsonify({"success": False, "message": "Invalid login data"}), 400
+        return redirect(url_for("pages.login_page"))
 
     result = user_service.login_user(dto)
 
+    # ❌ LOGIN FAILED
     if not result["success"]:
-        # ❌ Keep API-style failure response
-        return jsonify(result), 401
+        # OPTIONAL: flash message later
+        return redirect(url_for("pages.login_page"))
 
-    # ✅ SAME SESSION STRUCTURE AS GOOGLE LOGIN
+    user = result["user"]
+
+    # 🚫 GOOGLE USERS CANNOT LOGIN VIA PASSWORD
+    if user.get("provider") == "google":
+        return redirect(url_for("pages.login_page"))
+
+    # ✅ SESSION (MATCHES GOOGLE STRUCTURE)
     session["user"] = {
-        "name": result["user"]["name"],
-        "email": result["user"]["email"]
+        "name": user["name"],
+        "email": user["email"],
+        "provider": "local"
     }
 
-    # ✅ SAME REDIRECT AS GOOGLE LOGIN
-    return redirect("/login-success")
+    return redirect("/dashboard")

@@ -1,9 +1,9 @@
 import requests
 
-from Python.config.openai_config import OPENAI_HEADERS, OPENAI_URL
-from Python.config.redis_config import redis_client
-from Python.utilis.intent_mapper import detect_intent, is_website_question
-from Python.utilis.semantic_cache import semantic_key
+from config.openai_config import OPENAI_HEADERS, OPENAI_URL
+from config.redis_config import redis_client
+from utils.intent_mapper import detect_intent, is_website_question
+from utils.semantic_cache import semantic_key
 
 MODEL = "gpt-4o-mini"
 CACHE_TTL = 3600  # 1 hour

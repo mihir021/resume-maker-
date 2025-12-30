@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from Python.services.chat_service import process_chat
-from Python.DTO.chat_dto import ChatResponseDTO
-from Python.utilis.rate_limiter import is_rate_limited
+from services.chat_service import process_chat
+from DTO.chat_dto import ChatResponseDTO
+from utils.rate_limiter import is_rate_limited
 
 chat_api = Blueprint("chat_api", __name__)
 
@@ -17,8 +17,7 @@ def get_client_id(req):
 
     return ip
 
-
-@chat_api.route("/api/chat", methods=["POST"])
+@chat_api.route("/", methods=["POST"])
 def chat():
     client_id = get_client_id(request)
 
