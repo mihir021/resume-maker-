@@ -2,9 +2,9 @@ from flask import Flask, send_from_directory, session, jsonify, redirect, url_fo
 from flask_cors import CORS
 import os
 
-from Controller.user_controller import user_bp
-from Controller.chat_controller import chat_api
-from Controller.Google import google_bp, init_oauth
+from Python.Controller.user_controller import user_bp
+from Python.Controller.chat_controller import chat_api
+from Python.Controller.Google import google_bp, init_oauth
 from Python.config.redis_config import redis_client
 
 # ================= PATHS =================
