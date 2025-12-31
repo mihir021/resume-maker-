@@ -1,3 +1,17 @@
+.show-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+    font-size: 16px;
+}
+
+.show-password:hover {
+    color: #1e5afe;
+}
+
 /* -----------------------------------------
    GLOBAL (animated gradient bg)
 ----------------------------------------- */

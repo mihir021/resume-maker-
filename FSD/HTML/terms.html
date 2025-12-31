@@ -8,88 +8,135 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Navbar + Page CSS -->
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .terms-box {
+            max-height: 420px;
+            overflow-y: auto;
+            padding: 25px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .terms-box h5 {
+            margin-top: 20px;
+        }
+
+        footer {
+            margin-top: 60px;
+        }
+    </style>
 </head>
 <body>
 
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary" href="/">ResumeMaker</a>
+        <div class="ms-auto">
+            <a href="/signUp.html" class="btn btn-outline-primary btn-sm">Back to Signup</a>
+        </div>
+    </div>
+</nav>
+
 <!-- ================= CONTENT ================= -->
 <main class="container mt-5 pt-5">
-    <h1 class="fw-bold mb-4">Terms & Conditions</h1>
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-10">
 
-    <p class="text-muted">
-        Last updated: January 2025
-    </p>
+            <h2 class="fw-bold mb-2">Terms & Conditions</h2>
+            <p class="text-muted mb-4">Last updated: January 2025</p>
 
-    <section class="mb-4">
-        <h5 class="fw-bold">1. Acceptance of Terms</h5>
-        <p>
-            By accessing or using ResumeMaker, you agree to be bound by these
-            Terms & Conditions. If you do not agree, please do not use our services.
-        </p>
-    </section>
+            <!-- TERMS BOX -->
+            <div class="terms-box mb-4">
 
-    <section class="mb-4">
-        <h5 class="fw-bold">2. Services</h5>
-        <p>
-            ResumeMaker provides tools for creating, editing, and downloading resumes.
-            We do not guarantee job placement or interview selection.
-        </p>
-    </section>
+                <h5 class="fw-bold">1. Acceptance of Terms</h5>
+                <p>
+                    By accessing or using ResumeMaker, you agree to be bound by these
+                    Terms & Conditions. If you do not agree, please do not use our services.
+                </p>
 
-    <section class="mb-4">
-        <h5 class="fw-bold">3. User Accounts</h5>
-        <p>
-            You are responsible for maintaining the confidentiality of your account
-            credentials and for all activities under your account.
-        </p>
-    </section>
+                <h5 class="fw-bold">2. Services</h5>
+                <p>
+                    ResumeMaker provides tools for creating, editing, and downloading resumes.
+                    We do not guarantee job placement or interview selection.
+                </p>
 
-    <section class="mb-4">
-        <h5 class="fw-bold">4. Data & Privacy</h5>
-        <p>
-            We collect and store user information only to provide our services.
-            Your data is never sold to third parties.
-        </p>
-    </section>
+                <h5 class="fw-bold">3. User Accounts</h5>
+                <p>
+                    You are responsible for maintaining the confidentiality of your account
+                    credentials and for all activities under your account.
+                </p>
 
-    <section class="mb-4">
-        <h5 class="fw-bold">5. Prohibited Use</h5>
-        <p>
-            Users must not misuse the platform, attempt unauthorized access,
-            or upload harmful or illegal content.
-        </p>
-    </section>
+                <h5 class="fw-bold">4. Data & Privacy</h5>
+                <p>
+                    We collect and store user information only to provide our services.
+                    Your data is never sold to third parties.
+                </p>
 
-    <section class="mb-4">
-        <h5 class="fw-bold">6. Limitation of Liability</h5>
-        <p>
-            ResumeMaker is not liable for any direct or indirect damages resulting
-            from the use of our services.
-        </p>
-    </section>
+                <h5 class="fw-bold">5. Prohibited Use</h5>
+                <p>
+                    Users must not misuse the platform, attempt unauthorized access,
+                    or upload harmful or illegal content.
+                </p>
 
-    <section class="mb-4">
-        <h5 class="fw-bold">7. Changes to Terms</h5>
-        <p>
-            We may update these terms at any time. Continued use of the platform
-            means acceptance of updated terms.
-        </p>
-    </section>
+                <h5 class="fw-bold">6. Limitation of Liability</h5>
+                <p>
+                    ResumeMaker is not liable for any direct or indirect damages resulting
+                    from the use of our services.
+                </p>
 
-    <section class="mb-5">
-        <h5 class="fw-bold">8. Contact</h5>
-        <p>
-            If you have any questions, please contact us via the Contact Us page.
-        </p>
-    </section>
+                <h5 class="fw-bold">7. Changes to Terms</h5>
+                <p>
+                    We may update these terms at any time. Continued use of the platform
+                    means acceptance of updated terms.
+                </p>
+
+                <h5 class="fw-bold">8. Contact</h5>
+                <p>
+                    If you have any questions, please contact us via the Contact Us page.
+                </p>
+
+            </div>
+
+            <!-- ACCEPT CHECKBOX -->
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" id="acceptTerms">
+                <label class="form-check-label" for="acceptTerms">
+                    I have read and agree to the Terms & Conditions
+                </label>
+            </div>
+
+            <!-- ACTION BUTTON -->
+            <button class="btn btn-primary px-4" onclick="goBack()" disabled id="continueBtn">
+                Continue to Signup
+            </button>
+
+        </div>
+    </div>
 </main>
 
 <!-- ================= FOOTER ================= -->
-<footer class="bg-dark text-white py-3">
-    <div class="container text-center">
-        <small>© 2025 ResumeMaker. All rights reserved.</small>
-    </div>
+<footer class="bg-dark text-white py-3 text-center">
+    <small>© 2025 ResumeMaker. All rights reserved.</small>
 </footer>
+
+<script>
+    const checkbox = document.getElementById("acceptTerms");
+    const btn = document.getElementById("continueBtn");
+
+    checkbox.addEventListener("change", () => {
+        btn.disabled = !checkbox.checked;
+    });
+
+    function goBack() {
+        window.location.href = "/signUp.html";
+    }
+</script>
 
 </body>
 </html>
