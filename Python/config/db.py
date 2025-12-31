@@ -12,3 +12,5 @@ if not MONGO_URI:
 
 client = MongoClient(MONGO_URI)
 db = client["resume_app"]
+def get_users_collection():
+    return db["users"]

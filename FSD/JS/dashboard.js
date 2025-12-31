@@ -1,10 +1,10 @@
-// ================================
+// =======================================
 // FADE-IN ANIMATION (UNCHANGED)
-// ================================
+// =======================================
 const sections = document.querySelectorAll(".fade-section");
 
 const observer = new IntersectionObserver(
-  entries => {
+  (entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add("show");
@@ -17,23 +17,27 @@ const observer = new IntersectionObserver(
 sections.forEach(section => observer.observe(section));
 
 
-// ================================
-// FETCH LOGGED-IN USER (FIXED)
-// ================================
-fetch("http://127.0.0.1:5000/api/users/me", {
-  method: "GET",
-  credentials: "include"
-})
-  .then(res => {
-    if (!res.ok) throw new Error("Not logged in");
-    return res.json();
-  })
-  .then(data => {
-    if (!data.user || !data.user.name) {
-      throw new Error("Invalid session");
+// =======================================
+// AUTH CHECK – FETCH LOGGED-IN USER
+// =======================================
+async function loadUser() {
+  try {
+    const response = await fetch("/api/users/me", {
+      method: "GET",
+      credentials: "include" // 🔥 REQUIRED FOR SESSION
+    });
+
+    if (!response.ok) {
+      throw new Error("User not authenticated");
     }
 
-    // Set username in navbar / dashboard
+    const data = await response.json();
+
+    if (!data.user || !data.user.name) {
+      throw new Error("Invalid session data");
+    }
+
+    // Update UI with user data
     const usernameEl = document.getElementById("username");
     const firstNameEl = document.getElementById("firstName");
 
@@ -44,21 +48,26 @@ fetch("http://127.0.0.1:5000/api/users/me", {
     if (firstNameEl) {
       firstNameEl.textContent = data.user.name.split(" ")[0];
     }
-  })
-  .catch(() => {
-    // Session invalid → go to login
+
+  } catch (error) {
+    console.warn("Auth failed:", error.message);
     window.location.href = "loginPage.html";
-  });
+  }
+}
+
+// Run auth check on page load
+loadUser();
 
 
-// ================================
-// LOGOUT (FIXED)
-// ================================
+// =======================================
+// LOGOUT
+// =======================================
 function logoutUser() {
-  fetch("http://127.0.0.1:5000/logout", {
+  fetch("/logout", {
     method: "GET",
     credentials: "include"
-  }).then(() => {
+  })
+  .finally(() => {
     window.location.href = "loginPage.html";
   });
 }

@@ -56,3 +56,66 @@ def documents_page():
 def logout():
     session.clear()
     return redirect(url_for("pages.login_page"))
+
+# ---------------- RESET PASSWORD ----------------
+@page_bp.route("/reset-password/<token>")
+def reset_password_page(token):
+    return send_from_directory(
+        HTML_DIR,
+        "reset-password.html"
+    )
+
+@page_bp.route("/terms.html")
+def terms_page():
+    return send_from_directory(HTML_DIR, "terms.html")
+
+# ---------------- FORGOT PASSWORD PAGE ----------------
+@page_bp.route("/forgot-password.html")
+def forgot_password_page():
+    return send_from_directory(HTML_DIR, "forgot-password.html")
+
+
+# ---------------- CHOOSE TEMPLATE ----------------
+@page_bp.route("/choose-template.html")
+def choose_template_page():
+    if "user" not in session:
+        return redirect(url_for("pages.login_page"))
+    return send_from_directory(HTML_DIR, "choose-template.html")
+
+# ---------------- STEP 1 ----------------
+@page_bp.route("/step-1.html")
+def step_1_page():
+    if "user" not in session:
+        return redirect(url_for("pages.login_page"))
+    return send_from_directory(HTML_DIR, "step-1.html")
+
+
+# ---------------- STEP 2 ----------------
+@page_bp.route("/step-2.html")
+def step_2_page():
+    if "user" not in session:
+        return redirect(url_for("pages.login_page"))
+    return send_from_directory(HTML_DIR, "step-2.html")
+
+
+# ---------------- STEP 3 ----------------
+@page_bp.route("/step-3.html")
+def step_3_page():
+    if "user" not in session:
+        return redirect(url_for("pages.login_page"))
+    return send_from_directory(HTML_DIR, "step-3.html")
+
+
+# ---------------- STEP 4 ----------------
+@page_bp.route("/step-4.html")
+def step_4_page():
+    if "user" not in session:
+        return redirect(url_for("pages.login_page"))
+    return send_from_directory(HTML_DIR, "step-4.html")
+
+# ---------------- BUILD RESUME ----------------
+@page_bp.route("/build-resume.html")
+def build_resume_page():
+    if "user" not in session:
+        return redirect(url_for("pages.login_page"))
+    return send_from_directory(HTML_DIR, "build-resume.html")

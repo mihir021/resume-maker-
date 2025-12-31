@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Resume Maker | Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Maker | Login</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../CSS/loginPage.css">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../CSS/loginPage.css">
+
     <script>
-  function loginWithGoogle() {
-    window.location.href = "http://127.0.0.1:5000/api/auth/google/login";
-  }
-</script>
-
+        function loginWithGoogle() {
+            window.location.href = "http://localhost:5000/api/auth/google/login";
+        }
+    </script>
 </head>
+
 <body>
 
 <div class="main-container">
@@ -24,7 +34,7 @@
         <h4>BUILD YOUR PROFESSIONAL RESUME</h4>
 
         <p class="welcome-text">
-            Create beautiful, ATS-friendly resumes quickly.  
+            Create beautiful, ATS-friendly resumes quickly.
             Customize, edit, and download your job-ready resume instantly.
         </p>
 
@@ -38,8 +48,10 @@
 
         <h2>Sign in to your Account</h2>
 
-        <!-- IMPORTANT FIXES HERE -->
-        <form action="http://127.0.0.1:5000/api/users/login" method="POST">
+        <!-- MESSAGE BOX -->
+        <div id="messageBox"></div>
+
+        <form id="loginForm">
 
             <label class="fw-bold small">EMAIL ADDRESS</label>
             <input
@@ -51,35 +63,105 @@
             >
 
             <label class="fw-bold small">PASSWORD</label>
-            <input
-                type="password"
-                name="password"
-                class="form-control mb-2"
-                placeholder="Password"
-                required
-            >
-
-            <div class="d-flex justify-content-between mb-3" style="font-size:clamp(12px,1vw,14px);">
-                <a href="#" class="text-primary fw-bold">Forgot your password?</a>
+            <div class="position-relative mb-2">
+                <input
+                    type="password"
+                    id="loginPassword"
+                    name="password"
+                    class="form-control"
+                    placeholder="Password"
+                    required
+                >
+                <span class="show-password" onclick="togglePassword('loginPassword', this)">
+                    <i class="fa-solid fa-eye"></i>
+                </span>
             </div>
 
-            <button type="submit" class="login-btn">Log in</button>
+            <div class="d-flex justify-content-between mb-3 small">
+                <a href="/forgot-password.html" class="text-primary fw-bold">
+                    Forgot your password?
+                </a>
+            </div>
 
-            <div class="divider">or</div>
+            <button type="submit" class="login-btn w-100">
+                Log in
+            </button>
 
-            <p class="text-center" style="font-size:clamp(12px,1vw,14px);">
+            <div class="divider my-3">or</div>
+
+            <p class="text-center small">
                 Don't have an account?
                 <a href="signUp.html" class="text-primary fw-bold">Sign up</a>
             </p>
 
-            <button type="button" class="social-btn google-btn" onclick="loginWithGoogle()" >
-                <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" width="18">
+            <button
+                type="button"
+                class="social-btn google-btn w-100"
+                onclick="loginWithGoogle()"
+            >
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
+                    width="18"
+                >
                 Sign in with Google
             </button>
 
         </form>
     </div>
 </div>
+
+<!-- Show / Hide Password -->
+<script src="../JS/showPassword.js"></script>
+
+<!-- LOGIN SCRIPT -->
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const messageBox = document.getElementById("messageBox");
+
+    messageBox.innerHTML = "";
+
+    try {
+        const response = await fetch("http://localhost:5000/api/users/login", {
+            method: "POST",
+            body: formData,
+            credentials: "include"   // 🔥 REQUIRED FOR SESSION
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            messageBox.innerHTML = `
+                <div class="alert alert-success">
+                    ${data.message || "Login successful"}
+                </div>
+            `;
+
+            // ✅ Redirect to Flask dashboard
+            setTimeout(() => {
+                window.location.href = "http://localhost:5000/dashboard";
+            }, 1000);
+
+        } else {
+            messageBox.innerHTML = `
+                <div class="alert alert-danger">
+                    ${data.message || "Invalid email or password"}
+                </div>
+            `;
+        }
+
+    } catch (error) {
+        console.error("Frontend error:", error);
+        messageBox.innerHTML = `
+            <div class="alert alert-danger">
+                Frontend error. Check console.
+            </div>
+        `;
+    }
+});
+</script>
 
 </body>
 </html>

@@ -41,6 +41,9 @@ class UserService:
         # ✅ Correct password check
         if not check_password_hash(user["password"], dto.password):
             return {"success": False, "message": "Invalid password"}
+        print("RAW EMAIL:", dto.email)
+        print("ENCODED EMAIL:", CryptoUtils.encode(dto.email))
+        print("DB USER:", user)
 
         return {
             "success": True,
