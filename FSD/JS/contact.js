@@ -1,18 +1,64 @@
-// FAQ toggle
+// ===============================
+// FAQ TOGGLE
+// ===============================
 document.querySelectorAll(".faq-question").forEach(btn => {
   btn.addEventListener("click", () => {
     btn.parentElement.classList.toggle("active");
   });
 });
 
-// Form submit
-document.getElementById("contactForm").addEventListener("submit", e => {
+
+// ===============================
+// CONTACT FORM SUBMIT (REAL)
+// ===============================
+document.getElementById("contactForm").addEventListener("submit", async e => {
   e.preventDefault();
-  alert("Message sent successfully!");
-  e.target.reset();
+
+  const name = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const subject = document.getElementById("subject").value;
+  const message = document.getElementById("message").value.trim();
+
+  if (!name || !email || !subject || !message) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/contact/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        name,
+        email,
+        subject,
+        message
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.msg || "Failed to send message");
+      return;
+    }
+
+    alert("Message sent successfully!");
+    e.target.reset();
+
+  } catch (err) {
+    console.error("Contact error:", err);
+    alert("Mail service unavailable.");
+  }
 });
 
-/* 🤖 ROBOT EYES FOLLOW CURSOR */
+
+// ===============================
+// 🤖 ROBOT EYES FOLLOW CURSOR
+// ===============================
 const robot = document.getElementById("robotAssistant");
 const pupils = document.querySelectorAll(".pupil");
 
@@ -30,17 +76,16 @@ document.addEventListener("mousemove", e => {
   });
 });
 
-/* ===============================
-   CHATBOT BACKEND INTEGRATION
-================================ */
 
-// TEMP chat popup (basic – will enhance later)
+// ===============================
+// 🤖 CHATBOT BACKEND INTEGRATION
+// ===============================
 robot.addEventListener("click", () => {
   const userText = prompt("Ask me something:");
 
   if (!userText) return;
 
-  fetch("http://localhost:5000/api/chat/", {
+  fetch("/api/chat/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -51,7 +96,6 @@ robot.addEventListener("click", () => {
     .then(data => {
       alert(data.reply);
 
-      // Handle navigation intent
       if (data.intent === "SCROLL_FAQ") {
         document
           .getElementById("faq")

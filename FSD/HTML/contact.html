@@ -79,29 +79,45 @@
     <p class="subtext">Our support team usually replies within 24 hours.</p>
 
     <form id="contactForm">
-      <label>Full name</label>
-      <input type="text" placeholder="Rathod Mihir" required />
+  <label>Full name</label>
+  <input
+    type="text"
+    id="fullName"
+    placeholder="Rathod Mihir"
+    required
+  />
 
-      <label>Email address</label>
-      <input type="email" placeholder="mihir@gmail.com" required />
+  <label>Email address</label>
+  <input
+    type="email"
+    id="email"
+    placeholder="mihir@gmail.com"
+    required
+  />
 
-      <label>Subject</label>
-      <small class="hint">Choose the option that best describes your issue</small>
-      <select required>
-        <option value="">Select</option>
-        <option>Account Support</option>
-        <option>Billing & Subscription</option>
-        <option>Resume Download Issue</option>
-        <option>Technical Problem</option>
-      </select>
+  <label>Subject</label>
+  <small class="hint">Choose the option that best describes your issue</small>
+  <select id="subject" required>
+    <option value="">Select</option>
+    <option>Account Support</option>
+    <option>Billing & Subscription</option>
+    <option>Resume Download Issue</option>
+    <option>Technical Problem</option>
+  </select>
 
-      <label>How can we help you?</label>
-      <textarea rows="4" placeholder="Explain your issue..." required></textarea>
+  <label>How can we help you?</label>
+  <textarea
+    rows="4"
+    id="message"
+    placeholder="Explain your issue..."
+    required
+  ></textarea>
 
-      <button class="btn-primary" type="submit">
-        Send Message
-      </button>
-    </form>
+  <button class="btn-primary" type="submit">
+    Send Message
+  </button>
+</form>
+
   </div>
 </section>
 
@@ -115,7 +131,7 @@
       <i class="fa-solid fa-chevron-down"></i>
     </button>
     <div class="faq-answer">
-      The login button is located at the top-right corner of the website.
+      The login button is located in the top-right corner of the website.
     </div>
   </div>
 
