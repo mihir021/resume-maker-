@@ -3,8 +3,6 @@ from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from utils.mail_utils import mail
 
-
-
 forgot_password_bp = Blueprint("forgot_password_bp", __name__)
 
 @forgot_password_bp.route("/forgot-password", methods=["POST"])
