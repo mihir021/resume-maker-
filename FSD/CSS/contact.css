@@ -225,3 +225,20 @@ textarea:focus {
     text-align: center;
   }
 }
+
+.feedback-cta {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.feedback-cta p {
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+.feedback-cta a {
+  border-radius: 30px;
+  padding: 8px 22px;
+  font-weight: 600;
+}
