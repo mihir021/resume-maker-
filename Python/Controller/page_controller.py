@@ -119,3 +119,11 @@ def build_resume_page():
     if "user" not in session:
         return redirect(url_for("pages.login_page"))
     return send_from_directory(HTML_DIR, "build-resume.html")
+
+@page_bp.route("/navbar.html")
+def navbar_file():
+    return send_from_directory(HTML_DIR, "navbar.html")
+
+@page_bp.route("/feedback")
+def feedback():
+    return send_from_directory(HTML_DIR,"feedback.html")

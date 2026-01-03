@@ -12,7 +12,7 @@ from config.redis_config import redis_client
 from Controller.contact_email_controller import contact_api
 from Controller.forgot_password_controller import forgot_password_bp
 from Controller.reset_password_controller import reset_password_bp
-
+from Controller.feedback_controller import feedback_bp
 
 def create_app():
     load_dotenv()
@@ -81,6 +81,7 @@ def create_app():
     app.register_blueprint(contact_api)
     app.register_blueprint(forgot_password_bp)
     app.register_blueprint(reset_password_bp)
+    app.register_blueprint(feedback_bp)
 
     print("✅ Flask app initialized successfully")
 
