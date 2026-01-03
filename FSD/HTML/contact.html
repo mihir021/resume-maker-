@@ -78,45 +78,36 @@
     <h2>Reach Us by Email</h2>
     <p class="subtext">Our support team usually replies within 24 hours.</p>
 
-    <form id="contactForm">
-  <label>Full name</label>
-  <input
-    type="text"
-    id="fullName"
-    placeholder="Rathod Mihir"
-    required
-  />
+<form id="contactForm">
 
+  <label>Full name</label>
+  <input id="fullName" type="text" required />
+
+  <!-- 🔒 EMAIL (AUTO FILLED) -->
   <label>Email address</label>
   <input
-    type="email"
     id="email"
-    placeholder="mihir@gmail.com"
-    required
+    type="email"
+    readonly
+    style="background:#f3f4f6; cursor:not-allowed;"
   />
 
   <label>Subject</label>
-  <small class="hint">Choose the option that best describes your issue</small>
   <select id="subject" required>
     <option value="">Select</option>
-    <option>Account Support</option>
-    <option>Billing & Subscription</option>
-    <option>Resume Download Issue</option>
-    <option>Technical Problem</option>
+    <option value="Bug Report">Bug Report</option>
+    <option value="Feature Request">Feature Request</option>
+    <option value="Account Issue">Account Issue</option>
+    <option value="Other">Other</option>
   </select>
 
   <label>How can we help you?</label>
-  <textarea
-    rows="4"
-    id="message"
-    placeholder="Explain your issue..."
-    required
-  ></textarea>
+  <textarea id="message" rows="5" required></textarea>
 
-  <button class="btn-primary" type="submit">
-    Send Message
-  </button>
+  <button type="submit">Send Message</button>
+
 </form>
+
 
   </div>
 </section>

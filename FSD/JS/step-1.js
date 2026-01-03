@@ -74,7 +74,6 @@ const TEMPLATES = {
     html: "../templates/template-ultra-clean/template.html"
   }
 };
-
 /* ================= SELECTED TEMPLATE ================= */
 const selectedTemplate =
   localStorage.getItem("selectedTemplate") || "academicYellow";
@@ -82,6 +81,7 @@ const selectedTemplate =
 /* ================= LOAD TEMPLATE CSS ================= */
 (function () {
   if (document.getElementById("template-style")) return;
+
   const link = document.createElement("link");
   link.id = "template-style";
   link.rel = "stylesheet";
@@ -95,10 +95,27 @@ fetch(TEMPLATES[selectedTemplate].html)
   .then(html => {
     $("resumePreview").innerHTML = html;
     restore();
+    bindLivePreview();
   });
 
+/* ================= STORAGE ================= */
 function save() {
-  localStorage.setItem("step1", JSON.stringify({
+  localStorage.setItem("step1", JSON.stringify(getFormData()));
+}
+
+function restore() {
+  const d = JSON.parse(localStorage.getItem("step1") || "{}");
+
+  Object.keys(getFormData()).forEach(id => {
+    if ($(id)) $(id).value = d[id] || "";
+  });
+
+  updatePreview();
+}
+
+/* ================= LIVE DATA ================= */
+function getFormData() {
+  return {
     name: $("name").value,
     title: $("title").value,
     email: $("email").value,
@@ -107,20 +124,12 @@ function save() {
     summary: $("summary").value,
     languages: $("languages").value,
     certs: $("certs").value
-  }));
+  };
 }
 
-function restore() {
-  const d = JSON.parse(localStorage.getItem("step1") || "{}");
-
-  ["name","title","email","phone","location","summary","languages","certs"]
-    .forEach(id => $(id).value = d[id] || "");
-
-  updatePreview();
-}
-
+/* ================= PREVIEW ================= */
 function updatePreview() {
-  const d = JSON.parse(localStorage.getItem("step1") || "{}");
+  const d = getFormData();
 
   set("previewName", d.name);
   set("previewTitle", d.title);
@@ -133,26 +142,31 @@ function updatePreview() {
   fill("pCerts", d.certs);
 }
 
-function set(id, v) {
+function set(id, value) {
   const el = $(id);
-  if (el && v) el.textContent = v;
+  if (el) el.textContent = value || "";
 }
 
-function fill(id, txt) {
+function fill(id, text) {
   const ul = $(id);
-  if (!ul || !txt) return;
-  ul.innerHTML = "";
-  txt.split("\n").forEach(l => {
-    if (l.trim()) ul.innerHTML += `<li>${l}</li>`;
-  });
+  if (!ul) return;
+
+  ul.innerHTML = (text || "")
+    .split("\n")
+    .filter(Boolean)
+    .map(line => `<li>${line}</li>`)
+    .join("");
 }
 
-document.querySelectorAll("input, textarea").forEach(el => {
-  el.addEventListener("input", () => {
-    save();
-    updatePreview();
+/* ================= EVENTS ================= */
+function bindLivePreview() {
+  document.querySelectorAll("input, textarea").forEach(el => {
+    el.addEventListener("input", () => {
+      save();
+      updatePreview();
+    });
   });
-});
+}
 
 $("nextBtn").onclick = () => {
   save();

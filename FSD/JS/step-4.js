@@ -1,88 +1,28 @@
 /* ================== SHORTCUT ================== */
 const $ = id => document.getElementById(id);
 
+/* ================== TEMPLATE MAP ================== */
 const TEMPLATES = {
   academicYellow: {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: { // template 2
+  professionalBlue: {
     css: "../templates/template-clean-profile/style.css",
     html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: { // template 3
+  minimalElegant: {
     css: "../templates/template-modern-clean/style.css",
     html: "../templates/template-modern-clean/template.html"
-  },
-  blueCorporate: {
-    css: "../templates/template-blue-corporate/style.css",
-    html: "../templates/template-blue-corporate/template.html"
-  },
-  softGreenMinimal: {
-    css: "../templates/template-soft-green-minimal/style.css",
-    html: "../templates/template-soft-green-minimal/template.html"
-  },
-  darkElegant: {
-    css: "../templates/template-dark-elegant/style.css",
-    html: "../templates/template-dark-elegant/template.html"
-  },
-  timelineResume: {
-    css: "../templates/template-timeline-resume/style.css",
-    html: "../templates/template-timeline-resume/template.html"
-  },
-  boldRedAccent: {
-    css: "../templates/template-Bold-red-Accent/style.css",
-    html: "../templates/template-Bold-red-Accent/template.html"
-  },
-  cardBased: {
-    css: "../templates/template-card-based/style.css",
-    html: "../templates/template-card-based/template.html"
-  },
-  glassmorphism: {
-    css: "../templates/template-glassmorphism/style.css",
-    html: "../templates/template-glassmorphism/template.html"
-  },
-  infographic: {
-    css: "../templates/template-infographic/style.css",
-    html: "../templates/template-infographic/template.html"
-  },
-  ultraMinimal: {
-    css: "../templates/template-ultra-minimal-black&white/style.css",
-    html: "../templates/template-ultra-minimal-black&white/template.html"
-  },
-  boxShadow: {
-    css: "../templates/template-box-shadow/style.css",
-    html: "../templates/template-box-shadow/template.html"
-  },
-  classicSerif: {
-    css: "../templates/template-classic-serif/style.css",
-    html: "../templates/template-classic-serif/template.html"
-  },
-  freshGradient: {
-    css: "../templates/template-fresh-gradient/style.css",
-    html: "../templates/template-fresh-gradient/template.html"
-  },
-  splitHeaderModern: {
-    css: "../templates/template-split-header-modern/style.css",
-    html: "../templates/template-split-header-modern/template.html"
-  },
-  techLook: {
-    css: "../templates/template-tech-look/style.css",
-    html: "../templates/template-tech-look/template.html"
-  },
-  ultraClean: {
-    css: "../templates/template-ultra-clean/style.css",
-    html: "../templates/template-ultra-clean/template.html"
   }
 };
-
 
 /* ================== SELECTED TEMPLATE ================== */
 const selectedTemplate =
   localStorage.getItem("selectedTemplate") || "academicYellow";
 
 /* ================== LOAD TEMPLATE CSS ================== */
-(function loadTemplateCSS() {
+(function () {
   if (document.getElementById("template-style")) return;
 
   const link = document.createElement("link");
@@ -97,9 +37,10 @@ fetch(TEMPLATES[selectedTemplate].html)
   .then(res => res.text())
   .then(html => {
     $("resumePreview").innerHTML = html;
+
     loadHeader();
-    loadExperience();
     loadEducation();
+    loadExperience();
     loadSkills();
   });
 
@@ -107,46 +48,26 @@ fetch(TEMPLATES[selectedTemplate].html)
 function loadHeader() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
-  setText("previewName", d.name || "Rathod Mihir");
-  setText("previewTitle", d.title || "Java Developer");
+  setText("previewName", d.name);
+  setText("previewTitle", d.title);
   setText("previewSummary", d.summary);
+  setText("previewPhone", d.phone);
+  setText("previewEmail", d.email);
+  setText("previewLocation", d.location);
 
-  fillList("pLanguages", d.languages || "English\nHindi");
-  fillList("pCerts", d.certs || "Google Data Analytics\nAdvanced Excel");
+  fillList("pLanguages", d.languages);
+  fillList("pCerts", d.certs);
 }
 
-/* ================== EXPERIENCE ================== */
-function loadExperience() {
-  const list = JSON.parse(localStorage.getItem("experiences") || "[]");
-  const section = $("previewExperienceSection");
-  const box = $("previewExperienceList");
+/* ================== EDUCATION (FIXED) ================== */
+function loadEducation() {
+  const d = JSON.parse(localStorage.getItem("step2") || "{}");
+  const section = $("educationSection");
 
-  if (!section || !box || !list.length) {
-    section && (section.style.display = "none");
+  if (!section || !d.degree) {
+    if (section) section.innerHTML = "";
     return;
   }
-
-  box.innerHTML = "";
-  list.forEach(exp => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
-      <small>${exp.startDate} – ${exp.endDate}</small>
-      <ul>${exp.description.split("\n").map(l => `<li>${l}</li>`).join("")}</ul>
-    `;
-    box.appendChild(div);
-  });
-
-  section.style.display = "block";
-}
-
-/* ================== EDUCATION ================== */
-function loadEducation() {
-  const d = JSON.parse(localStorage.getItem("education") || {});
-  const section = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("EDUCATION"));
-
-  if (!section) return;
 
   const dateText = d.current
     ? `Expected ${formatMonth(d.month)}`
@@ -154,54 +75,65 @@ function loadEducation() {
 
   section.innerHTML = `
     <h3>EDUCATION</h3>
-    <p><strong>${d.degree} in ${d.field}</strong></p>
-    <p>${d.school} | ${d.location}</p>
-    <p><em>${dateText}</em></p>
+    <ul>
+      <li>
+        <strong>${d.degree} in ${d.field}</strong><br>
+        ${d.school} | ${d.location}<br>
+        <em>${dateText}</em>
+        ${
+          d.details?.length
+            ? `<ul>${d.details.map(x => `<li>${x}</li>`).join("")}</ul>`
+            : ""
+        }
+      </li>
+    </ul>
   `;
 }
 
-/* ================== SKILLS ================== */
+/* ================== EXPERIENCE ================== */
+function loadExperience() {
+  const list = JSON.parse(localStorage.getItem("experiences") || []);
+  const section = $("previewExperienceSection");
+  const box = $("previewExperienceList");
+
+  if (!section || !box || !list.length) {
+    if (section) section.style.display = "none";
+    return;
+  }
+
+  box.innerHTML = "";
+
+  list.forEach(exp => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
+      <small>${exp.startDate} – ${exp.endDate}</small>
+      <ul>
+        ${(exp.description || "")
+          .split("\n")
+          .map(l => `<li>${l}</li>`)
+          .join("")}
+      </ul>
+    `;
+    box.appendChild(div);
+  });
+
+  section.style.display = "block";
+}
+
+/* ================== SKILLS (FIXED) ================== */
 function loadSkills() {
   const skills = JSON.parse(localStorage.getItem("skills") || []);
   $("skillsEditor").value = skills.join("\n");
   renderSkills(skills);
 }
 
-/* SKILL BUTTONS */
-document.querySelectorAll("[data-skill]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const list = getSkills();
-    if (!list.includes(btn.dataset.skill)) {
-      list.push(btn.dataset.skill);
-      saveSkills(list);
-    }
-  });
-});
-
-/* LIVE TEXTAREA */
-$("skillsEditor").addEventListener("input", () => {
-  saveSkills(getSkills());
-});
-
-/* STORAGE */
-function getSkills() {
-  return $("skillsEditor").value
-    .split("\n")
-    .map(s => s.trim())
-    .filter(Boolean);
-}
-
-function saveSkills(list) {
-  localStorage.setItem("skills", JSON.stringify(list));
-  renderSkills(list);
-}
-
-/* RENDER SKILLS */
 function renderSkills(list) {
-  const section = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("SKILLS"));
-
-  if (!section) return;
+  const section = $("skillsSection");
+  if (!section || !list.length) {
+    if (section) section.innerHTML = "";
+    return;
+  }
 
   const half = Math.ceil(list.length / 2);
 
@@ -214,10 +146,37 @@ function renderSkills(list) {
   `;
 }
 
+/* ================== SKILL INPUT ================== */
+document.querySelectorAll("[data-skill]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const list = getSkills();
+    if (!list.includes(btn.dataset.skill)) {
+      list.push(btn.dataset.skill);
+      saveSkills(list);
+    }
+  });
+});
+
+$("skillsEditor").addEventListener("input", () => {
+  saveSkills(getSkills());
+});
+
+function getSkills() {
+  return $("skillsEditor").value
+    .split("\n")
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+function saveSkills(list) {
+  localStorage.setItem("skills", JSON.stringify(list));
+  renderSkills(list);
+}
+
 /* ================== HELPERS ================== */
 function setText(id, val) {
   const el = $(id);
-  if (el) el.textContent = val;
+  if (el && val) el.textContent = val;
 }
 
 function fillList(id, text) {
@@ -228,10 +187,34 @@ function fillList(id, text) {
 
 function formatMonth(v) {
   if (!v) return "";
-  return new Date(v).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return new Date(v).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric"
+  });
 }
 
-/* ================== FINISH ================== */
-function goToStep5() {
-  window.location.href = "build-resume.html";
+/* ================== FINAL SAVE ================== */
+function finishResume() {
+  const resumePayload = {
+    title: "My Resume",
+    template: selectedTemplate,
+    data: {
+      step1: JSON.parse(localStorage.getItem("step1") || "{}"),
+      step2: JSON.parse(localStorage.getItem("step2") || "{}"),
+      step3: JSON.parse(localStorage.getItem("experiences") || "[]"),
+      step4: JSON.parse(localStorage.getItem("skills") || "[]")
+    }
+  };
+
+  fetch("/api/resumes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(resumePayload)
+  })
+    .then(res => res.json())
+    .then(r => {
+      if (r.success) window.location.href = "/documents.html";
+      else alert(r.message || "Save failed");
+    });
 }

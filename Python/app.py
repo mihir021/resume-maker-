@@ -12,6 +12,7 @@ from config.redis_config import redis_client
 from Controller.contact_email_controller import contact_api
 from Controller.forgot_password_controller import forgot_password_bp
 from Controller.reset_password_controller import reset_password_bp
+from Controller.resume_controller import resume_bp
 
 
 def create_app():
@@ -81,6 +82,7 @@ def create_app():
     app.register_blueprint(contact_api)
     app.register_blueprint(forgot_password_bp)
     app.register_blueprint(reset_password_bp)
+    app.register_blueprint(resume_bp, url_prefix="/api/resumes")
 
     print("✅ Flask app initialized successfully")
 

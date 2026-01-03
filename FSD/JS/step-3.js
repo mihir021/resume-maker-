@@ -1,6 +1,7 @@
 /* ================== SHORTCUT ================== */
 const $ = id => document.getElementById(id);
 
+/* ================== TEMPLATE MAP ================== */
 const TEMPLATES = {
   academicYellow: {
     css: "../templates/template-academic-yellow/style.css",
@@ -96,9 +97,14 @@ fetch(TEMPLATES[selectedTemplate].html)
   .then(res => res.text())
   .then(html => {
     $("resumePreview").innerHTML = html;
+
     loadHeader();
     loadExperience();
-    loadEducation();
+
+    // 🔥 VERY IMPORTANT: wait for template DOM
+    requestAnimationFrame(() => {
+      restoreEducation();
+    });
   });
 
 /* ================== LOAD HEADER ================== */
@@ -112,28 +118,35 @@ function loadHeader() {
   setText("previewLocation", d.location);
   setText("previewSummary", d.summary);
 
-  fillList("pLanguages", d.languages || "English\nHindi");
-  fillList("pCerts", d.certs || "Google Data Analytics\nAdvanced Excel");
+  fillList("pLanguages", d.languages);
+  fillList("pCerts", d.certs);
 }
 
 /* ================== LOAD EXPERIENCE ================== */
 function loadExperience() {
   const list = JSON.parse(localStorage.getItem("experiences") || "[]");
-  const section = $("previewExperienceSection");
-  const box = $("previewExperienceList");
 
-  if (!section || !box || !list.length) {
-    section && (section.style.display = "none");
+  const section = document.getElementById("previewExperienceSection");
+  const box = document.getElementById("previewExperienceList");
+
+  if (!section || !box || list.length === 0) {
+    if (section) section.style.display = "none";
     return;
   }
 
   box.innerHTML = "";
+
   list.forEach(exp => {
     const div = document.createElement("div");
     div.innerHTML = `
       <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
       <small>${exp.startDate} – ${exp.endDate}</small>
-      <ul>${exp.description.split("\n").map(l => `<li>${l}</li>`).join("")}</ul>
+      <ul>
+        ${(exp.description || "")
+          .split("\n")
+          .map(l => `<li>${l}</li>`)
+          .join("")}
+      </ul>
     `;
     box.appendChild(div);
   });
@@ -141,9 +154,55 @@ function loadExperience() {
   section.style.display = "block";
 }
 
-/* ================== EDUCATION ================== */
-function loadEducation() {
-  const d = JSON.parse(localStorage.getItem("education") || "{}");
+/* ================== EDUCATION (FIXED) ================== */
+
+/* LIVE SAVE */
+[
+  "school",
+  "eduLocation",
+  "degree",
+  "field",
+  "gradMonth",
+  "currentStudy",
+  "eduDetails"
+].forEach(id => {
+  const el = $(id);
+  if (!el) return;
+  el.addEventListener("input", saveEducation);
+  el.addEventListener("change", saveEducation);
+});
+
+/* SAVE EDUCATION */
+function saveEducation() {
+  const data = {
+    school: $("school").value.trim(),
+    location: $("eduLocation").value.trim(),
+    degree: $("degree").value.trim(),
+    field: $("field").value.trim(),
+    month: $("gradMonth").value,
+    current: $("currentStudy").checked,
+    details: $("eduDetails").value
+      .split("\n")
+      .map(x => x.trim())
+      .filter(Boolean)
+  };
+
+  localStorage.setItem("step2", JSON.stringify(data));
+  renderEducation(data);
+}
+
+/* RESTORE EDUCATION */
+function restoreEducation() {
+  const raw = localStorage.getItem("step2");
+  if (!raw) return;
+
+  let d;
+  try {
+    d = JSON.parse(raw);
+  } catch {
+    console.error("Invalid step2 data");
+    return;
+  }
 
   $("school").value = d.school || "";
   $("eduLocation").value = d.location || "";
@@ -156,32 +215,10 @@ function loadEducation() {
   renderEducation(d);
 }
 
-/* ================== LIVE SAVE ================== */
-document.querySelectorAll("input, textarea").forEach(el => {
-  el.addEventListener("input", saveAndRender);
-});
-
-function saveAndRender() {
-  const data = {
-    school: $("school").value,
-    location: $("eduLocation").value,
-    degree: $("degree").value,
-    field: $("field").value,
-    month: $("gradMonth").value,
-    current: $("currentStudy").checked,
-    details: $("eduDetails").value.split("\n").filter(Boolean)
-  };
-
-  localStorage.setItem("education", JSON.stringify(data));
-  renderEducation(data);
-}
-
-/* ================== RENDER EDUCATION ================== */
+/* RENDER EDUCATION TO PREVIEW */
 function renderEducation(d) {
-  const section = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("EDUCATION"));
-
-  if (!section) return;
+  const section = document.getElementById("educationSection");
+  if (!section || !d.school) return;
 
   const dateText = d.current
     ? `Expected ${formatMonth(d.month)}`
@@ -189,10 +226,18 @@ function renderEducation(d) {
 
   section.innerHTML = `
     <h3>EDUCATION</h3>
-    <p><strong>${d.degree} in ${d.field}</strong></p>
-    <p>${d.school} | ${d.location}</p>
-    <p><em>${dateText}</em></p>
-    ${d.details?.length ? `<ul>${d.details.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}
+    <ul>
+      <li>
+        <strong>${d.degree} in ${d.field}</strong><br>
+        ${d.school} | ${d.location}<br>
+        <em>${dateText}</em>
+        ${
+          d.details && d.details.length
+            ? `<ul>${d.details.map(x => `<li>${x}</li>`).join("")}</ul>`
+            : ""
+        }
+      </li>
+    </ul>
   `;
 }
 
@@ -205,15 +250,22 @@ function setText(id, val) {
 function fillList(id, text) {
   const ul = $(id);
   if (!ul || !text) return;
-  ul.innerHTML = text.split("\n").map(l => `<li>${l}</li>`).join("");
+  ul.innerHTML = text
+    .split("\n")
+    .map(l => `<li>${l}</li>`)
+    .join("");
 }
 
 function formatMonth(v) {
   if (!v) return "";
-  return new Date(v).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return new Date(v).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric"
+  });
 }
 
 /* ================== NAV ================== */
 function goToStep4() {
+  saveEducation(); // ensure saved
   window.location.href = "step-4.html";
 }

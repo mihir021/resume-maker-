@@ -144,3 +144,68 @@ body {
         width: 100%;
     }
 }
+/* new */
+/* ================= OVERLAY ================= */
+.resume-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resume-overlay.hidden {
+  display: none;
+}
+
+/* ================= MODAL ================= */
+.resume-modal {
+  background: #fff;
+  width: 95%;
+  max-width: 1100px;
+  height: 90vh;
+
+  position: relative;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ================= CLOSE BUTTON ================= */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+
+  font-size: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+/* ================= SCROLL AREA ================= */
+#pdfWrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+/* ================= DOWNLOAD BAR ================= */
+.download-bar {
+  padding: 12px;
+  border-top: 1px solid #ddd;
+  background: #fff;
+  text-align: center;
+}
+
+
+
+
+
