@@ -92,18 +92,62 @@ body {
   margin-bottom: 10px;
 }
 
-/* ================= REVIEWS ================= */
-.review-card {
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+/* ================= REVIEW SECTION ================= */
+.customer-review {
+  background: linear-gradient(180deg, #f6f9ff, #ffffff);
 }
 
-.review-card:hover {
+/* Review card */
+.quote-card {
+  background: #ffffff;
+  padding: 36px 28px;
+  border-radius: 18px;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
+
+/* Hover animation */
+.quote-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.15);
+}
+
+/* Quote icon */
+.quote-icon {
+  font-size: 60px;
+  color: #c9a227;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+/* Feedback text */
+.quote-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #555;
+  margin: 20px 0;
+}
+
+/* Divider */
+.quote-divider {
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #4f7cff, #c9a227);
+  margin: 18px auto;
+  border-radius: 10px;
+}
+
+/* Name */
+.quote-name {
+  font-weight: 700;
+  color: #111;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
 /* ================= FOOTER ================= */
