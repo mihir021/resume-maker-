@@ -1,0 +1,41 @@
+.feedback-hero {
+  padding: 120px 20px 40px;
+  text-align: center;
+  background: linear-gradient(135deg, #4f7cff, #6aa9ff);
+  color: white;
+}
+
+.feedback-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.feedback-card {
+  background: white;
+  padding: 30px;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.feedback-card label {
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.feedback-card input,
+.feedback-card select,
+.feedback-card textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-top: 6px;
+}
+
+.feedback-card button {
+  margin-top: 20px;
+  border-radius: 30px;
+}

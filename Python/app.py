@@ -13,7 +13,7 @@ from Controller.contact_email_controller import contact_api
 from Controller.forgot_password_controller import forgot_password_bp
 from Controller.reset_password_controller import reset_password_bp
 from Controller.resume_controller import resume_bp
-
+from Controller.feedback_controller import feedback_bp
 
 def create_app():
     load_dotenv()
@@ -26,6 +26,12 @@ def create_app():
 
     # ================= CORE CONFIG =================
     app.config.from_object(Config)
+    # 🔥 CRITICAL: Session cookie config (OAuth safe)
+    app.config.update(
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",   # REQUIRED for Google OAuth
+        SESSION_COOKIE_SECURE=False      # True only in production (HTTPS)
+    )
 
     # 🔐 REQUIRED for sessions + OAuth
     app.secret_key = app.config.get("SECRET_KEY", "dev-secret-key")
@@ -83,6 +89,7 @@ def create_app():
     app.register_blueprint(forgot_password_bp)
     app.register_blueprint(reset_password_bp)
     app.register_blueprint(resume_bp, url_prefix="/api/resumes")
+    app.register_blueprint(feedback_bp)
 
     print("✅ Flask app initialized successfully")
 
