@@ -17,6 +17,7 @@ from Controller.feedback_controller import feedback_bp
 from Controller.admin_controller import admin_bp
 from Controller.admin_data_controller import admin_data_bp
 
+
 def create_app():
     load_dotenv()
 

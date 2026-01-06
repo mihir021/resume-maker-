@@ -205,6 +205,12 @@ body {
   text-align: center;
 }
 
+#finalScore {
+  font-size: 38px;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
 
 
 

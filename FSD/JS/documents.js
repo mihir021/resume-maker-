@@ -70,9 +70,15 @@ function openResumePreview(resumeId) {
       overlay.classList.remove("hidden");
       document.body.style.overflow = "hidden";
 
+      // 🔥 THIS IS THE FIX
+      document
+        .querySelector(".resume-score-btn")
+        .setAttribute("data-id", resumeId);
+
       loadFinalTemplate(resume);
     });
 }
+
 
 function closeResumePreview() {
   document.getElementById("resumePreviewOverlay")
@@ -200,4 +206,32 @@ function downloadResumePDF() {
     .save();
 }
 
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("resume-score-btn")) return;
+
+  const resumeId = e.target.dataset.id;
+  console.log("Resume ID:", resumeId); // 🔥 debug
+
+  const res = await fetch(`/api/resumes/score/${resumeId}`);
+  const data = await res.json();
+
+  document.getElementById("finalScore").innerText =
+    `${data.score} / 100`;
+
+  const list = document.getElementById("scoreList");
+  list.innerHTML = "";
+
+  for (let key in data.breakdown) {
+    list.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        <span>${key}</span>
+        <strong>${data.breakdown[key]}</strong>
+      </li>
+    `;
+  }
+
+  new bootstrap.Modal(
+    document.getElementById("resumeScoreModal")
+  ).show();
+});
 
