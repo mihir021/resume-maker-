@@ -119,3 +119,15 @@ function escapeHtml(text) {
     "'": "&#039;"
   }[ch]));
 }
+
+document.getElementById("checkScoreBtn").addEventListener("click", async () => {
+
+  const response = await fetch("/api/resume-score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(window.resumePayload)
+  });
+
+  const data = await response.json();
+  document.getElementById("resumeScore").innerText = data.resume_score;
+});

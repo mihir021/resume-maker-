@@ -15,6 +15,7 @@ from Controller.reset_password_controller import reset_password_bp
 from Controller.resume_controller import resume_bp
 from Controller.feedback_controller import feedback_bp
 
+
 def create_app():
     load_dotenv()
 
