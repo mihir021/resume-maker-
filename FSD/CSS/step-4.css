@@ -246,3 +246,18 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
+.suggestions-box {
+  border: 1px solid #ccc;
+  max-width: 400px;
+  background: #fff;
+}
+
+.suggestion-item {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}

@@ -1,34 +1,53 @@
 <div class="resume modern-clean" style="width:800px;min-height:1100px;">
 
     <aside class="sidebar">
-        <div class="avatar"></div>
 
-        <div class="side-block">
-            <h4>Contact</h4>
+      <div class="avatar"></div>
 
-            <p class="label">Email</p>
-            <p id="previewEmail" class="value">john@example.com</p>
+      <div class="side-block">
+        <h4>Contact</h4>
+        <p class="label">Email</p>
+        <p id="previewEmail" class="value"></p>
+        <p class="label">Phone</p>
+        <p id="previewPhone" class="value"></p>
+      </div>
 
-            <p class="label">Phone</p>
-            <p id="previewPhone" class="value">+91 9876543210</p>
-        </div>
+      <div class="side-block">
+        <h4>Languages</h4>
+        <ul id="pLanguages" class="skills-list"></ul>
+      </div>
 
-        <div class="side-block">
-            <h4>Skills</h4>
-            <ul id="previewSkills" class="skills-list">
-                <li>HTML</li>
-                <li>CSS</li>
-            </ul>
-        </div>
+      <div class="side-block">
+        <h4>Certificates</h4>
+        <ul id="pCerts" class="skills-list"></ul>
+      </div>
+
+      <div class="side-block">
+        <h4>Skills</h4>
+        <ul id="previewSkills" class="skills-list"></ul>
+      </div>
+
     </aside>
 
-    <main class="content">
-        <h1 id="previewName">JOHN DOE</h1>
-        <h2 class="title">Frontend Developer</h2>
 
-        <p id="previewSummary">
-            Passionate developer focused on building clean and user-friendly interfaces.
-        </p>
+    <main class="content">
+
+      <h1 id="previewName"></h1>
+      <h2 id="previewTitle" class="title"></h2>
+
+      <p id="previewSummary"></p>
+
+      <!-- EDUCATION -->
+      <section id="educationSection" class="content-block"></section>
+
+      <!-- EXPERIENCE -->
+      <section id="previewExperienceSection" class="content-block">
+        <h3>EXPERIENCE</h3>
+        <div id="previewExperienceList"></div>
+      </section>
+
     </main>
+
+
 
 </div>

@@ -38,11 +38,19 @@ fetch("/api/resumes", { credentials: "include" })
 
     container.innerHTML = resumes.map(r => `
       <div class="resume-card fade-card" onclick="openResumePreview('${r._id}')">
+
+        <div class="rank-badge">
+          ${r.rank === 1 ? "🏆" : r.rank === 2 ? "🥈" : r.rank === 3 ? "🥉" : "🔹"}
+          Rank ${r.rank}
+        </div>
+
         <h3>${r.title}</h3>
+        <p>Score: <strong>${r.score} / 100</strong></p>
         <p>Template: ${r.template}</p>
-        <p>Created: ${new Date(r.created_at).toLocaleDateString()}</p>
+
       </div>
     `).join("");
+
 
     container.querySelectorAll('.fade-card')
       .forEach(card => observer.observe(card));

@@ -9,8 +9,8 @@ const TEMPLATES = {
     html: "../templates/template-professional-blue/template.html"
   },
   minimalElegant: {
-    css: "../templates/template-minimal/style.css",
-    html: "../templates/template-minimal/template.html"
+    css: "../templates/template-modern-clean/style.css",
+    html: "../templates/template-modern-clean/template.html"
   },
   blueCorporate: {
     css: "../templates/template-blue-corporate/style.css",

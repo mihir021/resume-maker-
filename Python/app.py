@@ -16,7 +16,7 @@ from Controller.resume_controller import resume_bp
 from Controller.feedback_controller import feedback_bp
 from Controller.admin_controller import admin_bp
 from Controller.admin_data_controller import admin_data_bp
-
+from Controller.skill_controller import skill_bp
 
 def create_app():
     load_dotenv()
@@ -95,6 +95,7 @@ def create_app():
     app.register_blueprint(feedback_bp)
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(admin_data_bp, url_prefix="/api/admin")
+    app.register_blueprint(skill_bp, url_prefix="/api/skills")
 
     print("✅ Flask app initialized successfully")
 

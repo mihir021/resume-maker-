@@ -211,6 +211,11 @@ body {
   color: #0d6efd;
 }
 
+.rank-badge {
+  font-weight: bold;
+  color: #0d6efd;
+  margin-bottom: 6px;
+}
 
 
 

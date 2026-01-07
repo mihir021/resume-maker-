@@ -17,6 +17,8 @@ def create_resume():
     )
     return jsonify(result)
 
+from services.resume_ranking_service import rank_resumes
+
 @resume_bp.get("/")
 def get_resumes():
     if "user" not in session:
@@ -25,7 +27,15 @@ def get_resumes():
     resumes = resume_service.get_user_resumes(
         session["user"]["email"]
     )
-    return jsonify(resumes)
+
+    # 🔥 APPLY DS-BASED RANKING
+    ranked_resumes = rank_resumes(
+        resumes,
+        session["user"]["email"]
+    )
+
+    return jsonify(ranked_resumes)
+
 
 @resume_bp.get("/<resume_id>")
 def get_single_resume(resume_id):
