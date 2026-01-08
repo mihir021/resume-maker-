@@ -9,9 +9,17 @@ class UserRepo:
     def find_user_by_email(self, encoded_email):
         return self.collection.find_one({"email": encoded_email})
 
+    def find_all_users(self):
+        return list(self.collection.find())
+
     def create_user(self, data):
+        data.setdefault("created_at", datetime.utcnow())
+        data.setdefault("status", "active")
+        data.setdefault("role", "user")
         return self.collection.insert_one(data)
 
-    def create_google_user(self, user_data):
-        user_data["created_at"] = datetime.utcnow()
-        return db.users.insert_one(user_data)
+    def update_user(self, query, update):
+        return self.collection.update_one(query, update)
+
+    def delete_user(self, query):
+        return self.collection.delete_one(query)

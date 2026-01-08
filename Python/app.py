@@ -16,6 +16,8 @@ from Controller.resume_controller import resume_bp
 from Controller.feedback_controller import feedback_bp
 from Controller.admin_controller import admin_bp
 from Controller.admin_data_controller import admin_data_bp
+from Controller.admin_analytics_controller import admin_analytics_bp
+from Controller.admin_user_action_controller import admin_user_action_bp
 
 def create_app():
     load_dotenv()
@@ -94,6 +96,8 @@ def create_app():
     app.register_blueprint(feedback_bp)
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(admin_data_bp, url_prefix="/api/admin")
+    app.register_blueprint(admin_analytics_bp, url_prefix="/api/admin")
+    app.register_blueprint(admin_user_action_bp, url_prefix="/api/admin")
 
     print("✅ Flask app initialized successfully")
 

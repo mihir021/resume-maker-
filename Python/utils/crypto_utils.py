@@ -23,3 +23,12 @@ class CryptoUtils:
 
         # Remove secret key from both sides
         return decoded_str.replace(SECRET_KEY, "")
+
+    @staticmethod
+    def safe_decode(value: str) -> str:
+        try:
+            decoded = CryptoUtils.decode(value)
+            # if secret key was really inside → valid decode
+            return decoded
+        except Exception:
+            return value
