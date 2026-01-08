@@ -7,23 +7,69 @@ class AdminService:
     def __init__(self):
         self.repo = UserRepo()
 
-    def login_admin(self, email, password):
-        # Admin emails are stored encoded (local users)
-        encoded_email = CryptoUtils.encode(email)
+    # ================= USERS =================
+    def get_all_users(self):
+        users = self.repo.find_all_users()
+        result = []
 
+        for u in users:
+            provider = u.get("provider", "local")
+
+            email = (
+                CryptoUtils.decode(u["email"])
+                if provider == "local"
+                else u["email"]
+            )
+
+            name = (
+                CryptoUtils.decode(u.get("name", ""))
+                if provider == "local"
+                else u.get("name", "")
+            )
+
+            result.append({
+                "_id": str(u["_id"]),
+                "email": email,
+                "name": name,
+                "provider": provider,
+                "status": u.get("status", "active"),
+                "role": u.get("role", "user")
+            })
+
+        return result
+
+    # ================= BLOCK / UNBLOCK / DELETE =================
+    def block_user(self, email):
+        encoded = CryptoUtils.encode(email)
+        return self.repo.update_user(
+            {"email": {"$in": [email, encoded]}},
+            {"$set": {"status": "blocked"}}
+        )
+
+    def unblock_user(self, email):
+        encoded = CryptoUtils.encode(email)
+        return self.repo.update_user(
+            {"email": {"$in": [email, encoded]}},
+            {"$set": {"status": "active"}}
+        )
+
+    def delete_user(self, email):
+        encoded = CryptoUtils.encode(email)
+        return self.repo.delete_user(
+            {"email": {"$in": [email, encoded]}}
+        )
+
+    # ================= ADMIN LOGIN =================
+    def login_admin(self, email, password):
+        encoded_email = CryptoUtils.encode(email)
         user = self.repo.find_user_by_email(encoded_email)
+
         if not user:
             return {"success": False, "message": "Admin not found"}
 
-        # Role check
         if user.get("role") != "admin":
             return {"success": False, "message": "Access denied"}
 
-        # Provider check
-        if user.get("provider") == "google":
-            return {"success": False, "message": "Google admins not allowed"}
-
-        # Password check (hashed)
         if not check_password_hash(user.get("password", ""), password):
             return {"success": False, "message": "Invalid credentials"}
 
@@ -35,3 +81,10 @@ class AdminService:
                 "role": "admin"
             }
         }
+
+    def _email_query(self, email):
+        encoded = CryptoUtils.encode(email)
+        user = self.repo.find_user_by_email(encoded)
+        if user:
+            return {"email": encoded}
+        return {"email": email}

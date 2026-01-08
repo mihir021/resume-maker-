@@ -1,8 +1,10 @@
 # Controller/Google.py
 from flask import Blueprint, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
+from utils.crypto_utils import CryptoUtils
 import os
 import secrets
+
 
 from services.user_service import UserService
 
@@ -43,8 +45,6 @@ def google_login():
         nonce=nonce
     )
 
-
-# ✅ CALLBACK
 @google_bp.route("/callback")
 def google_callback():
     nonce = session.pop("google_nonce", None)
@@ -52,13 +52,19 @@ def google_callback():
     token = oauth.google.authorize_access_token()
     profile = oauth.google.parse_id_token(token, nonce=nonce)
 
-    user = user_service.login_with_google(profile)
+    result = user_service.login_with_google(profile)
+
+    if not result["success"]:
+        session.pop("user", None)
+        return redirect(f"/login?error={result['message']}")
+
+    user = result["user"]
 
     session["user"] = {
         "email": user["email"],
-        "name": user.get("name"),
-        "avatar": user.get("avatar"),
-        "provider": "google"
+        "name": user["name"],
+        "provider": "google",
+        "role": user.get("role", "user")
     }
 
     return redirect("/login-success")

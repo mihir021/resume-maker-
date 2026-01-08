@@ -20,3 +20,14 @@ class ResumeRepo:
             "_id": resume_id,
             "user_email": encoded_email
         })
+
+    def find_all_resumes(self):
+        return list(
+            self.collection.find(
+                {},
+                {
+                    "data": 0  # exclude heavy resume data
+                }
+            )
+        )
+

@@ -27,6 +27,7 @@ class AdminDataService:
                 "email": CryptoUtils.decode(u["email"]) if u.get("provider") == "local" else u.get("email"),
                 "provider": u.get("provider"),
                 "role": u.get("role", "user"),
+                "status": u.get("status", "active"),
                 "created_at": u.get("created_at")
             })
         return rows

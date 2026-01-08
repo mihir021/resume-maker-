@@ -1,17 +1,14 @@
 import streamlit as st
+import requests
 
-def logs_page():
+def logs_page(api_base: str):
     st.title("📜 Activity Logs")
 
-    st.text_area(
-        "Recent Logs",
-        value="""
-[INFO] User logged in
-[INFO] Resume generated
-[WARNING] Slow response detected
-[INFO] Redis cache hit
-        """,
-        height=250
-    )
+    log_type = st.selectbox("Select log type", ["admin", "service"])
 
-    st.info("Live log streaming will be added later.")
+    if st.button("Refresh Logs"):
+        res = requests.get(f"{api_base}/logs?type={log_type}")
+        if res.ok:
+            st.text_area("Recent Logs", "".join(res.json().get("logs", [])), height=350)
+        else:
+            st.error("Failed to load logs")
