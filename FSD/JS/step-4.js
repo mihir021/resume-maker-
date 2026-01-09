@@ -7,13 +7,73 @@ const TEMPLATES = {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: {
+  professionalBlue: { // template 2
     css: "../templates/template-clean-profile/style.css",
     html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: {
+  minimalElegant: { // template 3
     css: "../templates/template-modern-clean/style.css",
     html: "../templates/template-modern-clean/template.html"
+  },
+  blueCorporate: {
+    css: "../templates/template-blue-corporate/style.css",
+    html: "../templates/template-blue-corporate/template.html"
+  },
+  softGreenMinimal: {
+    css: "../templates/template-soft-green-minimal/style.css",
+    html: "../templates/template-soft-green-minimal/template.html"
+  },
+  darkElegant: {
+    css: "../templates/template-dark-elegant/style.css",
+    html: "../templates/template-dark-elegant/template.html"
+  },
+  timelineResume: {
+    css: "../templates/template-timeline-resume/style.css",
+    html: "../templates/template-timeline-resume/template.html"
+  },
+  boldRedAccent: {
+    css: "../templates/template-Bold-red-Accent/style.css",
+    html: "../templates/template-Bold-red-Accent/template.html"
+  },
+  cardBased: {
+    css: "../templates/template-card-based/style.css",
+    html: "../templates/template-card-based/template.html"
+  },
+  glassmorphism: {
+    css: "../templates/template-glassmorphism/style.css",
+    html: "../templates/template-glassmorphism/template.html"
+  },
+  infographic: {
+    css: "../templates/template-infographic/style.css",
+    html: "../templates/template-infographic/template.html"
+  },
+  ultraMinimal: {
+    css: "../templates/template-ultra-minimal-black&white/style.css",
+    html: "../templates/template-ultra-minimal-black&white/template.html"
+  },
+  boxShadow: {
+    css: "../templates/template-box-shadow/style.css",
+    html: "../templates/template-box-shadow/template.html"
+  },
+  classicSerif: {
+    css: "../templates/template-classic-serif/style.css",
+    html: "../templates/template-classic-serif/template.html"
+  },
+  freshGradient: {
+    css: "../templates/template-fresh-gradient/style.css",
+    html: "../templates/template-fresh-gradient/template.html"
+  },
+  splitHeaderModern: {
+    css: "../templates/template-split-header-modern/style.css",
+    html: "../templates/template-split-header-modern/template.html"
+  },
+  techLook: {
+    css: "../templates/template-tech-look/style.css",
+    html: "../templates/template-tech-look/template.html"
+  },
+  ultraClean: {
+    css: "../templates/template-ultra-clean/style.css",
+    html: "../templates/template-ultra-clean/template.html"
   }
 };
 
@@ -129,22 +189,18 @@ function loadSkills() {
 }
 
 function renderSkills(list) {
-  const section = $("skillsSection");
-  if (!section || !list.length) {
-    if (section) section.innerHTML = "";
-    return;
-  }
+  const ul = document.getElementById("previewSkills");
+  if (!ul) return;
 
-  const half = Math.ceil(list.length / 2);
+  ul.innerHTML = "";
 
-  section.innerHTML = `
-    <h3>SKILLS</h3>
-    <div class="skills-grid">
-      <ul>${list.slice(0, half).map(s => `<li>${s}</li>`).join("")}</ul>
-      <ul>${list.slice(half).map(s => `<li>${s}</li>`).join("")}</ul>
-    </div>
-  `;
+  list.forEach(skill => {
+    const li = document.createElement("li");
+    li.textContent = skill;
+    ul.appendChild(li);
+  });
 }
+
 
 /* ================== SKILL INPUT ================== */
 document.querySelectorAll("[data-skill]").forEach(btn => {
@@ -218,3 +274,52 @@ function finishResume() {
       else alert(r.message || "Save failed");
     });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const editor = document.getElementById("skillsEditor");
+  const suggestionBox = document.getElementById("skillSuggestions");
+
+  if (!editor || !suggestionBox) {
+    console.error("Skills editor or suggestion box not found");
+    return;
+  }
+
+  editor.addEventListener("keyup", async () => {
+    const lines = editor.value.split("\n");
+    const current = lines[lines.length - 1].trim();
+
+    if (current.length < 2) {
+      suggestionBox.innerHTML = "";
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/skills/suggest?q=${current}`);
+      const suggestions = await res.json();
+
+      suggestionBox.innerHTML = suggestions
+        .map(skill => `
+          <div class="suggestion-item" data-skill="${skill}">
+            ${skill}
+          </div>
+        `)
+        .join("");
+
+    } catch (err) {
+      console.error("Suggestion error", err);
+    }
+  });
+
+  // Click to add suggestion
+  suggestionBox.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("suggestion-item")) return;
+
+    const skill = e.target.dataset.skill;
+    let lines = editor.value.split("\n");
+    lines[lines.length - 1] = skill;
+    editor.value = lines.join("\n") + "\n";
+
+    suggestionBox.innerHTML = "";
+    editor.focus();
+  });
+});

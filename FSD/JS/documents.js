@@ -38,11 +38,19 @@ fetch("/api/resumes", { credentials: "include" })
 
     container.innerHTML = resumes.map(r => `
       <div class="resume-card fade-card" onclick="openResumePreview('${r._id}')">
+
+        <div class="rank-badge">
+          ${r.rank === 1 ? "🏆" : r.rank === 2 ? "🥈" : r.rank === 3 ? "🥉" : "🔹"}
+          Rank ${r.rank}
+        </div>
+
         <h3>${r.title}</h3>
+        <p>Score: <strong>${r.score} / 100</strong></p>
         <p>Template: ${r.template}</p>
-        <p>Created: ${new Date(r.created_at).toLocaleDateString()}</p>
+
       </div>
     `).join("");
+
 
     container.querySelectorAll('.fade-card')
       .forEach(card => observer.observe(card));
@@ -70,9 +78,15 @@ function openResumePreview(resumeId) {
       overlay.classList.remove("hidden");
       document.body.style.overflow = "hidden";
 
+      // 🔥 THIS IS THE FIX
+      document
+        .querySelector(".resume-score-btn")
+        .setAttribute("data-id", resumeId);
+
       loadFinalTemplate(resume);
     });
 }
+
 
 function closeResumePreview() {
   document.getElementById("resumePreviewOverlay")
@@ -200,4 +214,32 @@ function downloadResumePDF() {
     .save();
 }
 
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("resume-score-btn")) return;
+
+  const resumeId = e.target.dataset.id;
+  console.log("Resume ID:", resumeId); // 🔥 debug
+
+  const res = await fetch(`/api/resumes/score/${resumeId}`);
+  const data = await res.json();
+
+  document.getElementById("finalScore").innerText =
+    `${data.score} / 100`;
+
+  const list = document.getElementById("scoreList");
+  list.innerHTML = "";
+
+  for (let key in data.breakdown) {
+    list.innerHTML += `
+      <li class="list-group-item d-flex justify-content-between">
+        <span>${key}</span>
+        <strong>${data.breakdown[key]}</strong>
+      </li>
+    `;
+  }
+
+  new bootstrap.Modal(
+    document.getElementById("resumeScoreModal")
+  ).show();
+});
 

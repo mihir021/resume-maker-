@@ -42,6 +42,7 @@ async function loadUser() {
   }
 }
 
+// Run auth check on page load
 loadUser();
 
 
@@ -118,4 +119,85 @@ function escapeHtml(text) {
     '"': "&quot;",
     "'": "&#039;"
   }[ch]));
+  fetch("/logout", { credentials: "include" })
+    .finally(() => window.location.href = "loginPage.html");
 }
+
+
+// =======================================
+// FETCH & DISPLAY USER REVIEWS (FIXED)
+// =======================================
+document.addEventListener("DOMContentLoaded", () => {
+  fetchReviews();
+});
+
+async function fetchReviews() {
+  try {
+    const res = await fetch("/api/feedbacks", {
+      credentials: "include"
+    });
+
+    if (!res.ok) return;
+
+    const reviews = await res.json();
+    const container = document.getElementById("reviewsContainer");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    reviews.forEach(review => {
+      const col = document.createElement("div");
+        col.className = "col-md-4 mb-4";
+
+
+      col.innerHTML = `
+  <div class="quote-card">
+    <div class="quote-icon">“</div>
+
+    <p class="quote-text">
+      ${escapeHtml(review.feedback)}
+    </p>
+
+    <div class="quote-divider"></div>
+
+    <div class="quote-name">
+      ${escapeHtml(review.name)}
+    </div>
+  </div>
+`;
+
+
+      container.appendChild(col);
+    });
+
+  } catch (err) {
+    console.error("Failed to load reviews:", err);
+  }
+}
+
+
+// =======================================
+// XSS SAFETY
+// =======================================
+function escapeHtml(text) {
+  return text.replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[ch]));
+}
+
+document.getElementById("checkScoreBtn").addEventListener("click", async () => {
+
+  const response = await fetch("/api/resume-score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(window.resumePayload)
+  });
+
+  const data = await response.json();
+  document.getElementById("resumeScore").innerText = data.resume_score;
+});
