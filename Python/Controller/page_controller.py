@@ -124,6 +124,6 @@ def build_resume_page():
 def navbar_file():
     return send_from_directory(HTML_DIR, "navbar.html")
 
-@page_bp.route("/feedback")
+@page_bp.route("/feedback.html")
 def feedback():
     return send_from_directory(HTML_DIR,"feedback.html")

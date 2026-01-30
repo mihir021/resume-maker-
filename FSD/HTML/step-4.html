@@ -5,68 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Step 4 – Skills</title>
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
   <link rel="stylesheet" href="../CSS/step-4.css">
 </head>
-<body>
+<body class="dark-mode">
 
-<!-- LEFT STEP BAR -->
-<aside class="step-sidebar">
-  <div class="step-number">4</div>
-  <ul class="steps">
-    <li><span>1</span></li>
-    <li><span>2</span></li>
-    <li><span>3</span></li>
-    <li class="active"><span>4</span></li>
-  </ul>
-</aside>
+<div class="glow-bg"></div>
 
-<!-- PAGE -->
-<div class="page">
+<div class="app-layout">
 
-  <header class="top-bar">
-    <h1>Skills</h1>
-    <span>Step 4 of 4</span>
-  </header>
+  <aside class="step-sidebar">
+    <div class="step-logo">4</div>
 
-  <main class="wrapper">
+    <ul class="steps">
+      <li><span>1</span></li>
+      <li><span>2</span></li>
+      <li><span>3</span></li>
+      <li class="active"><span>4</span></li>
+    </ul>
 
-    <!-- FORM -->
-    <section class="form-card">
+    <a href="step-3.html" class="back-link"><i class="bi bi-arrow-left"></i></a>
+  </aside>
 
-      <h2>Add Skills</h2>
-      <p class="hint">Click to add or type your own skills.</p>
+  <div class="main-content">
 
-      <div class="skills-list">
-        <button data-skill="Customer Service">+ Customer Service</button>
-        <button data-skill="Team Collaboration">+ Team Collaboration</button>
-        <button data-skill="Time Management">+ Time Management</button>
-        <button data-skill="Problem Solving">+ Problem Solving</button>
-        <button data-skill="Effective Communication">+ Effective Communication</button>
-        <button data-skill="Project Management">+ Project Management</button>
-      </div>
+    <header class="top-bar">
+      <h4 class="text-white m-0 fw-bold">Skills <span class="text-green">.</span></h4>
+      <span class="step-badge">Step 4 of 4</span>
+    </header>
 
-      <label>Your Skills (one per line)</label>
-      <textarea
-        id="skillsEditor"
-        rows="6"
-        placeholder="Java
-Spring Boot
-REST APIs
-MySQL"></textarea>
-      <div id="skillSuggestions" class="suggestions-box"></div>
-      <div class="nav-buttons">
-        <button class="ghost-btn" onclick="history.back()">← Back</button>
-        <button class="primary-btn" onclick="finishResume()">Finish</button>
-      </div>
+    <div class="workspace">
 
-    </section>
+      <section class="form-pane">
+        <div class="glass-card">
+          <h2 class="form-title">Add Skills</h2>
+          <p class="text-light-gray small mb-4">Click to add suggestions or type your own skills below.</p>
 
-    <!-- PREVIEW -->
-    <section class="preview-wrap">
-      <div id="resumePreview"></div>
-    </section>
+          <div class="skills-list">
+            <button class="skill-btn" data-skill="Customer Service"><i class="bi bi-plus"></i> Customer Service</button>
+            <button class="skill-btn" data-skill="Team Collaboration"><i class="bi bi-plus"></i> Team Collaboration</button>
+            <button class="skill-btn" data-skill="Time Management"><i class="bi bi-plus"></i> Time Management</button>
+            <button class="skill-btn" data-skill="Problem Solving"><i class="bi bi-plus"></i> Problem Solving</button>
+            <button class="skill-btn" data-skill="Effective Communication"><i class="bi bi-plus"></i> Effective Communication</button>
+            <button class="skill-btn" data-skill="Project Management"><i class="bi bi-plus"></i> Project Management</button>
+          </div>
 
-  </main>
+          <label class="fw-bold small text-green mt-3 mb-2">YOUR SKILLS (ONE PER LINE)</label>
+          <textarea
+            id="skillsEditor"
+            class="dark-input"
+            rows="6"
+            placeholder="Java&#10;Spring Boot&#10;REST APIs&#10;MySQL"></textarea>
+
+          <div id="skillSuggestions" class="suggestions-box"></div>
+
+          <div class="d-flex justify-content-between pt-3 border-top border-secondary mt-4">
+            <button class="ghost-btn text-white" onclick="history.back()">
+                <i class="bi bi-arrow-left me-2"></i> Back
+            </button>
+            <button class="primary-btn px-4" onclick="finishResume()">
+                Finish <i class="bi bi-check-lg ms-2"></i>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="preview-pane">
+        <div class="preview-header">
+            <span class="text-dark small fw-bold"><i class="bi bi-eye-fill me-2"></i>Live Preview</span>
+        </div>
+
+        <div id="resumePreview" class="resume-content">
+            </div>
+      </section>
+
+    </div>
+  </div>
 </div>
 
 <script src="../JS/step-4.js"></script>

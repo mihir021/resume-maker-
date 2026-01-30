@@ -5,56 +5,56 @@
   <title>Feedback | Resume Builder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Bootstrap + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="../CSS/navbar.css">
   <link rel="stylesheet" href="../CSS/feedback.css">
 
   <script src="../JS/navbar-loader.js"></script>
 </head>
-<body>
+<body class="dark-mode">
 
-<div id="navbar-container"></div>
+    <div class="glow-bg"></div>
 
-<section class="feedback-hero">
-  <h1>Your Feedback Matters 💙</h1>
-  <p>Help us improve ResumeMaker</p>
-</section>
+    <div id="navbar-container"></div>
 
-<section class="feedback-wrapper">
-  <form id="feedbackForm" class="feedback-card">
+    <section class="feedback-hero">
+      <h1 class="display-4 fw-bold text-white">Your Feedback <span class="text-green">Matters 💙</span></h1>
+      <p class="lead text-light-gray">Help us improve ResumeMaker</p>
+    </section>
 
-    <label>Your Name</label>
-    <input type="text" id="fbName" placeholder="Rathod Mihir" required>
+    <section class="feedback-wrapper">
+      <form id="feedbackForm" class="feedback-card shadow-glow">
 
-    <label>Email</label>
-    <input type="email" id="fbEmail" placeholder="mihir@gmail.com" required>
+        <label class="fw-bold small text-green">YOUR NAME</label>
+        <input type="text" id="fbName" class="form-control mb-3 dark-input" placeholder="Rathod Mihir" required>
 
-    <label>Rate Your Experience</label>
-    <select id="rating" required>
-      <option value="">Select</option>
-      <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-      <option value="4">⭐⭐⭐⭐ Very Good</option>
-      <option value="3">⭐⭐⭐ Good</option>
-      <option value="2">⭐⭐ Fair</option>
-      <option value="1">⭐ Poor</option>
-    </select>
+        <label class="fw-bold small text-green">EMAIL</label>
+        <input type="email" id="fbEmail" class="form-control mb-3 dark-input" placeholder="mihir@gmail.com" required>
 
-    <label>Your Feedback</label>
-    <textarea id="fbMessage" rows="4" placeholder="Write your feedback..." required></textarea>
+        <label class="fw-bold small text-green">RATE YOUR EXPERIENCE</label>
+        <select id="rating" class="form-select mb-3 dark-input" required>
+          <option value="" selected disabled>Select Rating</option>
+          <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+          <option value="4">⭐⭐⭐⭐ Very Good</option>
+          <option value="3">⭐⭐⭐ Good</option>
+          <option value="2">⭐⭐ Fair</option>
+          <option value="1">⭐ Poor</option>
+        </select>
 
-    <button type="submit" class="btn-primary w-100">
-      Submit Feedback
-    </button>
+        <label class="fw-bold small text-green">YOUR FEEDBACK</label>
+        <textarea id="fbMessage" class="form-control mb-4 dark-input" rows="4" placeholder="Write your feedback..." required></textarea>
 
-  </form>
-</section>
+        <button type="submit" class="primary-btn w-100 shadow-glow">
+          Submit Feedback
+        </button>
 
-<script src="../JS/feedback.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      </form>
+    </section>
+
+    <script src="../JS/feedback.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

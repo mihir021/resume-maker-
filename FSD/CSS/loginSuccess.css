@@ -1,0 +1,75 @@
+/* GLOBAL SETTINGS */
+:root {
+    --neon-green: #00ff66;
+    --dark-green: #00b347;
+    --bg-dark: #050a05;
+    --text-white: #ffffff;
+    --text-gray: #b0b0b0;
+}
+
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    /* Deep Dark Gradient Background */
+    background: radial-gradient(circle at center, #0a1f0a 0%, #000000 100%);
+    color: var(--text-white);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background Atmospheric Glow */
+.glow-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 255, 102, 0.1) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Helper Classes */
+.text-green { color: var(--neon-green) !important; text-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
+.text-light-gray { color: var(--text-gray) !important; }
+.shadow-glow { box-shadow: 0 0 30px rgba(0, 255, 102, 0.15); }
+
+/* SUCCESS CARD */
+.success-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 50px 30px;
+    background: rgba(20, 20, 20, 0.85); /* Glass-like dark bg */
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 255, 102, 0.2);
+    border-radius: 25px;
+
+    opacity: 0;
+    transform: translateY(20px);
+    animation: softUp 0.8s ease forwards;
+}
+
+@keyframes softUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Icon Animation */
+.scale-in {
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+@keyframes popIn {
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Spinner Customization */
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.2em;
+}

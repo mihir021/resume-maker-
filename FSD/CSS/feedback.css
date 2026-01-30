@@ -1,41 +1,133 @@
+/* GLOBAL SETTINGS */
+:root {
+    --neon-green: #00ff66;
+    --dark-green: #00b347;
+    --bg-dark: #050a05;
+    --text-white: #ffffff;
+    --text-gray: #b0b0b0;
+    --glass-bg: rgba(20, 20, 20, 0.85);
+}
+
+body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    /* Deep Dark Gradient Background */
+    background: radial-gradient(circle at top right, #0a1f0a 0%, #000000 100%);
+    color: var(--text-white);
+    overflow-x: hidden;
+}
+
+/* Background Glow */
+.glow-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: radial-gradient(circle at 50% 20%, rgba(0, 255, 102, 0.1) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Helper Classes */
+.text-green { color: var(--neon-green) !important; text-shadow: 0 0 10px rgba(0,255,102,0.3); }
+.text-light-gray { color: var(--text-gray) !important; }
+.shadow-glow { box-shadow: 0 0 25px rgba(0, 255, 102, 0.15); }
+
+/* HERO SECTION */
 .feedback-hero {
-  padding: 120px 20px 40px;
-  text-align: center;
-  background: linear-gradient(135deg, #4f7cff, #6aa9ff);
-  color: white;
+    padding: 120px 20px 40px;
+    text-align: center;
+    background: transparent;
+}
+.feedback-hero h1 span {
+    text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
 }
 
+/* FEEDBACK WRAPPER */
 .feedback-wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    padding: 20px 20px 60px;
 }
 
+/* FEEDBACK CARD (Glassmorphism) */
 .feedback-card {
-  background: white;
-  padding: 30px;
-  width: 100%;
-  max-width: 480px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    background: var(--glass-bg);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 102, 0.2);
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s;
 }
 
+.feedback-card:hover {
+    border-color: var(--neon-green);
+}
+
+/* LABELS */
 .feedback-card label {
-  font-weight: 600;
-  margin-top: 15px;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: block;
+    letter-spacing: 0.5px;
 }
 
-.feedback-card input,
-.feedback-card select,
-.feedback-card textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  margin-top: 6px;
+/* DARK INPUTS */
+.dark-input {
+    background: #151515 !important;
+    border: 1px solid #333;
+    color: #fff !important;
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: 0.3s;
 }
 
-.feedback-card button {
-  margin-top: 20px;
-  border-radius: 30px;
+.dark-input:focus {
+    background: #050505 !important;
+    border-color: var(--neon-green);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+}
+
+.dark-input::placeholder {
+    color: #555;
+}
+
+/* SELECT DROPDOWN FIX */
+.form-select.dark-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300ff66' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+/* Force Options to be Dark */
+select option {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+}
+
+/* BUTTON */
+.primary-btn {
+    margin-top: 20px;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--dark-green), var(--neon-green));
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(0, 255, 102, 0.5);
+    color: #000;
 }

@@ -1,10 +1,10 @@
 document.getElementById("feedbackForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const name = fbName.value.trim();
-  const email = fbEmail.value.trim();
+  const name = document.getElementById("fbName").value.trim();
+  const email = document.getElementById("fbEmail").value.trim();
   const rating = document.getElementById("rating").value;
-  const message = fbMessage.value.trim();
+  const message = document.getElementById("fbMessage").value.trim();
 
   if (!name || !email || !rating || !message) {
     alert("Please fill all fields");
