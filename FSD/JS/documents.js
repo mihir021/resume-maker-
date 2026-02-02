@@ -243,3 +243,38 @@ document.addEventListener("click", async (e) => {
   ).show();
 });
 
+fetch("/api/resumes/skills/frequency")
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("topSkills");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const entries = Object.entries(data)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6); // show top 6 skills
+
+    if (entries.length === 0) {
+      container.innerHTML = "<p class='text-muted'>No skills data available</p>";
+      return;
+    }
+
+    const maxCount = entries[0][1];
+
+    entries.forEach(([skill, count]) => {
+      const percent = Math.round((count / maxCount) * 100);
+
+      container.innerHTML += `
+        <div class="skill-row">
+          <span class="skill-name">${skill}</span>
+
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:${percent}%"></div>
+          </div>
+
+          <span class="skill-count">${count}</span>
+        </div>
+      `;
+    });
+  });

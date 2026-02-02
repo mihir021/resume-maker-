@@ -18,3 +18,8 @@
   content: "➤";
   color: #c62828;
 }
+
+p:empty,
+ul:empty {
+  display: none;
+}

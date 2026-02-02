@@ -21,3 +21,7 @@
   border-bottom: 1px solid #5d4037;
   padding-bottom: 4px;
 }
+p:empty,
+ul:empty {
+  display: none;
+}

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from services.resume_service import ResumeService
 from services.resume_score_service import calculate_resume_score
+from services.navigation_stack_service import open_view, go_back
 
 resume_bp = Blueprint("resume", __name__)
 resume_service = ResumeService()
@@ -33,7 +34,7 @@ def get_resumes():
         resumes,
         session["user"]["email"]
     )
-
+    open_view("documents")
     return jsonify(ranked_resumes)
 
 
@@ -47,7 +48,10 @@ def get_single_resume(resume_id):
         resume_id
     )
 
+    open_view("preview")  # 🔥 STACK USED HERE
+
     return jsonify(resume)
+
 
 
 @resume_bp.get("/score/<resume_id>")
@@ -65,7 +69,34 @@ def get_resume_score(resume_id):
 
     score, breakdown = calculate_resume_score(resume)
 
+    open_view("score")  # 🔥 STACK USED HERE
+
     return jsonify({
         "score": score,
         "breakdown": breakdown
     })
+
+
+from services.skill_frequency_service import get_skill_frequency
+
+@resume_bp.get("/skills/frequency")
+def skill_frequency():
+    if "user" not in session:
+        return jsonify({}), 401
+
+    freq = get_skill_frequency(session["user"]["email"])
+    return jsonify(freq)
+
+from services.navigation_stack_service import open_view, go_back
+
+@resume_bp.post("/navigation/open")
+def open_nav():
+    view = request.json.get("view")
+    open_view(view)
+    return jsonify({"status": "pushed", "view": view})
+
+@resume_bp.post("/navigation/back")
+def back_nav():
+    view = go_back()
+    return jsonify({"status": "popped", "current": view})
+

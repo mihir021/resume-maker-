@@ -96,3 +96,7 @@
 .main-section ul {
     padding-left: 20px;
 }
+ul:empty,
+p:empty {
+  display: none;
+}
