@@ -30,9 +30,7 @@
 
       <section class="side-section">
         <h3>LANGUAGES</h3>
-        <ul id="pLanguages">
-
-        </ul>
+        <ul id="pLanguages"></ul>
       </section>
 
     </aside>
@@ -54,20 +52,35 @@
         </ul>
       </section>
 
-      <section class="main-section">
-        <h3>EDUCATION</h3>
-        <ul>
-          <li>
-            <strong>B.Tech in Computer Science</strong><br>
-            XYZ University | 2024<br>
-            CGPA: 8.5 / 10
-          </li>
-        </ul>
-      </section>
+      <section class="main-section" id="educationSection">
+          <h3>EDUCATION</h3>
+
+          <ul>
+            <li>
+              <strong id="previewDegree"></strong><br>
+              <span id="previewField"></span><br>
+              <span id="previewEduInstitute"></span>,
+              <span id="previewEduLocation"></span><br>
+              <span id="previewGraduation"></span>
+            </li>
+          </ul>
+
+          <ul id="previewEduDetails"></ul>
+        </section>
+
 
       <section class="main-section" id="previewExperienceSection" style="display:none">
         <h3>WORK EXPERIENCE</h3>
-        <div id="previewExperienceList"></div>
+        <div id="previewExperienceList">
+          <div class="exp-item">
+            <strong id="previewExpTitle"></strong><br>
+            <span id="previewExpCompany"></span><br>
+            <span id="previewExpLocation"></span><br>
+            <span id="previewExpDuration"></span>
+            <ul id="previewExpDesc"></ul>
+          </div>
+        </div>
+
       </section>
 
     </main>

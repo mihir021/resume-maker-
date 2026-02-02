@@ -101,3 +101,8 @@
   padding-left: 18px;
   margin: 0;
 }
+p:empty,
+ul:empty,
+div:empty {
+  display: none;
+}
