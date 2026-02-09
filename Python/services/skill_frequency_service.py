@@ -10,7 +10,6 @@ def get_skill_frequency(user_email):
 
     for resume_meta in resumes:
         resume = resume_service.get_resume_by_id(
-            user_email,
             resume_meta["_id"]
         )
 

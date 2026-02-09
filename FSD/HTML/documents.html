@@ -98,12 +98,98 @@
       <!-- CONTENT -->
       <section class="col-lg-9">
 
-        <div class="pageHeader">
-          <h2>Resumes</h2>
+        <div class="pageHeader d-flex gap-2 align-items-center">
+          <h2 class="me-auto">Resumes</h2>
+
+          <button id="aiCreateBtn" class="btn btn-warning">
+            🤖 Create with AI
+          </button>
+
           <a href="choose-template.html" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i> Create New
           </a>
         </div>
+        <!-- AI Resume Modal -->
+        <div class="modal fade" id="aiResumeModal" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content p-4">
+
+              <h4 class="mb-3">Create Resume with AI 🤖</h4>
+              <h5>Basic Details</h5>
+
+                <input id="aiName" placeholder="Full Name" class="form-control mb-2">
+                <input id="aiTitle" placeholder="Job Title" class="form-control mb-2">
+
+                <input id="aiEmail" placeholder="Email" class="form-control mb-2">
+                <input id="aiPhone" placeholder="Phone" class="form-control mb-2">
+                <input id="aiLocation" placeholder="Location" class="form-control mb-2">
+
+                <textarea id="aiSummary" class="form-control mb-3" placeholder="Professional Summary (optional)"> </textarea>
+              <h5>Additional Details</h5>
+
+              <textarea id="aiLanguages"
+                        class="form-control mb-2"
+                        placeholder="Languages (one per line)
+              English
+              Hindi
+              Gujarati"></textarea>
+
+              <textarea id="aiCertificates"
+                        class="form-control mb-3"
+                        placeholder="Certificates (one per line)
+              AWS Cloud Practitioner
+              Java Programming Certificate"></textarea>
+
+              <div class="mb-3">
+                <label class="form-label">Job Description (optional)</label>
+                <textarea id="aiJD" class="form-control" rows="4"
+                          placeholder="Paste job description here (optional)"></textarea>
+              </div>
+              <h5>Education</h5>
+
+              <input id="aiSchool" placeholder="University / School" class="form-control mb-2">
+              <input id="aiDegree" placeholder="Degree" class="form-control mb-2">
+              <input id="aiField" placeholder="Field of Study" class="form-control mb-2">
+              <input id="aiGradYear" placeholder="Graduation Year" class="form-control mb-3">
+
+              <div class="mb-3">
+                <label class="form-label">Experience Level</label>
+                <select id="aiExperience" class="form-select">
+                  <option value="fresher">Fresher</option>
+                  <option value="experienced">Experienced</option>
+                </select>
+              </div>
+
+              <!-- EXPERIENCE SECTION (AI) -->
+              <div id="aiExperienceSection" class="mb-3 d-none">
+
+                <h5>Work Experience</h5>
+
+                <div id="experienceContainer"></div>
+
+                <button class="btn btn-outline-success btn-sm mt-2"
+                        onclick="addExperienceField()">
+                  + Add Experience
+                </button>
+              </div>
+
+
+              <div class="mb-3 d-none" id="skillsField">
+                <label class="form-label">Skills</label>
+                <input type="text" id="aiSkills" class="form-control"
+                       placeholder="HTML, CSS, JavaScript, Python">
+              </div>
+
+              <div class="text-end">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-warning" onclick="submitAIResume()">
+                  Generate Resume
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         <div class="wrap-resume" id="resumeList">
           <!-- injected by JS -->
@@ -166,9 +252,32 @@
   </div>
 </footer>
 
-<!-- JS -->
-<script src="../JS/documents.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../JS/documents.js"></script>
 
 </body>
 </html>
+<template id="experienceTemplate">
+  <div class="experience-block border p-3 mt-3">
+    <input class="form-control mb-2 exp-title" placeholder="Job Title">
+    <input class="form-control mb-2 exp-employer" placeholder="Employer">
+    <div class="row">
+      <div class="col">
+        <input class="form-control mb-2 exp-city" placeholder="City">
+      </div>
+      <div class="col">
+        <input class="form-control mb-2 exp-country" placeholder="Country">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <input type="month" class="form-control mb-2 exp-start">
+      </div>
+      <div class="col">
+        <input type="month" class="form-control mb-2 exp-end">
+      </div>
+    </div>
+    <textarea class="form-control exp-desc"
+              placeholder="Job Description"></textarea>
+  </div>
+</template>

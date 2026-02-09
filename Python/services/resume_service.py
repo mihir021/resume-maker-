@@ -52,8 +52,14 @@ class ResumeService:
 
         return resumes
 
-    def get_resume_by_id(self, email, resume_id):
-        encoded = CryptoUtils.encode(email)
-        resume = self.repo.find_one(encoded, ObjectId(resume_id))
+    def get_resume_by_id(self, resume_id):
+        resume = self.repo.find_by_id(ObjectId(resume_id))
+        if not resume:
+            return None
+
         resume["_id"] = str(resume["_id"])
         return resume
+
+    def delete_resume(self, email, resume_id):
+        encoded_email = CryptoUtils.encode(email)
+        return self.repo.delete_by_id(encoded_email, resume_id)

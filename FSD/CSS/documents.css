@@ -283,7 +283,32 @@ body {
   font-weight: 600;
   text-align: right;
 }
+.analytics-card {
+  position: sticky;
+  top: 80px;
+}
 
+.resume-card {
+  position: relative;
+}
 
+.delete-resume-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: rgba(255, 0, 0, 0.85);
+  color: white;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.delete-resume-btn:hover {
+  background: red;
+}
 
 
