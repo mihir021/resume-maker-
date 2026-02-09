@@ -28,7 +28,6 @@ def get_resumes():
     resumes = resume_service.get_user_resumes(
         session["user"]["email"]
     )
-
     # 🔥 APPLY DS-BASED RANKING
     ranked_resumes = rank_resumes(
         resumes,
@@ -39,19 +38,22 @@ def get_resumes():
 
 
 @resume_bp.get("/<resume_id>")
+@resume_bp.get("/<resume_id>")
 def get_single_resume(resume_id):
     if "user" not in session:
         return jsonify({"success": False}), 401
 
-    resume = resume_service.get_resume_by_id(
-        session["user"]["email"],
-        resume_id
-    )
+    resume = resume_service.get_resume_by_id(resume_id)
 
-    open_view("preview")  # 🔥 STACK USED HERE
+    if not resume:
+        return jsonify({"error": "Resume not found"}), 404
+
+    open_view("preview")
+
+    # ✅ DO NOT TOUCH resume["data"]
+    # ✅ KEEP step-1 / step-2 / step-3 / step-4 AS IS
 
     return jsonify(resume)
-
 
 
 @resume_bp.get("/score/<resume_id>")
@@ -59,10 +61,10 @@ def get_resume_score(resume_id):
     if "user" not in session:
         return jsonify({"success": False}), 401
 
-    resume = resume_service.get_resume_by_id(
-        session["user"]["email"],
-        resume_id
-    )
+    resume = resume_service.get_resume_by_id(resume_id)
+
+    if not resume:
+        return jsonify({"error": "Resume not found"}), 404
 
     if not resume:
         return jsonify({"error": "Resume not found"}), 404
@@ -99,4 +101,24 @@ def open_nav():
 def back_nav():
     view = go_back()
     return jsonify({"status": "popped", "current": view})
+
+@resume_bp.delete("/<resume_id>")
+def delete_resume(resume_id):
+    if "user" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    email = session["user"]["email"]
+
+    success = resume_service.delete_resume(email, resume_id)
+
+    if not success:
+        return jsonify({
+            "success": False,
+            "message": "Resume not found or not allowed"
+        }), 404
+
+    return jsonify({
+        "success": True,
+        "message": "Resume deleted successfully"
+    })
 
