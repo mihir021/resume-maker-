@@ -1,24 +1,107 @@
-.resume.card-layout {
-  width: 820px;
-  background: #f4f6f8;
-  font-family: "Poppins", sans-serif;
+.resume.card-elegant {
+  background: #f5f6f8;
+  font-family: "Inter", "Poppins", "Segoe UI", sans-serif;
+  color: #1f1f1f;
 }
 
-.card-layout .top-header {
-  background: #ff7043;
-  color: white;
+/* HEADER */
+.card-elegant .top-header {
+  background: #ffffff;
+  padding: 36px;
+  border-bottom: 3px solid #ff7043;
+}
+
+.card-elegant .top-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.card-elegant .top-header p {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #555;
+}
+
+/* LAYOUT */
+.card-elegant .body {
+  display: flex;
   padding: 30px;
+  gap: 24px;
 }
 
-.card-layout .main-section,
-.card-layout .side-section {
-  background: white;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 12px;
-  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+/* LEFT PANEL */
+.card-elegant .left-panel {
+  width: 30%;
 }
+
+.card-elegant .photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #ff7043;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 12px;
+}
+
+/* CARD SECTIONS */
+.card-elegant .side-section,
+.card-elegant .main-section {
+  background: #ffffff;
+  padding: 18px 20px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  border: 1px solid #e4e6eb;
+}
+
+/* TITLES */
+.card-elegant h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #ff7043;
+}
+
+/* TEXT */
+.card-elegant p,
+.card-elegant li {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+/* LISTS */
+.card-elegant ul {
+  padding-left: 18px;
+}
+
+.card-elegant ul li::before {
+  content: "";
+  color: #ff7043;
+  margin-right: 6px;
+}
+
+/* EDU / EXP */
+.edu-item,
+.exp-item {
+  margin-bottom: 14px;
+}
+
+.edu-item p:first-child,
+.exp-item p:first-child {
+  font-weight: 600;
+}
+
+/* CLEAN EMPTY */
 p:empty,
 ul:empty {
   display: none;
+}
+.hide-section {
+  display: none !important;
 }

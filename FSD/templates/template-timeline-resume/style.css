@@ -1,37 +1,128 @@
-.resume.timeline-resume {
-  width: 820px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.2);
-  font-family: "Segoe UI", sans-serif;
+.resume.timeline-pro {
+  background: #ffffff;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: #1f1f1f;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.15);
 }
 
-.timeline-resume .top-header {
+/* HEADER */
+.timeline-pro .top-header {
   background: #263238;
-  color: white;
-  padding: 30px;
+  color: #ffffff;
+  padding: 32px 36px;
 }
 
-.timeline-resume .left-panel {
-  background: #eceff1;
+.timeline-pro .top-header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.timeline-pro .top-header p {
+  margin-top: 6px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* LAYOUT */
+.timeline-pro .body {
+  display: flex;
+}
+
+/* LEFT PANEL */
+.timeline-pro .left-panel {
   width: 28%;
+  background: #eceff1;
+  padding: 28px 20px;
 }
 
-.timeline-resume .timeline {
+.timeline-pro .photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #263238;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #666;
+}
+
+.timeline-pro .side-section {
+  margin-bottom: 26px;
+}
+
+.timeline-pro .side-section h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  color: #263238;
+}
+
+.timeline-pro .side-section p,
+.timeline-pro .side-section li {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* RIGHT PANEL */
+.timeline-pro .right-panel {
+  width: 72%;
+  padding: 34px;
+}
+
+.timeline-pro .main-section {
+  margin-bottom: 34px;
+}
+
+.timeline-pro .main-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  color: #263238;
+}
+
+/* TIMELINE */
+.timeline-pro .timeline {
   border-left: 3px solid #263238;
-  padding-left: 20px;
+  padding-left: 26px;
 }
 
-.timeline-resume .timeline div {
-  margin-bottom: 20px;
+.timeline-pro .exp-item,
+.timeline-pro .edu-item {
   position: relative;
+  margin-bottom: 22px;
 }
 
-.timeline-resume .timeline div::before {
+.timeline-pro .exp-item::before,
+.timeline-pro .edu-item::before {
   content: "";
   position: absolute;
-  left: -28px;
-  top: 5px;
+  left: -35px;
+  top: 6px;
   width: 12px;
   height: 12px;
   background: #263238;
   border-radius: 50%;
+}
+
+/* CONTENT TEXT */
+.timeline-pro .main-section p,
+.timeline-pro .main-section li {
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* LISTS */
+.timeline-pro ul {
+  padding-left: 18px;
+}
+
+/* CLEAN EMPTY */
+p:empty,
+ul:empty {
+  display: none;
 }

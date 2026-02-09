@@ -7,11 +7,11 @@ const TEMPLATES = {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: { // template 2
+  professionalBlue: {
     css: "../templates/template-clean-profile/style.css",
     html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: { // template 3
+  minimalElegant: {
     css: "../templates/template-modern-clean/style.css",
     html: "../templates/template-modern-clean/template.html"
   },
@@ -77,12 +77,11 @@ const TEMPLATES = {
   }
 };
 
-
 /* ================== SELECTED TEMPLATE ================== */
 const selectedTemplate =
   localStorage.getItem("selectedTemplate") || "academicYellow";
 
-/* ================== LOAD TEMPLATE CSS (ONCE) ================== */
+/* ================== LOAD TEMPLATE CSS ================== */
 (function loadTemplateCSS() {
   if (document.getElementById("template-style")) return;
 
@@ -137,14 +136,14 @@ function formatMonth(val) {
 }
 
 /* ================== ADD EXPERIENCE ================== */
-$("addExperienceBtn").addEventListener("click", () => {
-  const jobTitle = $("jobTitle").value.trim();
-  const employer = $("employer").value.trim();
-  const city = $("city").value.trim();
-  const country = $("country").value.trim();
-  const start = $("startDate").value;
-  const end = $("endDate").value;
-  const desc = $("description").value.trim();
+$("addExperienceBtn")?.addEventListener("click", () => {
+  const jobTitle = $("jobTitle")?.value.trim();
+  const employer = $("employer")?.value.trim();
+  const city = $("city")?.value.trim();
+  const country = $("country")?.value.trim();
+  const start = $("startDate")?.value;
+  const end = $("endDate")?.value;
+  const desc = $("description")?.value.trim();
 
   if (!jobTitle || !employer || !start || !end || !desc) {
     alert("Please fill all experience fields.");
@@ -211,13 +210,15 @@ function clearForm() {
     "startDate",
     "endDate",
     "description"
-  ].forEach(id => $(id).value = "");
+  ].forEach(id => {
+    if ($(id)) $(id).value = "";
+  });
 }
 
 /* ================== HELPERS ================== */
 function setText(id, val) {
   const el = $(id);
-  if (el && val) el.textContent = val;
+  if (el) el.textContent = val || "";
 }
 
 function fillList(id, text) {

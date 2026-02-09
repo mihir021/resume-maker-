@@ -1,24 +1,121 @@
-.resume.red-impact {
-  width: 800px;
-  border-top: 14px solid #c62828;
-  font-family: "Montserrat", sans-serif;
+.resume.red-elegant {
+  background: #ffffff;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: #1f1f1f;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
 }
 
-.red-impact .top-header {
-  background: #b71c1c;
-  color: white;
+/* HEADER */
+.red-elegant .top-header {
+  padding: 38px 36px 28px;
+  border-bottom: 3px solid #c62828;
 }
 
-.red-impact h3 {
-  color: #b71c1c;
-  text-transform: uppercase;
+.red-elegant .top-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.red-impact ul li::before {
-  content: "➤";
+.red-elegant .top-header p {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #555;
+}
+
+/* LAYOUT */
+.red-elegant .body {
+  display: flex;
+  padding: 30px 34px;
+  gap: 30px;
+}
+
+/* LEFT PANEL */
+.red-elegant .left-panel {
+  width: 30%;
+  font-size: 13px;
+}
+
+.red-elegant .photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #c62828;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 12px;
+}
+
+.red-elegant .side-section {
+  margin-bottom: 26px;
+}
+
+.red-elegant .side-section h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
   color: #c62828;
+  margin-bottom: 8px;
 }
 
+.red-elegant .side-section p,
+.red-elegant .side-section li {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+/* MAIN CONTENT */
+.red-elegant .right-panel {
+  width: 70%;
+}
+
+.red-elegant .main-section {
+  margin-bottom: 30px;
+}
+
+.red-elegant .main-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #c62828;
+  margin-bottom: 10px;
+}
+
+.red-elegant .main-section p,
+.red-elegant .main-section li {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+/* LISTS */
+.red-elegant ul {
+  padding-left: 18px;
+}
+
+.red-elegant ul li::before {
+  content: "";
+  color: #c62828;
+  margin-right: 6px;
+}
+
+/* EDU / EXP ITEMS */
+.edu-item,
+.exp-item {
+  margin-bottom: 16px;
+}
+
+.edu-item p:first-child,
+.exp-item p:first-child {
+  font-weight: 600;
+}
+
+/* CLEAN EMPTY */
 p:empty,
 ul:empty {
   display: none;

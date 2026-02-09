@@ -1,29 +1,126 @@
-.resume.dark-elegant {
-  background: #121212;
-  color: #e0e0e0;
-  box-shadow: 0 25px 65px rgba(0,0,0,0.5);
-  font-family: "Montserrat", sans-serif;
+.resume.dark-modern-pro {
+  background: #111111;
+  font-family: "Inter", "Montserrat", "Segoe UI", sans-serif;
+  box-shadow: 0 22px 60px rgba(0,0,0,0.5);
 }
 
-.dark-elegant .top-header {
-  background: linear-gradient(135deg, #000, #333);
+/* HEADER */
+.dark-modern-pro .top-header {
+  background: linear-gradient(135deg, #000000, #1c1c1c);
+  padding: 36px;
+  color: #ffffff;
 }
 
-.dark-elegant .left-panel {
-  background: #1b1b1b;
-}
-
-.dark-elegant .right-panel {
-  background: #ffffff;
-  color: #222;
-}
-
-.dark-elegant h3 {
-  letter-spacing: 2px;
+.dark-modern-pro .top-header h1 {
+  margin: 0;
+  font-size: 32px;
   font-weight: 700;
+  letter-spacing: 0.4px;
 }
 
-.dark-elegant ul li::before {
-  content: "◆";
+.dark-modern-pro .top-header p {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #cccccc;
+}
+
+/* BODY */
+.dark-modern-pro .body {
+  display: flex;
+}
+
+/* LEFT PANEL */
+.dark-modern-pro .left-panel {
+  width: 30%;
+  background: #181818;
+  padding: 28px 22px;
+  color: #e0e0e0;
+}
+
+.dark-modern-pro .photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #ffca28;
+  margin-bottom: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.dark-modern-pro .side-section {
+  margin-bottom: 26px;
+}
+
+.dark-modern-pro .side-section h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
   color: #ffca28;
+  margin-bottom: 8px;
+}
+
+.dark-modern-pro .side-section p,
+.dark-modern-pro .side-section li {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* RIGHT PANEL */
+.dark-modern-pro .right-panel {
+  width: 70%;
+  background: #ffffff;
+  padding: 34px;
+  color: #222222;
+}
+
+.dark-modern-pro .main-section {
+  margin-bottom: 30px;
+}
+
+.dark-modern-pro .main-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #111111;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ffca28;
+  padding-bottom: 4px;
+}
+
+.dark-modern-pro .main-section p,
+.dark-modern-pro .main-section li {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+/* LIST STYLE */
+.dark-modern-pro ul {
+  padding-left: 18px;
+}
+
+.dark-modern-pro ul li::before {
+  content: "";
+  color: #ffca28;
+  margin-right: 6px;
+}
+
+/* EDU / EXP ITEMS */
+.edu-item,
+.exp-item {
+  margin-bottom: 16px;
+}
+
+.edu-item p:first-child,
+.exp-item p:first-child {
+  font-weight: 600;
+}
+
+/* CLEAN EMPTY */
+p:empty,
+ul:empty {
+  display: none;
 }

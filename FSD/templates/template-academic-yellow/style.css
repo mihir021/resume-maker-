@@ -19,7 +19,7 @@
     letter-spacing: 1px;
 }
 
-.top-header h2 {
+.top-header p {
     margin-top: 6px;
     font-size: 14px;
     font-weight: 400;
@@ -96,7 +96,52 @@
 .main-section ul {
     padding-left: 20px;
 }
+
+/* HIDE EMPTY ELEMENTS */
 ul:empty,
 p:empty {
   display: none;
+}
+
+/* ================= PRINT & VISIBILITY FIX ================= */
+
+.hide-section {
+  display: none;
+}
+
+@media print {
+  body {
+    margin: 0;
+    background: white !important;
+  }
+
+  .resume {
+    width: 100% !important;
+    min-height: auto !important;
+    border: none !important;
+  }
+
+  .academic-yellow {
+    border: 14px solid #ffd83d !important;
+  }
+
+  .top-header,
+  .side-section,
+  .main-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .hide-section {
+    display: block !important;
+  }
+
+  button {
+    display: none !important;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 12mm;
 }

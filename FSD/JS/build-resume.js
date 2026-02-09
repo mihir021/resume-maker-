@@ -7,13 +7,13 @@ const TEMPLATES = {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: {
-    css: "../templates/template-professional-blue/style.css",
-    html: "../templates/template-professional-blue/template.html"
+  professionalBlue: { // template 2
+    css: "../templates/template-clean-profile/style.css",
+    html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: {
-    css: "../templates/template-minimal/style.css",
-    html: "../templates/template-minimal/template.html"
+  minimalElegant: { // template 3
+    css: "../templates/template-modern-clean/style.css",
+    html: "../templates/template-modern-clean/template.html"
   },
   blueCorporate: {
     css: "../templates/template-blue-corporate/style.css",
@@ -81,7 +81,7 @@ const TEMPLATES = {
 const selectedTemplate =
   localStorage.getItem("selectedTemplate") || "academicYellow";
 
-/* ================== LOAD TEMPLATE CSS (ONCE) ================== */
+/* ================== LOAD TEMPLATE CSS ================== */
 (function loadTemplateCSS() {
   if (document.getElementById("template-style")) return;
 
@@ -98,42 +98,68 @@ fetch(TEMPLATES[selectedTemplate].html)
   .then(html => {
     $("resumePreview").innerHTML = html;
 
-    loadHeader();
-    loadSidebar();
-    loadExperience();
+    loadStep1();
     loadEducation();
-    loadSkills();
+    loadExperience();
+    loadSkills(); // ✅ FIXED
   });
 
 /* ================== STEP 1 : HEADER ================== */
-function loadHeader() {
+function loadStep1() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
-  setText("previewName", d.name || "Rathod Mihir");
-  setText("previewTitle", d.title || "Java Developer");
-  setText("previewSummary", d.summary || "");
+  setText("previewName", d.name);
+  setText("previewTitle", d.title);
+  setText("previewSummary", d.summary);
+  setText("previewPhone", d.phone);
+  setText("previewEmail", d.email);
+  setText("previewLocation", d.location);
+
+  fillList("pLanguages", d.languages);
+  fillList("pCerts", d.certs);
 }
 
-/* ================== STEP 1 : SIDEBAR ================== */
-function loadSidebar() {
-  const d = JSON.parse(localStorage.getItem("step1") || "{}");
+/* ================== STEP 2 : EDUCATION ================== */
+function loadEducation() {
+  const d = JSON.parse(localStorage.getItem("step2") || "{}");
+  const section = $("educationSection");
 
-  setText("previewPhone", d.phone || "");
-  setText("previewEmail", d.email || "");
-  setText("previewLocation", d.location || "");
+  if (!section || !d.degree) {
+    section && section.classList.add("hide-section");
+    return;
+  }
 
-  fillList("pLanguages", d.languages || "English\nHindi");
-  fillList("pCerts", d.certs || "Google Data Analytics\nAdvanced Excel");
+  const dateText = d.current
+    ? `Expected ${formatMonth(d.month)}`
+    : formatMonth(d.month);
+
+  section.innerHTML = `
+    <h3>EDUCATION</h3>
+    <ul>
+      <li>
+        <strong>${d.degree} in ${d.field}</strong><br>
+        ${d.school} | ${d.location}<br>
+        <em>${dateText}</em>
+        ${
+          d.details?.length
+            ? `<ul>${d.details.map(x => `<li>${x}</li>`).join("")}</ul>`
+            : ""
+        }
+      </li>
+    </ul>
+  `;
+
+  section.classList.remove("hide-section");
 }
 
-/* ================== STEP 2 : EXPERIENCE ================== */
+/* ================== STEP 3 : EXPERIENCE ================== */
 function loadExperience() {
-  const list = JSON.parse(localStorage.getItem("experiences") || []);
+  const list = JSON.parse(localStorage.getItem("experiences") || "[]");
   const section = $("previewExperienceSection");
   const box = $("previewExperienceList");
 
   if (!section || !box || !list.length) {
-    section && (section.style.display = "none");
+    section && section.classList.add("hide-section");
     return;
   }
 
@@ -141,11 +167,15 @@ function loadExperience() {
 
   list.forEach(exp => {
     const div = document.createElement("div");
+    div.className = "exp-item";
     div.innerHTML = `
       <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
-      <small>${exp.startDate} – ${exp.endDate}</small>
+      <small>
+        ${exp.city || ""}${exp.country ? ", " + exp.country : ""}
+        | ${exp.startDate} – ${exp.endDate}
+      </small>
       <ul>
-        ${exp.description
+        ${(exp.description || "")
           .split("\n")
           .filter(Boolean)
           .map(l => `<li>${l}</li>`)
@@ -155,80 +185,49 @@ function loadExperience() {
     box.appendChild(div);
   });
 
-  section.style.display = "block";
+  section.classList.remove("hide-section");
 }
 
-/* ================== STEP 3 : EDUCATION ================== */
-function loadEducation() {
-  const d = JSON.parse(localStorage.getItem("education") || {});
-  const eduSection = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("EDUCATION"));
-
-  if (!eduSection) return;
-
-  const dateText = d.current
-    ? `Expected ${formatMonth(d.month)}`
-    : formatMonth(d.month);
-
-  eduSection.innerHTML = `
-    <h3>EDUCATION</h3>
-    <p><strong>${d.degree || ""} ${d.field ? "in " + d.field : ""}</strong></p>
-    <p>${d.school || ""} ${d.location ? "| " + d.location : ""}</p>
-    <p><em>${dateText}</em></p>
-  `;
-}
-
-/* ================== STEP 4 : SKILLS ================== */
+/* ================== STEP 4 : SKILLS (FIXED) ================== */
 function loadSkills() {
-  const list = JSON.parse(localStorage.getItem("skills") || []);
-  const section = [...document.querySelectorAll(".main-section")]
-    .find(s => s.querySelector("h3")?.textContent.toUpperCase().includes("SKILLS"));
+  const skills = JSON.parse(localStorage.getItem("skills") || "[]");
+  const ul = $("previewSkills");
+  const section = ul?.closest("section");
 
-  if (!section || !list.length) return;
+  if (!ul || !skills.length) {
+    section?.classList.add("hide-section");
+    return;
+  }
 
-  const half = Math.ceil(list.length / 2);
+  ul.innerHTML = "";
+  skills.forEach(skill => {
+    const li = document.createElement("li");
+    li.textContent = skill;
+    ul.appendChild(li);
+  });
 
-  section.innerHTML = `
-    <h3>SKILLS</h3>
-    <div class="skills-grid">
-      <ul>${list.slice(0, half).map(s => `<li>${s}</li>`).join("")}</ul>
-      <ul>${list.slice(half).map(s => `<li>${s}</li>`).join("")}</ul>
-    </div>
-  `;
-}
-
-/* ================== DOWNLOAD / PRINT ================== */
-function downloadPDF() {
-  const oldTitle = document.title;
-  document.title = "Resume";
-  window.print();
-  setTimeout(() => (document.title = oldTitle), 500);
+  section.classList.remove("hide-section");
 }
 
 /* ================== HELPERS ================== */
 function setText(id, val) {
   const el = $(id);
-  if (el && val) el.textContent = val;
+  if (el) el.textContent = val || "";
 }
 
 function fillList(id, text) {
   const ul = $(id);
   if (!ul || !text) return;
-
-  ul.innerHTML = "";
-  text.split("\n").forEach(line => {
-    if (line.trim()) {
-      const li = document.createElement("li");
-      li.textContent = line.trim();
-      ul.appendChild(li);
-    }
-  });
+  ul.innerHTML = text
+    .split("\n")
+    .filter(Boolean)
+    .map(l => `<li>${l}</li>`)
+    .join("");
 }
 
-function formatMonth(val) {
-  if (!val) return "";
-  const d = new Date(val);
-  return d.toLocaleDateString("en-US", {
+function formatMonth(v) {
+  if (!v) return "";
+  return new Date(v).toLocaleDateString("en-US", {
     month: "short",
     year: "numeric"
   });

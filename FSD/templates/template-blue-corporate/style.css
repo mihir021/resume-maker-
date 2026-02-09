@@ -1,32 +1,120 @@
 .resume.blue-corporate {
-  background: #fff;
-  border-left: 20px solid #0d47a1;
-  box-shadow: 0 22px 55px rgba(0,0,0,0.2);
-  font-family: "Calibri", sans-serif;
+  background: #ffffff;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: #222;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.15);
 }
 
-.blue-corporate .top-header {
-  background: linear-gradient(135deg, #0d47a1, #1976d2);
-  text-transform: uppercase;
+/* HEADER */
+.split-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 28px 36px;
+  border-bottom: 3px solid #2c7be5;
 }
 
-.blue-corporate .left-panel {
-  background: #eef3fb;
-}
-
-.blue-corporate .main-section h3 {
-  color: #0d47a1;
+.split-header h1 {
+  margin: 0;
+  font-size: 30px;
   font-weight: 700;
 }
 
-.blue-corporate ul li::before {
-  content: "■";
-  color: #0d47a1;
-  font-size: 8px;
-  margin-right: 6px;
+.split-header p {
+  margin-top: 6px;
+  font-size: 14px;
+  opacity: 0.85;
 }
 
-p:empty,
-ul:empty {
+.contact-block p {
+  font-size: 13px;
+  text-align: right;
+}
+
+/* BODY */
+.split-body {
+  display: flex;
+  padding: 30px;
+  gap: 24px;
+}
+
+/* LEFT COLUMN */
+.info-column {
+  width: 32%;
+}
+
+.photo-card {
+  height: 140px;
+  background: #f1f3f6;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.info-card {
+  background: #f8f9fb;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.info-card h3 {
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #2c7be5;
+}
+
+/* MAIN COLUMN */
+.content-column {
+  width: 68%;
+}
+
+.content-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin-bottom: 22px;
+  border-left: 4px solid #2c7be5;
+}
+
+.content-card h3 {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #2c7be5;
+}
+
+/* LISTS */
+ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.edu-item,
+.exp-item {
+  margin-bottom: 14px;
+}
+
+.edu-item p:first-child,
+.exp-item p:first-child {
+  font-weight: 600;
+}
+
+/* CLEAN EMPTY */
+/* hide empty text only */
+p:empty {
   display: none;
+}
+
+/* hide sections only when explicitly told */
+.hide-section {
+  display: none !important;
+}
+
+#previewSkills li {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 6px;
 }

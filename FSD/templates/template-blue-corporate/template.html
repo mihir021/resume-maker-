@@ -1,88 +1,60 @@
 <div class="resume blue-corporate" style="width:800px;min-height:1100px;">
 
-  <!-- TOP HEADER -->
-  <header class="top-header">
-    <h1 id="previewName">Rathod Mihir</h1>
-    <p id="previewTitle">Java Developer</p>
+  <!-- HEADER BLOCK -->
+  <header class="split-header">
+    <div class="name-block">
+      <h1 id="previewName"></h1>
+      <p id="previewTitle"></p>
+    </div>
+
+    <div class="contact-block">
+      <p id="previewPhone"></p>
+      <p id="previewEmail"></p>
+      <p id="previewLocation"></p>
+    </div>
   </header>
 
-  <div class="body">
+  <div class="split-body">
 
-    <!-- LEFT SIDEBAR -->
-    <aside class="left-panel">
+    <!-- LEFT INFO COLUMN -->
+    <aside class="info-column">
 
-      <div class="photo"></div>
-
-      <section class="side-section">
-        <h3>CONTACT</h3>
-        <p id="previewPhone">+91 9876543210</p>
-        <p id="previewEmail">mihir@email.com</p>
-        <p id="previewLocation">Ahmedabad, India</p>
+      <!-- ✅ SKILLS (ONLY ONCE) -->
+      <section class="info-card">
+        <h3>SKILLS</h3>
+        <ul id="previewSkills"></ul>
       </section>
 
-      <section class="side-section">
-        <h3>CERTIFICATIONS</h3>
-        <ul id="pCerts">
-          <li>Java Programming</li>
-          <li>Web Development</li>
-        </ul>
-      </section>
-
-      <section class="side-section">
+      <section class="info-card">
         <h3>LANGUAGES</h3>
         <ul id="pLanguages"></ul>
       </section>
 
+      <section class="info-card">
+        <h3>CERTIFICATIONS</h3>
+        <ul id="pCerts"></ul>
+      </section>
+
     </aside>
 
-    <!-- RIGHT CONTENT -->
-    <main class="right-panel">
+    <!-- MAIN CONTENT -->
+    <main class="content-column">
 
-      <section class="main-section">
+      <section class="content-card">
         <h3>PROFESSIONAL SUMMARY</h3>
-        <p id="previewSummary">
-          Motivated software developer with strong fundamentals in Java and problem-solving skills.
-        </p>
+        <p id="previewSummary"></p>
       </section>
 
-      <section class="main-section">
-        <h3>KEY SKILLS</h3>
-        <ul id="previewSkills">
-
-        </ul>
+      <section class="content-card" id="educationSection">
+        <h3>EDUCATION</h3>
       </section>
 
-      <section class="main-section" id="educationSection">
-          <h3>EDUCATION</h3>
-
-          <ul>
-            <li>
-              <strong id="previewDegree"></strong><br>
-              <span id="previewField"></span><br>
-              <span id="previewEduInstitute"></span>,
-              <span id="previewEduLocation"></span><br>
-              <span id="previewGraduation"></span>
-            </li>
-          </ul>
-
-          <ul id="previewEduDetails"></ul>
-        </section>
-
-
-      <section class="main-section" id="previewExperienceSection" style="display:none">
+      <section class="content-card hide-section" id="previewExperienceSection">
         <h3>WORK EXPERIENCE</h3>
-        <div id="previewExperienceList">
-          <div class="exp-item">
-            <strong id="previewExpTitle"></strong><br>
-            <span id="previewExpCompany"></span><br>
-            <span id="previewExpLocation"></span><br>
-            <span id="previewExpDuration"></span>
-            <ul id="previewExpDesc"></ul>
-          </div>
-        </div>
-
+        <div id="previewExperienceList"></div>
       </section>
 
     </main>
+
   </div>
 </div>

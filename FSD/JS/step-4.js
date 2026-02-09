@@ -82,7 +82,7 @@ const selectedTemplate =
   localStorage.getItem("selectedTemplate") || "academicYellow";
 
 /* ================== LOAD TEMPLATE CSS ================== */
-(function () {
+(function loadTemplateCSS() {
   if (document.getElementById("template-style")) return;
 
   const link = document.createElement("link");
@@ -101,10 +101,10 @@ fetch(TEMPLATES[selectedTemplate].html)
     loadHeader();
     loadEducation();
     loadExperience();
-    loadSkills();
+    loadSkills(); // 🔥 FINAL FIX
   });
 
-/* ================== HEADER ================== */
+/* ================== HEADER (STEP-1) ================== */
 function loadHeader() {
   const d = JSON.parse(localStorage.getItem("step1") || "{}");
 
@@ -119,13 +119,13 @@ function loadHeader() {
   fillList("pCerts", d.certs);
 }
 
-/* ================== EDUCATION (FIXED) ================== */
+/* ================== EDUCATION (STEP-2) ================== */
 function loadEducation() {
-  const d = JSON.parse(localStorage.getItem("step2") || "{}");
+  const d = JSON.parse(localStorage.getItem("step2") || {});
   const section = $("educationSection");
 
   if (!section || !d.degree) {
-    if (section) section.innerHTML = "";
+    section && section.classList.add("hide-section");
     return;
   }
 
@@ -148,16 +148,18 @@ function loadEducation() {
       </li>
     </ul>
   `;
+
+  section.classList.remove("hide-section");
 }
 
-/* ================== EXPERIENCE ================== */
+/* ================== EXPERIENCE (STEP-3) ================== */
 function loadExperience() {
-  const list = JSON.parse(localStorage.getItem("experiences") || []);
+  const list = JSON.parse(localStorage.getItem("experiences") || "[]");
   const section = $("previewExperienceSection");
   const box = $("previewExperienceList");
 
   if (!section || !box || !list.length) {
-    if (section) section.style.display = "none";
+    section && section.classList.add("hide-section");
     return;
   }
 
@@ -165,12 +167,17 @@ function loadExperience() {
 
   list.forEach(exp => {
     const div = document.createElement("div");
+    div.className = "exp-item";
     div.innerHTML = `
       <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
-      <small>${exp.startDate} – ${exp.endDate}</small>
+      <small>
+        ${exp.city || ""}${exp.country ? ", " + exp.country : ""}
+        | ${exp.startDate} – ${exp.endDate}
+      </small>
       <ul>
         ${(exp.description || "")
           .split("\n")
+          .filter(Boolean)
           .map(l => `<li>${l}</li>`)
           .join("")}
       </ul>
@@ -178,67 +185,66 @@ function loadExperience() {
     box.appendChild(div);
   });
 
-  section.style.display = "block";
+  section.classList.remove("hide-section");
 }
 
-/* ================== SKILLS (FIXED) ================== */
+/* ================== SKILLS (STEP-4) 🔥 FIX ================== */
 function loadSkills() {
-  const skills = JSON.parse(localStorage.getItem("skills") || []);
-  $("skillsEditor").value = skills.join("\n");
-  renderSkills(skills);
-}
+  const skills = JSON.parse(localStorage.getItem("skills") || "[]");
+  const ul = $("previewSkills");
 
-function renderSkills(list) {
-  const ul = document.getElementById("previewSkills");
-  if (!ul) return;
+  if (!ul || !skills.length) return;
 
   ul.innerHTML = "";
 
-  list.forEach(skill => {
+  skills.forEach(skill => {
     const li = document.createElement("li");
     li.textContent = skill;
     ul.appendChild(li);
   });
 }
 
-
-/* ================== SKILL INPUT ================== */
-document.querySelectorAll("[data-skill]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const list = getSkills();
-    if (!list.includes(btn.dataset.skill)) {
-      list.push(btn.dataset.skill);
-      saveSkills(list);
-    }
-  });
-});
-
-$("skillsEditor").addEventListener("input", () => {
+/* ================== SAVE SKILLS FROM INPUT ================== */
+$("skillsEditor")?.addEventListener("input", () => {
   saveSkills(getSkills());
 });
 
+/* ================== GET SKILLS ================== */
 function getSkills() {
-  return $("skillsEditor").value
+  return $("skillsEditor")
+    .value
     .split("\n")
     .map(s => s.trim())
     .filter(Boolean);
 }
 
+/* ================== SAVE SKILLS ================== */
 function saveSkills(list) {
   localStorage.setItem("skills", JSON.stringify(list));
-  renderSkills(list);
 }
+
+/* ================== RESTORE SKILLS ================== */
+(function restoreSkills() {
+  const list = JSON.parse(localStorage.getItem("skills") || "[]");
+  if ($("skillsEditor")) {
+    $("skillsEditor").value = list.join("\n");
+  }
+})();
 
 /* ================== HELPERS ================== */
 function setText(id, val) {
   const el = $(id);
-  if (el && val) el.textContent = val;
+  if (el) el.textContent = val || "";
 }
 
 function fillList(id, text) {
   const ul = $(id);
   if (!ul || !text) return;
-  ul.innerHTML = text.split("\n").map(l => `<li>${l}</li>`).join("");
+  ul.innerHTML = text
+    .split("\n")
+    .filter(Boolean)
+    .map(l => `<li>${l}</li>`)
+    .join("");
 }
 
 function formatMonth(v) {
@@ -274,52 +280,3 @@ function finishResume() {
       else alert(r.message || "Save failed");
     });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const editor = document.getElementById("skillsEditor");
-  const suggestionBox = document.getElementById("skillSuggestions");
-
-  if (!editor || !suggestionBox) {
-    console.error("Skills editor or suggestion box not found");
-    return;
-  }
-
-  editor.addEventListener("keyup", async () => {
-    const lines = editor.value.split("\n");
-    const current = lines[lines.length - 1].trim();
-
-    if (current.length < 2) {
-      suggestionBox.innerHTML = "";
-      return;
-    }
-
-    try {
-      const res = await fetch(`/api/skills/suggest?q=${current}`);
-      const suggestions = await res.json();
-
-      suggestionBox.innerHTML = suggestions
-        .map(skill => `
-          <div class="suggestion-item" data-skill="${skill}">
-            ${skill}
-          </div>
-        `)
-        .join("");
-
-    } catch (err) {
-      console.error("Suggestion error", err);
-    }
-  });
-
-  // Click to add suggestion
-  suggestionBox.addEventListener("click", (e) => {
-    if (!e.target.classList.contains("suggestion-item")) return;
-
-    const skill = e.target.dataset.skill;
-    let lines = editor.value.split("\n");
-    lines[lines.length - 1] = skill;
-    editor.value = lines.join("\n") + "\n";
-
-    suggestionBox.innerHTML = "";
-    editor.focus();
-  });
-});
