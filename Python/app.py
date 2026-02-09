@@ -1,6 +1,8 @@
+from dotenv import load_dotenv
+load_dotenv()  # 🔥 MUST be before Config import
+
 from flask import Flask
 from flask_cors import CORS
-from dotenv import load_dotenv
 import os
 
 from config.app_config import Config, FSD_DIR
@@ -20,8 +22,6 @@ from Controller.admin_analytics_controller import admin_analytics_bp
 from Controller.admin_user_action_controller import admin_user_action_bp
 
 def create_app():
-    load_dotenv()
-
     app = Flask(
         __name__,
         static_folder=FSD_DIR,
@@ -30,21 +30,25 @@ def create_app():
 
     # ================= CORE CONFIG =================
     app.config.from_object(Config)
-    # 🔥 CRITICAL: Session cookie config (OAuth safe)
-    app.config.update(
-        SESSION_COOKIE_HTTPONLY=True,
-        SESSION_COOKIE_SAMESITE="Lax",   # REQUIRED for Google OAuth
-        SESSION_COOKIE_SECURE=False      # True only in production (HTTPS)
-    )
+
+    # 🔥 FAIL FAST (NO SILENT OAUTH BREAKS)
+    if not app.config.get("SECRET_KEY"):
+        raise RuntimeError("❌ SECRET_KEY missing in .env")
+
+    if not app.config.get("GOOGLE_CLIENT_ID"):
+        raise RuntimeError("❌ GOOGLE_CLIENT_ID missing in .env")
+
+    if not app.config.get("GOOGLE_CLIENT_SECRET"):
+        raise RuntimeError("❌ GOOGLE_CLIENT_SECRET missing in .env")
 
     # 🔐 REQUIRED for sessions + OAuth
-    app.secret_key = app.config.get("SECRET_KEY", "dev-secret-key")
+    app.secret_key = app.config["SECRET_KEY"]
 
-    # 🔥 CRITICAL: Session cookie config (OAuth safe)
+    # 🔥 Session cookie config (OAuth safe)
     app.config.update(
         SESSION_COOKIE_HTTPONLY=True,
-        SESSION_COOKIE_SAMESITE="Lax",   # REQUIRED for Google OAuth
-        SESSION_COOKIE_SECURE=False      # True only in production (HTTPS)
+        SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_SECURE=False  # True only in production (HTTPS)
     )
 
     # ================= CORS (API ONLY) =================
@@ -100,5 +104,6 @@ def create_app():
     app.register_blueprint(admin_user_action_bp, url_prefix="/api/admin")
 
     print("✅ Flask app initialized successfully")
+    print(app.config["GOOGLE_CLIENT_ID"])  # debug – remove later
 
     return app

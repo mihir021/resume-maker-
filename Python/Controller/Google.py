@@ -32,7 +32,6 @@ def init_oauth(app):
         }
     )
 
-
 # ✅ FINAL LOGIN URL
 @google_bp.route("/login")
 def google_login():
