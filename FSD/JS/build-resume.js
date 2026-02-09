@@ -7,11 +7,11 @@ const TEMPLATES = {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: { // template 2
+  professionalBlue: {
     css: "../templates/template-clean-profile/style.css",
     html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: { // template 3
+  minimalElegant: {
     css: "../templates/template-modern-clean/style.css",
     html: "../templates/template-modern-clean/template.html"
   },
@@ -101,7 +101,7 @@ fetch(TEMPLATES[selectedTemplate].html)
     loadStep1();
     loadEducation();
     loadExperience();
-    loadSkills(); // ✅ FIXED
+    loadSkills(); // ✅ stable now
   });
 
 /* ================== STEP 1 : HEADER ================== */
@@ -125,7 +125,7 @@ function loadEducation() {
   const section = $("educationSection");
 
   if (!section || !d.degree) {
-    section && section.classList.add("hide-section");
+    section?.classList.add("hide-section");
     return;
   }
 
@@ -159,7 +159,7 @@ function loadExperience() {
   const box = $("previewExperienceList");
 
   if (!section || !box || !list.length) {
-    section && section.classList.add("hide-section");
+    section?.classList.add("hide-section");
     return;
   }
 
@@ -188,13 +188,17 @@ function loadExperience() {
   section.classList.remove("hide-section");
 }
 
-/* ================== STEP 4 : SKILLS (FIXED) ================== */
+/* ================== STEP 4 : SKILLS ================== */
 function loadSkills() {
   const skills = JSON.parse(localStorage.getItem("skills") || "[]");
   const ul = $("previewSkills");
-  const section = ul?.closest("section");
 
-  if (!ul || !skills.length) {
+  // ✅ SAFE GUARD
+  if (!ul) return;
+
+  const section = ul.closest("section");
+
+  if (!skills.length) {
     section?.classList.add("hide-section");
     return;
   }
@@ -206,7 +210,7 @@ function loadSkills() {
     ul.appendChild(li);
   });
 
-  section.classList.remove("hide-section");
+  section?.classList.remove("hide-section");
 }
 
 /* ================== HELPERS ================== */
@@ -218,6 +222,7 @@ function setText(id, val) {
 function fillList(id, text) {
   const ul = $(id);
   if (!ul || !text) return;
+
   ul.innerHTML = text
     .split("\n")
     .filter(Boolean)

@@ -7,11 +7,11 @@ const TEMPLATES = {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: { // template 2
+  professionalBlue: {
     css: "../templates/template-clean-profile/style.css",
     html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: { // template 3
+  minimalElegant: {
     css: "../templates/template-modern-clean/style.css",
     html: "../templates/template-modern-clean/template.html"
   },
@@ -101,7 +101,7 @@ fetch(TEMPLATES[selectedTemplate].html)
     loadHeader();
     loadEducation();
     loadExperience();
-    loadSkills(); // 🔥 FINAL FIX
+    loadSkills(); // ✅ stable now
   });
 
 /* ================== HEADER (STEP-1) ================== */
@@ -125,7 +125,7 @@ function loadEducation() {
   const section = $("educationSection");
 
   if (!section || !d.degree) {
-    section && section.classList.add("hide-section");
+    section?.classList.add("hide-section");
     return;
   }
 
@@ -159,7 +159,7 @@ function loadExperience() {
   const box = $("previewExperienceList");
 
   if (!section || !box || !list.length) {
-    section && section.classList.add("hide-section");
+    section?.classList.add("hide-section");
     return;
   }
 
@@ -188,20 +188,28 @@ function loadExperience() {
   section.classList.remove("hide-section");
 }
 
-/* ================== SKILLS (STEP-4) 🔥 FIX ================== */
+/* ================== SKILLS (STEP-4) ================== */
 function loadSkills() {
   const skills = JSON.parse(localStorage.getItem("skills") || "[]");
   const ul = $("previewSkills");
 
-  if (!ul || !skills.length) return;
+  if (!ul) return;
+
+  const section = ul.closest("section");
+
+  if (!skills.length) {
+    section?.classList.add("hide-section");
+    return;
+  }
 
   ul.innerHTML = "";
-
   skills.forEach(skill => {
     const li = document.createElement("li");
     li.textContent = skill;
     ul.appendChild(li);
   });
+
+  section?.classList.remove("hide-section");
 }
 
 /* ================== SAVE SKILLS FROM INPUT ================== */
@@ -209,21 +217,18 @@ $("skillsEditor")?.addEventListener("input", () => {
   saveSkills(getSkills());
 });
 
-/* ================== GET SKILLS ================== */
+/* ================== GET / SAVE / RESTORE SKILLS ================== */
 function getSkills() {
-  return $("skillsEditor")
-    .value
+  return $("skillsEditor").value
     .split("\n")
     .map(s => s.trim())
     .filter(Boolean);
 }
 
-/* ================== SAVE SKILLS ================== */
 function saveSkills(list) {
   localStorage.setItem("skills", JSON.stringify(list));
 }
 
-/* ================== RESTORE SKILLS ================== */
 (function restoreSkills() {
   const list = JSON.parse(localStorage.getItem("skills") || "[]");
   if ($("skillsEditor")) {

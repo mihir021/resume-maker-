@@ -15,11 +15,11 @@ const TEMPLATES = {
     css: "../templates/template-academic-yellow/style.css",
     html: "../templates/template-academic-yellow/template.html"
   },
-  professionalBlue: { // template 2
+  professionalBlue: {
     css: "../templates/template-clean-profile/style.css",
     html: "../templates/template-clean-profile/template.html"
   },
-  minimalElegant: { // template 3
+  minimalElegant: {
     css: "../templates/template-modern-clean/style.css",
     html: "../templates/template-modern-clean/template.html"
   },
@@ -100,11 +100,8 @@ fetch("/api/resumes", { credentials: "include" })
       <div class="resume-card fade-card" data-id="${r._id}"
            onclick="openResumePreview('${r._id}')">
 
-        <!-- ❌ DELETE BUTTON -->
         <button class="delete-resume-btn"
-                onclick="deleteResume(event, '${r._id}')">
-          ✕
-        </button>
+                onclick="deleteResume(event, '${r._id}')">✕</button>
 
         <div class="rank-badge">
           ${r.rank === 1 ? "🏆" : r.rank === 2 ? "🥈" : r.rank === 3 ? "🥉" : "🔹"}
@@ -121,65 +118,30 @@ fetch("/api/resumes", { credentials: "include" })
       .forEach(card => observer.observe(card));
   });
 
-/* ================= PREVIEW CONTROLS ================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const overlay = document.getElementById("resumePreviewOverlay");
-  const closeBtn = document.getElementById("closePreview");
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      overlay.classList.add("hidden");
-      document.body.style.overflow = "auto";
-
-      // 🔥 REMOVE TEMPLATE CSS
-      const old = document.getElementById("final-template-style");
-      if (old) old.remove();
-
-      // clear preview
-      document.getElementById("finalResumePreview").innerHTML = "";
-    });
-  }
-});
-
 /* ================= OPEN PREVIEW ================= */
 function openResumePreview(resumeId) {
   fetch(`/api/resumes/${resumeId}`, { credentials: "include" })
     .then(res => res.json())
     .then(resume => {
-        console.log("RESUME FROM API:", resume); // 🔥 ADD THIS
       const overlay = document.getElementById("resumePreviewOverlay");
       overlay.classList.remove("hidden");
       document.body.style.overflow = "hidden";
 
-      // 🔥 THIS IS THE FIX
-      document
-        .querySelector(".resume-score-btn")
-        ?.setAttribute("data-id", resumeId);
-
       loadFinalTemplate(resume);
+
+      // attach resumeId to score button AFTER render
+      setTimeout(() => {
+        document.querySelector(".resume-score-btn")
+          ?.setAttribute("data-id", resumeId);
+      }, 50);
     });
-}
-
-
-function closeResumePreview() {
-  document.getElementById("resumePreviewOverlay")
-    .classList.add("hidden");
 }
 
 /* ================= LOAD TEMPLATE ================= */
 function loadFinalTemplate(resume) {
-    console.log("TEMPLATE KEY:", resume.template);
-  const templateKey = resume.template || "professionalBlue";
-  const tpl = TEMPLATES[templateKey];
-    console.log("TEMPLATE OBJECT:", tpl);
-  if (!tpl) {
-    alert("Template not found. Using default template.");
-    return;
-  }
+  const tpl = TEMPLATES[resume.template] || TEMPLATES.professionalBlue;
 
-
-  const old = document.getElementById("final-template-style");
-  if (old) old.remove();
+  document.getElementById("final-template-style")?.remove();
 
   const link = document.createElement("link");
   link.id = "final-template-style";
@@ -195,157 +157,23 @@ function loadFinalTemplate(resume) {
     });
 }
 
-/* ================= INJECT ALL DATA ================= */
-function injectFinalData(data) {
-  if (!data) return;
-
-  /* STEP 1 – HEADER + CONTACT */
-  setText("previewName", data.step1?.name);
-  setText("previewTitle", data.step1?.title);
-  setText("previewSummary", data.step1?.summary);
-  setText("previewEmail", data.step1?.email);
-  setText("previewPhone", data.step1?.phone);
-  setText("previewLocation", data.step1?.location);
-
-  fillList("pLanguages", data.step1?.languages);
-  fillList("pCerts", data.step1?.certs);
-
-  /* STEP 2 – EDUCATION */
-  if (data.step2) {
-    const edu = document.getElementById("educationSection");
-    if (edu && data.step2.degree) {
-      const dateText = data.step2.current
-        ? "Expected " + formatMonth(data.step2.month)
-        : formatMonth(data.step2.month);
-
-      edu.innerHTML = `
-        <h3>EDUCATION</h3>
-        <ul>
-          <li>
-            <strong>${data.step2.degree} in ${data.step2.field}</strong><br>
-            ${data.step2.school} | ${data.step2.location}<br>
-            <em>${dateText}</em>
-          </li>
-        </ul>
-      `;
-    }
+/* ================= DELEGATED FIX: CLOSE BUTTON ================= */
+document.addEventListener("click", (e) => {
+  if (e.target.closest("#closePreview")) {
+    document.getElementById("resumePreviewOverlay").classList.add("hidden");
+    document.body.style.overflow = "auto";
+    document.getElementById("final-template-style")?.remove();
+    document.getElementById("finalResumePreview").innerHTML = "";
   }
+});
 
-  /* STEP 3 – EXPERIENCE (FIXED) */
-  if (Array.isArray(data.step3) && data.step3.length) {
-    const section = document.getElementById("previewExperienceSection");
-    const box = document.getElementById("previewExperienceList");
-
-    if (section && box) {
-      box.innerHTML = data.step3.map(exp => `
-        <div class="exp-item">
-          <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
-          <small>
-            ${exp.city || ""}${exp.country ? ", " + exp.country : ""}
-            | ${exp.startDate} – ${exp.endDate}
-          </small>
-          <ul>
-            ${(exp.description || "")
-              .split("\n")
-              .filter(Boolean)
-              .map(d => `<li>${d}</li>`)
-              .join("")}
-          </ul>
-        </div>
-      `).join("");
-
-      section.classList.remove("hide-section");
-    }
-  }
-
-  /* STEP 4 – SKILLS (FIXED FOR ALL TEMPLATES) */
-    if (Array.isArray(data.step4) && data.step4.length) {
-      const ul = document.getElementById("previewSkills");
-      const section = ul?.closest("section");
-
-      if (ul) {
-        ul.innerHTML = "";
-
-        data.step4.forEach(skill => {
-          const li = document.createElement("li");
-          li.textContent = skill;
-          ul.appendChild(li);
-        });
-
-        section?.classList.remove("hide-section");
-      }
-    }
-
-}
-
-/* ================= HELPERS ================= */
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el && value) el.textContent = value;
-}
-
-function fillList(id, text) {
-  const ul = document.getElementById(id);
-  if (!ul || !text) return;
-  ul.innerHTML = text
-    .split("\n")
-    .filter(Boolean)
-    .map(l => `<li>${l}</li>`)
-    .join("");
-}
-
-function formatMonth(v) {
-  if (!v) return "";
-  return new Date(v).toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric"
-  });
-}
-function loadSkills() {
-  const skills = JSON.parse(localStorage.getItem("skills") || "[]");
-
-  const ul = document.getElementById("previewSkills");
-  const section = ul?.closest("section");
-
-  if (!ul || !skills.length) {
-    section?.classList.add("hide-section");
-    return;
-  }
-
-  ul.innerHTML = "";
-  skills.forEach(skill => {
-    const li = document.createElement("li");
-    li.textContent = skill;
-    ul.appendChild(li);
-  });
-
-  // ✅ IMPORTANT
-  section.classList.remove("hide-section");
-}
-
-/* ================= DOWNLOAD PDF (STABLE) ================= */
-function downloadResumePDF() {
-  const element = document.getElementById("finalResumePreview");
-
-  setTimeout(() => {
-    html2pdf()
-      .set({
-        margin: 5,
-        filename: "resume.pdf",
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-      })
-      .from(element)
-      .save();
-  }, 300);
-}
-/* ================= RESUME SCORE BUTTON ================= */
+/* ================= DELEGATED FIX: RESUME SCORE ================= */
 document.addEventListener("click", async (e) => {
-  if (!e.target.classList.contains("resume-score-btn")) return;
+  const btn = e.target.closest(".resume-score-btn");
+  if (!btn) return;
 
-  const resumeId = e.target.dataset.id;
-  console.log("Resume ID:", resumeId); // 🔥 debug
+  const resumeId = btn.dataset.id;
+  if (!resumeId) return;
 
   const res = await fetch(`/api/resumes/score/${resumeId}`);
   const data = await res.json();
@@ -369,330 +197,159 @@ document.addEventListener("click", async (e) => {
     document.getElementById("resumeScoreModal")
   ).show();
 });
-/* ================= CLOSE PREVIEW BUTTON ================= */
-document.addEventListener("click", (e) => {
-  if (e.target.closest("#closePreview")) {
-    const overlay = document.getElementById("resumePreviewOverlay");
-    if (overlay) {
-      overlay.classList.add("hidden");
-      document.body.style.overflow = "auto";
-    }
-  }
-});
 
-fetch("/api/resumes/skills/frequency")
-  .then(res => res.json())
-  .then(data => {
-    const container = document.getElementById("topSkills");
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    const entries = Object.entries(data)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 6); // show top 6 skills
-
-    if (entries.length === 0) {
-      container.innerHTML = "<p class='text-muted'>No skills data available</p>";
-      return;
-    }
-
-    const maxCount = entries[0][1];
-
-    entries.forEach(([skill, count]) => {
-      const percent = Math.round((count / maxCount) * 100);
-
-      container.innerHTML += `
-        <div class="skill-row">
-          <span class="skill-name">${skill}</span>
-
-          <div class="skill-bar">
-            <div class="skill-bar-fill" style="width:${percent}%"></div>
-          </div>
-
-          <span class="skill-count">${count}</span>
-        </div>
-      `;
-    });
-  });
-
+/* ================= DELETE RESUME ================= */
 async function deleteResume(event, resumeId) {
-  event.stopPropagation(); // 🔥 prevents opening preview
-
+  event.stopPropagation();
   if (!confirm("Delete this resume permanently?")) return;
 
-  try {
-    const res = await fetch(`/api/resumes/${resumeId}`, {
-      method: "DELETE",
-      credentials: "include"
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Failed to delete resume");
-      return;
-    }
-
-    // ✅ remove card from UI
-    document
-      .querySelector(`.resume-card[data-id="${resumeId}"]`)
-      ?.remove();
-
-  } catch (err) {
-    console.error(err);
-    alert("Server error while deleting resume");
-  }
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const aiBtn = document.getElementById("aiCreateBtn");
-  const aiModal = document.getElementById("aiResumeModal");
-
-  if (!aiBtn || !aiModal) {
-    console.error("AI button or modal not found");
-    return;
-  }
-
-  aiBtn.addEventListener("click", async () => {
-    const res = await fetch("/api/profile/status", { credentials: "include" });
-    const status = await res.json();
-
-    document.getElementById("skillsField")?.classList.toggle("d-none", status.skills);
-    document.getElementById("projectsField")?.classList.toggle("d-none", status.projects);
-
-    new bootstrap.Modal(aiModal).show();
+  const res = await fetch(`/api/resumes/${resumeId}`, {
+    method: "DELETE",
+    credentials: "include"
   });
-});
 
-
-async function submitAIResume() {
-  const role = document.getElementById("aiTitle").value.trim();
-  const jd = document.getElementById("aiJD").value.trim();
-  const exp = document.getElementById("aiExperience").value;
-  let experience = [];
-
-    if (document.getElementById("aiExperience").value === "experienced") {
-      document.querySelectorAll(".experience-block").forEach(block => {
-      const jobTitle = block.querySelector(".exp-title").value.trim();
-      if (!jobTitle) return;
-
-      experience.push({
-        jobTitle,
-        employer: block.querySelector(".exp-employer").value,
-        city: block.querySelector(".exp-city").value,
-        country: block.querySelector(".exp-country").value,
-        startMonth: block.querySelector(".exp-start").value,
-        endMonth: block.querySelector(".exp-end").value,
-        description: block.querySelector(".exp-desc").value
-      });
-    });
-    }
-
-
-  if (!role) {
-    alert("Please enter a role");
-    return;
+  if (res.ok) {
+    document.querySelector(`.resume-card[data-id="${resumeId}"]`)?.remove();
   }
-
-  try {
-    const res = await fetch("/ai/create-resume", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-          role,
-          job_description: jd,
-          experience_level: exp,
-
-          personal: {
-              name: document.getElementById("aiName").value || "",
-              title: document.getElementById("aiTitle").value || "",
-              email: document.getElementById("aiEmail").value || "",
-              phone: document.getElementById("aiPhone").value || "",
-              location: document.getElementById("aiLocation").value || "",
-              summary: document.getElementById("aiSummary").value,
-
-              languages: document
-                .getElementById("aiLanguages")
-                ?.value.split("\n")
-                .filter(Boolean) || [],
-
-              certificates: document
-                .getElementById("aiCertificates")
-                ?.value.split("\n")
-                .filter(Boolean) || []
-            },
-
-          education: {
-            institution: document.getElementById("aiSchool").value,
-            degree: document.getElementById("aiDegree").value,
-            field: document.getElementById("aiField").value,
-            year: document.getElementById("aiGradYear").value
-          },
-
-          experience: experience,
-
-          skills: document
-            .getElementById("aiSkills")
-            .value
-            .split("\n")
-            .filter(Boolean)
-        })
-
-
-    });
-
-    const raw = await res.text();
-    console.log("AI RAW RESPONSE:", raw);
-
-    if (!res.ok) {
-      throw new Error(raw);
-    }
-
-    const data = JSON.parse(raw);
-
-    bootstrap.Modal.getInstance(
-      document.getElementById("aiResumeModal")
-    ).hide();
-
-    openResumePreview(data.resumeId);
-
-  }catch (e) {
-      console.error("AI ERROR:", e);
-      alert("AI resume creation failed:\n" + e.message);
-    }
-
 }
 
 function injectFinalData(data) {
-  console.log("FINAL PREVIEW DATA:", data);
+  if (!data) return;
 
-  if (!data.step1 || !data.step2) {
-    console.error("Invalid STEP resume data", data);
-    return;
+  /* ===== STEP 1 – HEADER & CONTACT ===== */
+  setText("previewName", data.step1?.name);
+  setText("previewTitle", data.step1?.title);
+  setText("previewSummary", data.step1?.summary);
+  setText("previewEmail", data.step1?.email);
+  setText("previewPhone", data.step1?.phone);
+  setText("previewLocation", data.step1?.location);
+
+  // ✅ FIX: certificates key mismatch
+  /* ===== LANGUAGES ===== */
+/* ===== LANGUAGES (string OR array safe) ===== */
+if (data.step1?.languages) {
+  const ul = document.getElementById("pLanguages");
+  const section = ul?.closest("section");
+
+  const langs = Array.isArray(data.step1.languages)
+    ? data.step1.languages
+    : data.step1.languages.split("\n").filter(Boolean);
+
+  if (langs.length) {
+    ul.innerHTML = langs.map(l => `<li>${l}</li>`).join("");
+    section?.classList.remove("hide-section");
+  }
+}
+
+/* ===== CERTIFICATIONS (string OR array safe) ===== */
+/* ===== CERTIFICATIONS (certs OR certificates SAFE) ===== */
+{
+  const ul = document.getElementById("pCerts");
+  const section = ul?.closest("section");
+
+  const certSource =
+    data.step1?.certificates ??
+    data.step1?.certs ??
+    null;
+
+  const certs = Array.isArray(certSource)
+    ? certSource
+    : typeof certSource === "string"
+      ? certSource.split("\n").filter(Boolean)
+      : [];
+
+  if (ul && certs.length) {
+    ul.innerHTML = certs.map(c => `<li>${c}</li>`).join("");
+    section?.classList.remove("hide-section");
+  }
+}
+
+
+
+  //* ===== STEP 2 – EDUCATION (TEMPLATE SAFE) ===== */
+if (data.step2) {
+  const eduSection = document.getElementById("educationSection");
+
+  if (eduSection) {
+    const degreeLine = data.step2.degree && data.step2.field
+      ? `${data.step2.degree} in ${data.step2.field}`
+      : data.step2.degree || "";
+
+    const dateText = data.step2.current
+      ? `Expected ${formatMonth(data.step2.month)}`
+      : formatMonth(data.step2.month);
+
+    eduSection.innerHTML = `
+      <h3>EDUCATION</h3>
+      <p><strong>${degreeLine}</strong></p>
+      <p>${data.step2.school || ""}</p>
+      <p>${data.step2.location || ""}</p>
+      <p>${dateText}</p>
+      ${
+        Array.isArray(data.step2.details) && data.step2.details.length
+          ? `<ul>${data.step2.details.map(d => `<li>${d}</li>`).join("")}</ul>`
+          : ""
+      }
+    `;
+  }
+}
+
+
+  /* ===== STEP 3 – EXPERIENCE ===== */
+  if (Array.isArray(data.step3) && data.step3.length) {
+    const section = document.getElementById("previewExperienceSection");
+    const box = document.getElementById("previewExperienceList");
+
+    box.innerHTML = data.step3.map(exp => `
+      <div class="exp-item">
+        <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
+        <small>
+          ${exp.city || ""}${exp.country ? ", " + exp.country : ""}
+          | ${exp.startDate} – ${exp.endDate}
+        </small>
+        <ul>
+          ${(exp.description || "")
+            .split("\n")
+            .filter(Boolean)
+            .map(d => `<li>${d}</li>`)
+            .join("")}
+        </ul>
+      </div>
+    `).join("");
+
+    section.classList.remove("hide-section");
   }
 
-  // ===== STEP 1 =====
-  setText("previewName", data.step1.name);
-  setText("previewTitle", data.step1.title);
-  setText("previewEmail", data.step1.email);
-  setText("previewPhone", data.step1.phone);
-  setText("previewLocation", data.step1.location);
-  const summaryEl = document.getElementById("previewSummary");
+  /* ===== STEP 4 – SKILLS ===== */
+  if (Array.isArray(data.step4) && data.step4.length) {
+    const ul = document.getElementById("previewSkills");
+    const section = ul?.closest("section");
 
-    if (summaryEl) {
-      summaryEl.innerHTML = highlightKeywords(
-        data.step1.summary,
-        data.step4   // skills = ATS keywords
-      );
-    }
-    const langList = document.getElementById("pLanguages");
-    if (langList && data.step1.languages?.length) {
-      langList.innerHTML = data.step1.languages
-        .map(l => `<li>${l}</li>`)
-        .join("");
-    } else if (langList) {
-      langList.parentElement.style.display = "none";
-    }
-
-    const certList = document.getElementById("pCerts");
-    if (certList && data.step1.certificates?.length) {
-      certList.innerHTML = data.step1.certificates
-        .map(c => `<li>${c}</li>`)
-        .join("");
-    } else if (certList) {
-      certList.parentElement.style.display = "none";
-    }
-
-
-
-      // ===== STEP 2 : EDUCATION (formatted, template-safe) =====
-    const degreeEl = document.getElementById("previewDegree");
-    const fieldEl = document.getElementById("previewField");
-    const instEl = document.getElementById("previewEduInstitute");
-    const yearEl = document.getElementById("previewGraduation");
-
-    if (data.step2) {
-      const degree = data.step2.degree || "";
-      const field = data.step2.field || "";
-      const inst = data.step2.institution || "";
-      const year = data.step2.year || "";
-
-      // Degree + Field → single line
-      if (degreeEl) {
-        degreeEl.textContent = field
-          ? `${degree} in ${field}`: degree;
-      }
-
-      // Hide standalone field line (prevents "IT" alone)
-      if (fieldEl) {
-        fieldEl.style.display = "none";
-      }
-
-      // Institution
-      if (instEl) {
-        instEl.textContent = inst;
-      }
-
-      // Year (clean)
-      if (yearEl) {
-        yearEl.textContent = year;
-      }
-    }
-
-
-  // ===== STEP 3 =====
-  if (data.step3 && data.step3.length > 0) {
-      document.getElementById("previewExperienceSection").style.display = "block";
-
-      document.getElementById("previewExperienceList").innerHTML =
-        data.step3.map(exp => `
-          <div class="mb-3">
-            <strong>${exp.jobTitle}</strong> – ${exp.employer}<br>
-            <small>${exp.city}, ${exp.country}</small><br>
-            <small>${exp.startMonth} – ${exp.endMonth}</small>
-            <p>${exp.description}</p>
-          </div>
-        `).join("");
-    }else {
-      document.getElementById("previewExperienceSection").style.display = "none";
-    }
-
-
-  // ===== STEP 4 =====
-  const skillsBox = document.getElementById("previewSkills");
-  if (skillsBox) {
-    skillsBox.innerHTML = (data.step4 || [])
+    ul.innerHTML = data.step4
       .map(skill => `<li>${skill}</li>`)
       .join("");
+
+    section?.classList.remove("hide-section");
   }
 }
-
-function highlightKeywords(text, keywords) {
-  if (!text || !Array.isArray(keywords)) return text;
-
-  const escaped = keywords.map(k =>
-    k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  );
-
-  const regex = new RegExp(`\\b(${escaped.join("|")})\\b`, "gi");
-
-  return text.replace(regex, `<span class="ats-highlight">$1</span>`);
+/* ================= HELPERS ================= */
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value || "";
 }
 
-const expSelect = document.getElementById("aiExperience");
-if (expSelect) {
-  expSelect.addEventListener("change", e => {
-    const section = document.getElementById("aiExperienceSection");
-    section.classList.toggle("d-none", e.target.value !== "experienced");
+function fillList(id, list) {
+  const ul = document.getElementById(id);
+  if (!ul || !Array.isArray(list) || !list.length) return;
+
+  ul.innerHTML = list.map(item => `<li>${item}</li>`).join("");
+}
+
+function formatMonth(v) {
+  if (!v) return "";
+  return new Date(v).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric"
   });
-}
-
-
-function addExperienceField() {
-  const tpl = document.getElementById("experienceTemplate");
-  const clone = tpl.content.cloneNode(true);
-  document.getElementById("experienceContainer").appendChild(clone);
 }
