@@ -106,6 +106,7 @@ def create_app():
     app.register_blueprint(ai_resume_bp)
 
     print("✅ Flask app initialized successfully")
+    print("OPENAI_API_KEY =", os.getenv("OPENAI_API_KEY"))
     print(app.config["GOOGLE_CLIENT_ID"])  # debug – remove later
 
     return app
