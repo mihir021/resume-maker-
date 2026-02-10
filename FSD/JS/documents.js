@@ -353,3 +353,193 @@ function formatMonth(v) {
     year: "numeric"
   });
 }
+function normalizeAIResume(ai) {
+  return {
+    step1: {
+      name: ai.personal?.name || "",
+      title: ai.personal?.title || "",
+      email: ai.personal?.email || "",
+      phone: ai.personal?.phone || "",
+      location: ai.personal?.location || "",
+      summary: ai.personal?.summary || "",
+      languages: ai.personal?.languages || [],
+      certificates: ai.personal?.certificates || []
+    },
+
+    step2: {
+      degree: ai.education?.degree || "",
+      field: ai.education?.field || "",
+      school: ai.education?.institution || "",
+      location: "",
+      year: ai.education?.year || ""
+    },
+
+    step3: Array.isArray(ai.experience)
+      ? ai.experience.map(e => ({
+          jobTitle: e.jobTitle,
+          employer: e.employer,
+          city: e.city,
+          country: e.country,
+          startDate: e.startMonth,
+          endDate: e.endMonth,
+          description: e.description
+        }))
+      : [],
+
+    step4: ai.skills || []
+  };
+}
+
+/* ================= CREATE WITH AI (FINAL FIX) ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const aiBtn = document.getElementById("aiCreateBtn");
+  const aiModal = document.getElementById("aiResumeModal");
+
+  if (!aiBtn || !aiModal) {
+    console.warn("AI Create button or modal not found");
+    return;
+  }
+
+  aiBtn.addEventListener("click", async () => {
+    try {
+      const res = await fetch("/api/profile/status", {
+        credentials: "include"
+      });
+
+      if (!res.ok) {
+        throw new Error("Profile status fetch failed");
+      }
+
+      const status = await res.json();
+
+      // Toggle optional fields
+      document
+        .getElementById("skillsField")
+        ?.classList.toggle("d-none", status.skills);
+
+      document
+        .getElementById("projectsField")
+        ?.classList.toggle("d-none", status.projects);
+
+      new bootstrap.Modal(aiModal).show();
+
+    } catch (err) {
+      console.error("AI modal error:", err);
+      alert("Unable to open AI resume builder");
+    }
+  });
+});
+async function submitAIResume() {
+  try {
+    const role = document.getElementById("aiTitle")?.value?.trim();
+    const jd = document.getElementById("aiJD")?.value?.trim();
+    const expLevel = document.getElementById("aiExperience")?.value;
+
+    if (!role) {
+      alert("Please enter a role");
+      return;
+    }
+
+    // 🔥 collect experience blocks (if experienced)
+    let experience = [];
+    if (expLevel === "experienced") {
+      document.querySelectorAll(".experience-block").forEach(block => {
+        const jobTitle = block.querySelector(".exp-title")?.value?.trim();
+        if (!jobTitle) return;
+
+        experience.push({
+          jobTitle,
+          employer: block.querySelector(".exp-employer")?.value || "",
+          city: block.querySelector(".exp-city")?.value || "",
+          country: block.querySelector(".exp-country")?.value || "",
+          startMonth: block.querySelector(".exp-start")?.value || "",
+          endMonth: block.querySelector(".exp-end")?.value || "",
+          description: block.querySelector(".exp-desc")?.value || ""
+        });
+      });
+    }
+
+    // 🔥 CALL AI API
+    const res = await fetch("/ai/create-resume", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        role,
+        job_description: jd,
+        experience_level: expLevel,
+
+        personal: {
+          name: document.getElementById("aiName")?.value || "",
+          title: role,
+          email: document.getElementById("aiEmail")?.value || "",
+          phone: document.getElementById("aiPhone")?.value || "",
+          location: document.getElementById("aiLocation")?.value || "",
+          summary: document.getElementById("aiSummary")?.value || "",
+          languages: document
+            .getElementById("aiLanguages")
+            ?.value.split("\n").filter(Boolean) || [],
+          certificates: document
+            .getElementById("aiCertificates")
+            ?.value.split("\n").filter(Boolean) || []
+        },
+
+        education: {
+          institution: document.getElementById("aiSchool")?.value || "",
+          degree: document.getElementById("aiDegree")?.value || "",
+          field: document.getElementById("aiField")?.value || "",
+          year: document.getElementById("aiGradYear")?.value || ""
+        },
+
+        experience,
+        skills: document
+          .getElementById("aiSkills")
+          ?.value.split("\n").filter(Boolean) || []
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "AI resume creation failed");
+    }
+
+    // 🔥 CLOSE MODAL
+    bootstrap.Modal
+      .getInstance(document.getElementById("aiResumeModal"))
+      ?.hide();
+
+    // 🔥 NORMALIZE + LOAD PREVIEW (THIS IS THE KEY FIX)
+    const normalized = normalizeAIResume(data.resume.data);
+
+    loadFinalTemplate({
+      template: data.resume.template || "professionalBlue",
+      data: normalized
+    });
+
+  } catch (err) {
+    console.error("submitAIResume error:", err);
+    alert("Failed to generate resume");
+  }
+}
+
+/* ================= AI GENERATE RESUME BUTTON (FINAL FIX) ================= */
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("#aiGenerateBtn");
+
+  if (!btn) return;
+
+  e.preventDefault();
+  btn.disabled = true;
+  btn.innerText = "Generating...";
+
+  Promise.resolve(submitAIResume())
+    .catch(err => {
+      console.error("AI Generate Error:", err);
+      alert("Failed to generate resume");
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = "Generate Resume";
+    });
+});
