@@ -1,24 +1,38 @@
 // FSD/JS/navbar-loader.js
-// FSD/JS/navbar-loader.js
 fetch("/navbar.html")
-    .then(res => res.text())
-    .then(html => {
-        document.getElementById("navbar-container").innerHTML = html;
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("navbar-container").innerHTML = html;
+    setActiveNav();
+    loadNavbarUser(); // 👈 important
+  });
 
-        // ===== ACTIVE NAV LINK LOGIC =====
-        const currentPage = window.location.pathname.split("/").pop();
+function setActiveNav() {
+  const currentPage = window.location.pathname.split("/").pop();
 
-        document.querySelectorAll(".nav-link").forEach(link => {
-            const linkPage = link.getAttribute("href");
+  document.querySelectorAll(".nav-link").forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
+    }
+  });
+}
 
-            // Only activate for these 3 pages
-            if (
-                (currentPage === "dashboard.html" && linkPage === "dashboard.html") ||
-                (currentPage === "documents.html" && linkPage === "documents.html") ||
-                (currentPage === "contact.html" && linkPage === "contact.html")
-            ) {
-                link.classList.add("active");
-            }
-        });
-    })
-    .catch(err => console.error("Navbar load failed", err));
+async function loadNavbarUser() {
+  try {
+    const res = await fetch("/api/users/me", { credentials: "include" });
+    if (!res.ok) return;
+
+    const data = await res.json();
+
+    const usernameEl = document.getElementById("username");
+
+    if (usernameEl && data.user) {
+      const name = data.user.name || "User";
+      const id = data.user.id || "";
+      usernameEl.textContent = `${name} ${id}`;
+    }
+
+  } catch (err) {
+    console.error("Navbar user fetch failed", err);
+  }
+}

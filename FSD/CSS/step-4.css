@@ -236,3 +236,24 @@ body {
   .preview-pane { display: none; }
   .step-sidebar { display: none; }
 }
+.suggestions-box {
+    position: absolute;
+    background: #0b0b0b;
+    border: 1px solid #2aff2a;
+    border-radius: 6px;
+    width: 100%;
+    max-height: 160px;
+    overflow-y: auto;
+    z-index: 9999;
+    margin-top: 4px;
+  }
+
+  .suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #fff;
+  }
+
+  .suggestion-item:hover {
+    background: #1e1e1e;
+  }

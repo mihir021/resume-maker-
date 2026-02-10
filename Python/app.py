@@ -21,6 +21,7 @@ from Controller.admin_data_controller import admin_data_bp
 from Controller.admin_analytics_controller import admin_analytics_bp
 from Controller.admin_user_action_controller import admin_user_action_bp
 from Controller.ai_resume_controller import ai_resume_bp
+from Controller.skill_controller import skill_bp
 
 def create_app():
     app = Flask(
@@ -104,7 +105,7 @@ def create_app():
     app.register_blueprint(admin_analytics_bp, url_prefix="/api/admin")
     app.register_blueprint(admin_user_action_bp, url_prefix="/api/admin")
     app.register_blueprint(ai_resume_bp)
-
+    app.register_blueprint(skill_bp, url_prefix="/api/skills")
     print("✅ Flask app initialized successfully")
     print(app.config["GOOGLE_CLIENT_ID"])  # debug – remove later
 

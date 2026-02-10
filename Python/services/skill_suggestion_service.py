@@ -3,9 +3,9 @@ from DS.trie import Trie
 skill_trie = Trie()
 
 COMMON_SKILLS = [
-    "python", "java", "javascript", "flask", "django",
-    "spring", "sql", "mongodb", "react", "nodejs",
-    "machine learning", "data structures", "algorithms"
+    "Python", "Java", "Javascript", "Flask", "Django",
+    "Spring","SpringBoot", "SQL", "MongoDB", "React", "NodeJS",
+    "Machine Learning", "Data Structures", "Algorithms","MERN","HTML","CSS"
 ]
 
 for skill in COMMON_SKILLS:
