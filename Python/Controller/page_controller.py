@@ -3,8 +3,12 @@ from config.app_config import HTML_DIR
 
 page_bp = Blueprint("pages", __name__)
 
-# ---------------- LOGIN ----------------
+# ---------------- LANDING PAGE ----------------
 @page_bp.route("/")
+def landing_page():
+    return send_from_directory(HTML_DIR, "landing page.html")
+
+# ---------------- LOGIN ----------------
 @page_bp.route("/login")
 @page_bp.route("/loginPage.html")
 def login_page():

@@ -124,17 +124,32 @@ function openResumePreview(resumeId) {
   fetch(`/api/resumes/${resumeId}`, { credentials: "include" })
     .then(res => res.json())
     .then(resume => {
-      const overlay = document.getElementById("resumePreviewOverlay");
-      overlay.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
-
       loadFinalTemplate(resume);
+
+      // 🔥 set resumeId on score button
+      const scoreBtn = document.querySelector(".resume-score-btn");
+      if (scoreBtn) scoreBtn.dataset.id = resumeId;
+
+      document
+        .getElementById("resumePreviewOverlay")
+        .classList.remove("hidden");
+
+      document.body.style.overflow = "hidden";
+    });
+}
+
+
+
 
 
 function closeResumePreview() {
   document.getElementById("resumePreviewOverlay")
     .classList.add("hidden");
+
+  document.body.style.overflow = "auto";
 }
+
+
 
 /* ================= LOAD TEMPLATE ================= */
 function loadFinalTemplate(resume) {
@@ -342,20 +357,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   aiBtn.addEventListener("click", async () => {
-    const res = await fetch("/api/profile/status", { credentials: "include" });
-    const status = await res.json();
+    try {
+      const res = await fetch("/api/profile/status", { credentials: "include" });
+      const status = await res.json();
 
-    document.getElementById("skillsField")?.classList.toggle("d-none", status.skills);
-    document.getElementById("projectsField")?.classList.toggle("d-none", status.projects);
+      document.getElementById("skillsField")
+        ?.classList.toggle("d-none", status.skills);
 
-    new bootstrap.Modal(aiModal).show();
+      document.getElementById("projectsField")
+        ?.classList.toggle("d-none", status.projects);
 
+      new bootstrap.Modal(aiModal).show();
     } catch (err) {
       console.error("AI modal error:", err);
       alert("Unable to open AI resume builder");
     }
   });
 });
+
 async function submitAIResume() {
   const role = document.getElementById("aiTitle").value.trim();
   const jd = document.getElementById("aiJD").value.trim();
@@ -454,108 +473,111 @@ async function submitAIResume() {
 }
 
 function injectFinalData(data) {
-  console.log("FINAL PREVIEW DATA:", data);
+  if (!data || !data.step1) return;
 
-  if (!data.step1 || !data.step2) {
-    console.error("Invalid STEP resume data", data);
-    return;
-  }
-
-  // ===== STEP 1 =====
+  /* ========== BASIC INFO ========== */
   setText("previewName", data.step1.name);
   setText("previewTitle", data.step1.title);
   setText("previewEmail", data.step1.email);
   setText("previewPhone", data.step1.phone);
   setText("previewLocation", data.step1.location);
-  const summaryEl = document.getElementById("previewSummary");
 
-    if (summaryEl) {
-      summaryEl.innerHTML = highlightKeywords(
-        data.step1.summary,
-        data.step4   // skills = ATS keywords
-      );
-    }
-    const langList = document.getElementById("pLanguages");
-    if (langList && data.step1.languages?.length) {
-      langList.innerHTML = data.step1.languages
-        .map(l => `<li>${l}</li>`)
-        .join("");
-    } else if (langList) {
-      langList.parentElement.style.display = "none";
-    }
+  /* ========== SKILLS ========== */
+  const skills = Array.isArray(data.step4)
+    ? data.step4.map(s => typeof s === "string" ? s : s?.name).filter(Boolean)
+    : [];
 
-    const certList = document.getElementById("pCerts");
-    if (certList && data.step1.certificates?.length) {
-      certList.innerHTML = data.step1.certificates
-        .map(c => `<li>${c}</li>`)
-        .join("");
-    } else if (certList) {
-      certList.parentElement.style.display = "none";
-    }
-
-
-
-      // ===== STEP 2 : EDUCATION (formatted, template-safe) =====
-    const degreeEl = document.getElementById("previewDegree");
-    const fieldEl = document.getElementById("previewField");
-    const instEl = document.getElementById("previewEduInstitute");
-    const yearEl = document.getElementById("previewGraduation");
-
-    if (data.step2) {
-      const degree = data.step2.degree || "";
-      const field = data.step2.field || "";
-      const inst = data.step2.institution || "";
-      const year = data.step2.year || "";
-
-      // Degree + Field → single line
-      if (degreeEl) {
-        degreeEl.textContent = field
-          ? `${degree} in ${field}`: degree;
-      }
-
-      // Hide standalone field line (prevents "IT" alone)
-      if (fieldEl) {
-        fieldEl.style.display = "none";
-      }
-
-      // Institution
-      if (instEl) {
-        instEl.textContent = inst;
-      }
-
-      // Year (clean)
-      if (yearEl) {
-        yearEl.textContent = year;
-      }
-    }
-
-
-  // ===== STEP 3 =====
-  if (data.step3 && data.step3.length > 0) {
-      document.getElementById("previewExperienceSection").style.display = "block";
-
-      document.getElementById("previewExperienceList").innerHTML =
-        data.step3.map(exp => `
-          <div class="mb-3">
-            <strong>${exp.jobTitle}</strong> – ${exp.employer}<br>
-            <small>${exp.city}, ${exp.country}</small><br>
-            <small>${exp.startMonth} – ${exp.endMonth}</small>
-            <p>${exp.description}</p>
-          </div>
-        `).join("");
-    }else {
-      document.getElementById("previewExperienceSection").style.display = "none";
-    }
-
-
-  // ===== STEP 4 =====
   const skillsBox = document.getElementById("previewSkills");
-  if (skillsBox) {
-    skillsBox.innerHTML = (data.step4 || [])
-      .map(skill => `<li>${skill}</li>`)
+  if (skillsBox && skills.length) {
+    skillsBox.innerHTML = skills.map(s => `<li>${s}</li>`).join("");
+    revealSection(skillsBox);
+  }
+
+  /* ========== SUMMARY ========== */
+  const summaryEl = document.getElementById("previewSummary");
+  if (summaryEl) {
+    summaryEl.innerHTML = highlightKeywords(
+      data.step1.summary || "",
+      skills
+    );
+  }
+
+  /* ========== LANGUAGES ========== */
+  const langList = document.getElementById("pLanguages");
+  if (langList && Array.isArray(data.step1.languages) && data.step1.languages.length) {
+    langList.innerHTML = data.step1.languages
+      .map(l => `<li>${l}</li>`)
       .join("");
+    revealSection(langList);
+  }
+
+  /* ========== CERTIFICATIONS ========== */
+  const certList = document.getElementById("pCerts");
+  if (certList && Array.isArray(data.step1.certificates) && data.step1.certificates.length) {
+    certList.innerHTML = data.step1.certificates
+      .map(c => `<li>${c}</li>`)
+      .join("");
+    revealSection(certList);
+  }
+
+  /* ========== EDUCATION ========== */
+  if (data.step2) {
+    setText("previewDegree", data.step2.degree);
+    setText("previewField", data.step2.field);
+    setText("previewEduInstitute", data.step2.institution);
+    setText("previewGraduation", data.step2.year);
+
+    const edu = document.getElementById("educationSection");
+    edu?.classList.remove("hide-section");
+    edu?.classList.add("show");
+  }
+
+  /* ========== EXPERIENCE ========== */
+  if (Array.isArray(data.step3) && data.step3.length) {
+    const sec = document.getElementById("previewExperienceSection");
+    const list = document.getElementById("previewExperienceList");
+
+    if (sec && list) {
+      list.innerHTML = data.step3.map(exp => `
+        <div class="mb-3">
+          <strong>
+            ${exp.jobTitle || ""}
+            ${exp.employer ? " – " + exp.employer : ""}
+          </strong><br>
+          <small>
+            ${exp.city || ""}${exp.country ? ", " + exp.country : ""}
+          </small><br>
+          <small>
+            ${(exp.startMonth || exp.startDate || "")}
+            ${(exp.endMonth || exp.endDate) ? " – " + (exp.endMonth || exp.endDate) : ""}
+          </small>
+          <p>${exp.description || ""}</p>
+        </div>
+      `).join("");
+
+      sec.classList.remove("hide-section");
+      sec.classList.add("show");
+    }
   }
 }
+function revealSection(el) {
+  if (!el) return;
+
+  // try common wrappers used by templates
+  const wrapper =
+    el.closest(".fade-section") ||
+    el.closest("section") ||
+    el.parentElement;
+
+  if (wrapper) {
+    wrapper.classList.remove("hide-section");
+    wrapper.classList.add("show");
+  }
+}
+
+
+
+
 
 function highlightKeywords(text, keywords) {
   if (!text || !Array.isArray(keywords)) return text;

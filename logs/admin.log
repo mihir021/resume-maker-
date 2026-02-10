@@ -168,3 +168,5 @@
 2026-01-08 19:42:08,393 | INFO | ADMIN | Fetched 4 users
 2026-01-08 19:42:08,549 | INFO | ADMIN | GET /api/admin/users called
 2026-01-08 19:42:08,563 | INFO | ADMIN | Fetched 3 users
+2026-02-10 12:28:34,625 | INFO | ADMIN | GET /api/admin/users called
+2026-02-10 12:28:35,249 | INFO | ADMIN | Fetched 6 users

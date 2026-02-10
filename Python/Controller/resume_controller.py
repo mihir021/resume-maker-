@@ -38,22 +38,15 @@ def get_resumes():
 
 
 @resume_bp.get("/<resume_id>")
-@resume_bp.get("/<resume_id>")
 def get_single_resume(resume_id):
     if "user" not in session:
         return jsonify({"success": False}), 401
 
     resume = resume_service.get_resume_by_id(resume_id)
-
     if not resume:
         return jsonify({"error": "Resume not found"}), 404
 
-    open_view("preview")
-
-    # ✅ DO NOT TOUCH resume["data"]
-    # ✅ KEEP step-1 / step-2 / step-3 / step-4 AS IS
-
-    return jsonify(resume)
+    return jsonify(resume)   # ✅ NOTHING ELSE
 
 
 @resume_bp.get("/score/<resume_id>")
