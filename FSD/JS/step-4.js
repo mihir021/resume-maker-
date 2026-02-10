@@ -212,9 +212,39 @@ function loadSkills() {
   section?.classList.remove("hide-section");
 }
 
-/* ================== SAVE SKILLS FROM INPUT ================== */
-$("skillsEditor")?.addEventListener("input", () => {
-  saveSkills(getSkills());
+$("skillsEditor")?.addEventListener("input", async e => {
+  const lines = e.target.value.split("\n");
+  const q = lines[lines.length - 1].trim();
+
+  saveSkills(getSkills()); // ✅ save here (merged logic)
+
+  if (q.length < 1) {
+      const box = $("skillSuggestions");
+      box.innerHTML = "";
+      box.style.display = "none";
+      return;
+    }
+
+
+  const res = await fetch(`/api/skills/suggest?q=${encodeURIComponent(q)}`);
+  const suggestions = await res.json();
+
+  const box = $("skillSuggestions");
+  box.innerHTML = "";
+  box.style.display = "block";
+
+  suggestions.forEach(skill => {
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.textContent = skill;
+    div.onclick = () => {
+      lines[lines.length - 1] = skill;
+      e.target.value = lines.join("\n") + "\n";
+      box.innerHTML = "";
+      saveSkills(getSkills());
+    };
+    box.appendChild(div);
+  });
 });
 
 /* ================== GET / SAVE / RESTORE SKILLS ================== */

@@ -100,6 +100,7 @@ fetch("/api/resumes", { credentials: "include" })
       <div class="resume-card fade-card" data-id="${r._id}"
            onclick="openResumePreview('${r._id}')">
 
+        <!-- ❌ DELETE BUTTON -->
         <button class="delete-resume-btn"
                 onclick="deleteResume(event, '${r._id}')">✕</button>
 
@@ -129,19 +130,26 @@ function openResumePreview(resumeId) {
 
       loadFinalTemplate(resume);
 
-      // attach resumeId to score button AFTER render
-      setTimeout(() => {
-        document.querySelector(".resume-score-btn")
-          ?.setAttribute("data-id", resumeId);
-      }, 50);
-    });
+
+function closeResumePreview() {
+  document.getElementById("resumePreviewOverlay")
+    .classList.add("hidden");
 }
 
 /* ================= LOAD TEMPLATE ================= */
 function loadFinalTemplate(resume) {
-  const tpl = TEMPLATES[resume.template] || TEMPLATES.professionalBlue;
+    console.log("TEMPLATE KEY:", resume.template);
+  const templateKey = resume.template || "professionalBlue";
+  const tpl = TEMPLATES[templateKey];
+    console.log("TEMPLATE OBJECT:", tpl);
+  if (!tpl) {
+    alert("Template not found. Using default template.");
+    return;
+  }
 
-  document.getElementById("final-template-style")?.remove();
+
+  const old = document.getElementById("final-template-style");
+  if (old) old.remove();
 
   const link = document.createElement("link");
   link.id = "final-template-style";
@@ -156,24 +164,74 @@ function loadFinalTemplate(resume) {
       injectFinalData(resume.data);
     });
 }
+/* ================= HELPERS ================= */
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el && value) el.textContent = value;
+}
 
-/* ================= DELEGATED FIX: CLOSE BUTTON ================= */
-document.addEventListener("click", (e) => {
-  if (e.target.closest("#closePreview")) {
-    document.getElementById("resumePreviewOverlay").classList.add("hidden");
-    document.body.style.overflow = "auto";
-    document.getElementById("final-template-style")?.remove();
-    document.getElementById("finalResumePreview").innerHTML = "";
+function fillList(id, text) {
+  const ul = document.getElementById(id);
+  if (!ul || !text) return;
+  ul.innerHTML = text
+    .split("\n")
+    .filter(Boolean)
+    .map(l => `<li>${l}</li>`)
+    .join("");
+}
+
+function formatMonth(v) {
+  if (!v) return "";
+  return new Date(v).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric"
+  });
+}
+function loadSkills() {
+  const skills = JSON.parse(localStorage.getItem("skills") || "[]");
+
+  const ul = document.getElementById("previewSkills");
+  const section = ul?.closest("section");
+
+  if (!ul || !skills.length) {
+    section?.classList.add("hide-section");
+    return;
   }
-});
 
-/* ================= DELEGATED FIX: RESUME SCORE ================= */
+  ul.innerHTML = "";
+  skills.forEach(skill => {
+    const li = document.createElement("li");
+    li.textContent = skill;
+    ul.appendChild(li);
+  });
+
+  // ✅ IMPORTANT
+  section.classList.remove("hide-section");
+}
+
+/* ================= DOWNLOAD PDF (STABLE) ================= */
+function downloadResumePDF() {
+  const element = document.getElementById("finalResumePreview");
+
+  setTimeout(() => {
+    html2pdf()
+      .set({
+        margin: 5,
+        filename: "resume.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      })
+      .from(element)
+      .save();
+  }, 300);
+}
+/* ================= RESUME SCORE BUTTON ================= */
 document.addEventListener("click", async (e) => {
-  const btn = e.target.closest(".resume-score-btn");
-  if (!btn) return;
+  if (!e.target.classList.contains("resume-score-btn")) return;
 
-  const resumeId = btn.dataset.id;
-  if (!resumeId) return;
+  const resumeId = e.target.dataset.id;
+  console.log("Resume ID:", resumeId); // 🔥 debug
 
   const res = await fetch(`/api/resumes/score/${resumeId}`);
   const data = await res.json();
@@ -197,231 +255,100 @@ document.addEventListener("click", async (e) => {
     document.getElementById("resumeScoreModal")
   ).show();
 });
+/* ================= CLOSE PREVIEW BUTTON ================= */
+document.addEventListener("click", (e) => {
+  if (e.target.closest("#closePreview")) {
+    const overlay = document.getElementById("resumePreviewOverlay");
+    if (overlay) {
+      overlay.classList.add("hidden");
+      document.body.style.overflow = "auto";
+    }
+  }
+});
 
-/* ================= DELETE RESUME ================= */
+fetch("/api/resumes/skills/frequency")
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("topSkills");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const entries = Object.entries(data)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6); // show top 6 skills
+
+    if (entries.length === 0) {
+      container.innerHTML = "<p class='text-muted'>No skills data available</p>";
+      return;
+    }
+
+    const maxCount = entries[0][1];
+
+    entries.forEach(([skill, count]) => {
+      const percent = Math.round((count / maxCount) * 100);
+
+      container.innerHTML += `
+        <div class="skill-row">
+          <span class="skill-name">${skill}</span>
+
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:${percent}%"></div>
+          </div>
+
+          <span class="skill-count">${count}</span>
+        </div>
+      `;
+    });
+  });
+
 async function deleteResume(event, resumeId) {
-  event.stopPropagation();
+  event.stopPropagation(); // 🔥 prevents opening preview
+
   if (!confirm("Delete this resume permanently?")) return;
 
-  const res = await fetch(`/api/resumes/${resumeId}`, {
-    method: "DELETE",
-    credentials: "include"
-  });
+  try {
+    const res = await fetch(`/api/resumes/${resumeId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
 
-  if (res.ok) {
-    document.querySelector(`.resume-card[data-id="${resumeId}"]`)?.remove();
-  }
-}
+    const data = await res.json();
 
-function injectFinalData(data) {
-  if (!data) return;
+    if (!res.ok) {
+      alert(data.message || "Failed to delete resume");
+      return;
+    }
 
-  /* ===== STEP 1 – HEADER & CONTACT ===== */
-  setText("previewName", data.step1?.name);
-  setText("previewTitle", data.step1?.title);
-  setText("previewSummary", data.step1?.summary);
-  setText("previewEmail", data.step1?.email);
-  setText("previewPhone", data.step1?.phone);
-  setText("previewLocation", data.step1?.location);
+    // ✅ remove card from UI
+    document
+      .querySelector(`.resume-card[data-id="${resumeId}"]`)
+      ?.remove();
 
-  // ✅ FIX: certificates key mismatch
-  /* ===== LANGUAGES ===== */
-/* ===== LANGUAGES (string OR array safe) ===== */
-if (data.step1?.languages) {
-  const ul = document.getElementById("pLanguages");
-  const section = ul?.closest("section");
-
-  const langs = Array.isArray(data.step1.languages)
-    ? data.step1.languages
-    : data.step1.languages.split("\n").filter(Boolean);
-
-  if (langs.length) {
-    ul.innerHTML = langs.map(l => `<li>${l}</li>`).join("");
-    section?.classList.remove("hide-section");
-  }
-}
-
-/* ===== CERTIFICATIONS (string OR array safe) ===== */
-/* ===== CERTIFICATIONS (certs OR certificates SAFE) ===== */
-{
-  const ul = document.getElementById("pCerts");
-  const section = ul?.closest("section");
-
-  const certSource =
-    data.step1?.certificates ??
-    data.step1?.certs ??
-    null;
-
-  const certs = Array.isArray(certSource)
-    ? certSource
-    : typeof certSource === "string"
-      ? certSource.split("\n").filter(Boolean)
-      : [];
-
-  if (ul && certs.length) {
-    ul.innerHTML = certs.map(c => `<li>${c}</li>`).join("");
-    section?.classList.remove("hide-section");
+  } catch (err) {
+    console.error(err);
+    alert("Server error while deleting resume");
   }
 }
 
 
-
-  //* ===== STEP 2 – EDUCATION (TEMPLATE SAFE) ===== */
-if (data.step2) {
-  const eduSection = document.getElementById("educationSection");
-
-  if (eduSection) {
-    const degreeLine = data.step2.degree && data.step2.field
-      ? `${data.step2.degree} in ${data.step2.field}`
-      : data.step2.degree || "";
-
-    const dateText = data.step2.current
-      ? `Expected ${formatMonth(data.step2.month)}`
-      : formatMonth(data.step2.month);
-
-    eduSection.innerHTML = `
-      <h3>EDUCATION</h3>
-      <p><strong>${degreeLine}</strong></p>
-      <p>${data.step2.school || ""}</p>
-      <p>${data.step2.location || ""}</p>
-      <p>${dateText}</p>
-      ${
-        Array.isArray(data.step2.details) && data.step2.details.length
-          ? `<ul>${data.step2.details.map(d => `<li>${d}</li>`).join("")}</ul>`
-          : ""
-      }
-    `;
-  }
-}
-
-
-  /* ===== STEP 3 – EXPERIENCE ===== */
-  if (Array.isArray(data.step3) && data.step3.length) {
-    const section = document.getElementById("previewExperienceSection");
-    const box = document.getElementById("previewExperienceList");
-
-    box.innerHTML = data.step3.map(exp => `
-      <div class="exp-item">
-        <strong>${exp.jobTitle} – ${exp.employer}</strong><br>
-        <small>
-          ${exp.city || ""}${exp.country ? ", " + exp.country : ""}
-          | ${exp.startDate} – ${exp.endDate}
-        </small>
-        <ul>
-          ${(exp.description || "")
-            .split("\n")
-            .filter(Boolean)
-            .map(d => `<li>${d}</li>`)
-            .join("")}
-        </ul>
-      </div>
-    `).join("");
-
-    section.classList.remove("hide-section");
-  }
-
-  /* ===== STEP 4 – SKILLS ===== */
-  if (Array.isArray(data.step4) && data.step4.length) {
-    const ul = document.getElementById("previewSkills");
-    const section = ul?.closest("section");
-
-    ul.innerHTML = data.step4
-      .map(skill => `<li>${skill}</li>`)
-      .join("");
-
-    section?.classList.remove("hide-section");
-  }
-}
-/* ================= HELPERS ================= */
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = value || "";
-}
-
-function fillList(id, list) {
-  const ul = document.getElementById(id);
-  if (!ul || !Array.isArray(list) || !list.length) return;
-
-  ul.innerHTML = list.map(item => `<li>${item}</li>`).join("");
-}
-
-function formatMonth(v) {
-  if (!v) return "";
-  return new Date(v).toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric"
-  });
-}
-function normalizeAIResume(ai) {
-  return {
-    step1: {
-      name: ai.personal?.name || "",
-      title: ai.personal?.title || "",
-      email: ai.personal?.email || "",
-      phone: ai.personal?.phone || "",
-      location: ai.personal?.location || "",
-      summary: ai.personal?.summary || "",
-      languages: ai.personal?.languages || [],
-      certificates: ai.personal?.certificates || []
-    },
-
-    step2: {
-      degree: ai.education?.degree || "",
-      field: ai.education?.field || "",
-      school: ai.education?.institution || "",
-      location: "",
-      year: ai.education?.year || ""
-    },
-
-    step3: Array.isArray(ai.experience)
-      ? ai.experience.map(e => ({
-          jobTitle: e.jobTitle,
-          employer: e.employer,
-          city: e.city,
-          country: e.country,
-          startDate: e.startMonth,
-          endDate: e.endMonth,
-          description: e.description
-        }))
-      : [],
-
-    step4: ai.skills || []
-  };
-}
-
-/* ================= CREATE WITH AI (FINAL FIX) ================= */
 document.addEventListener("DOMContentLoaded", () => {
   const aiBtn = document.getElementById("aiCreateBtn");
   const aiModal = document.getElementById("aiResumeModal");
 
   if (!aiBtn || !aiModal) {
-    console.warn("AI Create button or modal not found");
+    console.error("AI button or modal not found");
     return;
   }
 
   aiBtn.addEventListener("click", async () => {
-    try {
-      const res = await fetch("/api/profile/status", {
-        credentials: "include"
-      });
+    const res = await fetch("/api/profile/status", { credentials: "include" });
+    const status = await res.json();
 
-      if (!res.ok) {
-        throw new Error("Profile status fetch failed");
-      }
+    document.getElementById("skillsField")?.classList.toggle("d-none", status.skills);
+    document.getElementById("projectsField")?.classList.toggle("d-none", status.projects);
 
-      const status = await res.json();
-
-      // Toggle optional fields
-      document
-        .getElementById("skillsField")
-        ?.classList.toggle("d-none", status.skills);
-
-      document
-        .getElementById("projectsField")
-        ?.classList.toggle("d-none", status.projects);
-
-      new bootstrap.Modal(aiModal).show();
+    new bootstrap.Modal(aiModal).show();
 
     } catch (err) {
       console.error("AI modal error:", err);
@@ -430,116 +357,229 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 async function submitAIResume() {
-  try {
-    const role = document.getElementById("aiTitle")?.value?.trim();
-    const jd = document.getElementById("aiJD")?.value?.trim();
-    const expLevel = document.getElementById("aiExperience")?.value;
+  const role = document.getElementById("aiTitle").value.trim();
+  const jd = document.getElementById("aiJD").value.trim();
+  const exp = document.getElementById("aiExperience").value;
+  let experience = [];
 
-    if (!role) {
-      alert("Please enter a role");
-      return;
-    }
-
-    // 🔥 collect experience blocks (if experienced)
-    let experience = [];
-    if (expLevel === "experienced") {
+    if (document.getElementById("aiExperience").value === "experienced") {
       document.querySelectorAll(".experience-block").forEach(block => {
-        const jobTitle = block.querySelector(".exp-title")?.value?.trim();
-        if (!jobTitle) return;
+      const jobTitle = block.querySelector(".exp-title").value.trim();
+      if (!jobTitle) return;
 
-        experience.push({
-          jobTitle,
-          employer: block.querySelector(".exp-employer")?.value || "",
-          city: block.querySelector(".exp-city")?.value || "",
-          country: block.querySelector(".exp-country")?.value || "",
-          startMonth: block.querySelector(".exp-start")?.value || "",
-          endMonth: block.querySelector(".exp-end")?.value || "",
-          description: block.querySelector(".exp-desc")?.value || ""
-        });
+      experience.push({
+        jobTitle,
+        employer: block.querySelector(".exp-employer").value,
+        city: block.querySelector(".exp-city").value,
+        country: block.querySelector(".exp-country").value,
+        startMonth: block.querySelector(".exp-start").value,
+        endMonth: block.querySelector(".exp-end").value,
+        description: block.querySelector(".exp-desc").value
       });
+    });
     }
 
-    // 🔥 CALL AI API
+
+  if (!role) {
+    alert("Please enter a role");
+    return;
+  }
+
+  try {
     const res = await fetch("/ai/create-resume", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
-        role,
-        job_description: jd,
-        experience_level: expLevel,
+          role,
+          job_description: jd,
+          experience_level: exp,
 
-        personal: {
-          name: document.getElementById("aiName")?.value || "",
-          title: role,
-          email: document.getElementById("aiEmail")?.value || "",
-          phone: document.getElementById("aiPhone")?.value || "",
-          location: document.getElementById("aiLocation")?.value || "",
-          summary: document.getElementById("aiSummary")?.value || "",
-          languages: document
-            .getElementById("aiLanguages")
-            ?.value.split("\n").filter(Boolean) || [],
-          certificates: document
-            .getElementById("aiCertificates")
-            ?.value.split("\n").filter(Boolean) || []
-        },
+          personal: {
+              name: document.getElementById("aiName").value || "",
+              title: document.getElementById("aiTitle").value || "",
+              email: document.getElementById("aiEmail").value || "",
+              phone: document.getElementById("aiPhone").value || "",
+              location: document.getElementById("aiLocation").value || "",
+              summary: document.getElementById("aiSummary").value,
 
-        education: {
-          institution: document.getElementById("aiSchool")?.value || "",
-          degree: document.getElementById("aiDegree")?.value || "",
-          field: document.getElementById("aiField")?.value || "",
-          year: document.getElementById("aiGradYear")?.value || ""
-        },
+              languages: document
+                .getElementById("aiLanguages")
+                ?.value.split("\n")
+                .filter(Boolean) || [],
 
-        experience,
-        skills: document
-          .getElementById("aiSkills")
-          ?.value.split("\n").filter(Boolean) || []
-      })
+              certificates: document
+                .getElementById("aiCertificates")
+                ?.value.split("\n")
+                .filter(Boolean) || []
+            },
+
+          education: {
+            institution: document.getElementById("aiSchool").value,
+            degree: document.getElementById("aiDegree").value,
+            field: document.getElementById("aiField").value,
+            year: document.getElementById("aiGradYear").value
+          },
+
+          experience: experience,
+
+          skills: document
+            .getElementById("aiSkills")
+            .value
+            .split("\n")
+            .filter(Boolean)
+        })
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+    console.log("AI RAW RESPONSE:", raw);
 
     if (!res.ok) {
-      throw new Error(data.message || "AI resume creation failed");
+      throw new Error(raw);
     }
 
-    // 🔥 CLOSE MODAL
-    bootstrap.Modal
-      .getInstance(document.getElementById("aiResumeModal"))
-      ?.hide();
+    const data = JSON.parse(raw);
 
-    // 🔥 NORMALIZE + LOAD PREVIEW (THIS IS THE KEY FIX)
-    const normalized = normalizeAIResume(data.resume.data);
+    bootstrap.Modal.getInstance(
+      document.getElementById("aiResumeModal")
+    ).hide();
 
-    loadFinalTemplate({
-      template: data.resume.template || "professionalBlue",
-      data: normalized
-    });
+    openResumePreview(data.resumeId);
 
-  } catch (err) {
-    console.error("submitAIResume error:", err);
-    alert("Failed to generate resume");
+  }catch (e) {
+      console.error("AI ERROR:", e);
+      alert("AI resume creation failed:\n" + e.message);
+    }
+
+}
+
+function injectFinalData(data) {
+  console.log("FINAL PREVIEW DATA:", data);
+
+  if (!data.step1 || !data.step2) {
+    console.error("Invalid STEP resume data", data);
+    return;
+  }
+
+  // ===== STEP 1 =====
+  setText("previewName", data.step1.name);
+  setText("previewTitle", data.step1.title);
+  setText("previewEmail", data.step1.email);
+  setText("previewPhone", data.step1.phone);
+  setText("previewLocation", data.step1.location);
+  const summaryEl = document.getElementById("previewSummary");
+
+    if (summaryEl) {
+      summaryEl.innerHTML = highlightKeywords(
+        data.step1.summary,
+        data.step4   // skills = ATS keywords
+      );
+    }
+    const langList = document.getElementById("pLanguages");
+    if (langList && data.step1.languages?.length) {
+      langList.innerHTML = data.step1.languages
+        .map(l => `<li>${l}</li>`)
+        .join("");
+    } else if (langList) {
+      langList.parentElement.style.display = "none";
+    }
+
+    const certList = document.getElementById("pCerts");
+    if (certList && data.step1.certificates?.length) {
+      certList.innerHTML = data.step1.certificates
+        .map(c => `<li>${c}</li>`)
+        .join("");
+    } else if (certList) {
+      certList.parentElement.style.display = "none";
+    }
+
+
+
+      // ===== STEP 2 : EDUCATION (formatted, template-safe) =====
+    const degreeEl = document.getElementById("previewDegree");
+    const fieldEl = document.getElementById("previewField");
+    const instEl = document.getElementById("previewEduInstitute");
+    const yearEl = document.getElementById("previewGraduation");
+
+    if (data.step2) {
+      const degree = data.step2.degree || "";
+      const field = data.step2.field || "";
+      const inst = data.step2.institution || "";
+      const year = data.step2.year || "";
+
+      // Degree + Field → single line
+      if (degreeEl) {
+        degreeEl.textContent = field
+          ? `${degree} in ${field}`: degree;
+      }
+
+      // Hide standalone field line (prevents "IT" alone)
+      if (fieldEl) {
+        fieldEl.style.display = "none";
+      }
+
+      // Institution
+      if (instEl) {
+        instEl.textContent = inst;
+      }
+
+      // Year (clean)
+      if (yearEl) {
+        yearEl.textContent = year;
+      }
+    }
+
+
+  // ===== STEP 3 =====
+  if (data.step3 && data.step3.length > 0) {
+      document.getElementById("previewExperienceSection").style.display = "block";
+
+      document.getElementById("previewExperienceList").innerHTML =
+        data.step3.map(exp => `
+          <div class="mb-3">
+            <strong>${exp.jobTitle}</strong> – ${exp.employer}<br>
+            <small>${exp.city}, ${exp.country}</small><br>
+            <small>${exp.startMonth} – ${exp.endMonth}</small>
+            <p>${exp.description}</p>
+          </div>
+        `).join("");
+    }else {
+      document.getElementById("previewExperienceSection").style.display = "none";
+    }
+
+
+  // ===== STEP 4 =====
+  const skillsBox = document.getElementById("previewSkills");
+  if (skillsBox) {
+    skillsBox.innerHTML = (data.step4 || [])
+      .map(skill => `<li>${skill}</li>`)
+      .join("");
   }
 }
 
-/* ================= AI GENERATE RESUME BUTTON (FINAL FIX) ================= */
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("#aiGenerateBtn");
+function highlightKeywords(text, keywords) {
+  if (!text || !Array.isArray(keywords)) return text;
 
-  if (!btn) return;
+  const escaped = keywords.map(k =>
+    k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  );
 
-  e.preventDefault();
-  btn.disabled = true;
-  btn.innerText = "Generating...";
+  const regex = new RegExp(`\\b(${escaped.join("|")})\\b`, "gi");
 
-  Promise.resolve(submitAIResume())
-    .catch(err => {
-      console.error("AI Generate Error:", err);
-      alert("Failed to generate resume");
-    })
-    .finally(() => {
-      btn.disabled = false;
-      btn.innerText = "Generate Resume";
-    });
-});
+  return text.replace(regex, `<span class="ats-highlight">$1</span>`);
+}
+
+const expSelect = document.getElementById("aiExperience");
+if (expSelect) {
+  expSelect.addEventListener("change", e => {
+    const section = document.getElementById("aiExperienceSection");
+    section.classList.toggle("d-none", e.target.value !== "experienced");
+  });
+}
+
+
+function addExperienceField() {
+  const tpl = document.getElementById("experienceTemplate");
+  const clone = tpl.content.cloneNode(true);
+  document.getElementById("experienceContainer").appendChild(clone);
+}
